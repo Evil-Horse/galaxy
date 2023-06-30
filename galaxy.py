@@ -4,6 +4,7 @@ import tqdm
 
 from image import Image
 import anomaly
+from subsectors import Subsectors
 
 class Galaxy:
     def __init__(self, name):
@@ -11,6 +12,7 @@ class Galaxy:
 
         self.image = Image()
         self.anomaly_file = open("anomaly", 'w')
+        self.subsectors = Subsectors()
 
     def __del__(self):
         self.json_file.close()
@@ -37,8 +39,10 @@ class Galaxy:
             anomaly_reason = anomaly.process(system)
             if anomaly_reason is not None:
                 print("%s: %s" % (system["name"], anomaly_reason), file=self.anomaly_file)
+            self.subsectors.process(system)
 
         self.image.finalize()
+        self.subsectors.finalize()
 
 
 galaxy = Galaxy("galaxy.json.gz")
