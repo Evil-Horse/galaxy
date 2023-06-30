@@ -3,12 +3,14 @@ import json
 import tqdm
 
 from image import Image
+import anomaly
 
 class Galaxy:
     def __init__(self, name):
         self.json_file = gzip.open(name, 'r')
 
         self.image = Image()
+        self.anomaly_file = open("anomaly", 'w')
 
     def __del__(self):
         self.json_file.close()
@@ -32,6 +34,9 @@ class Galaxy:
             pbar.set_description(system["name"])
 
             self.image.process(system)
+            anomaly_reason = anomaly.process(system)
+            if anomaly_reason is not None:
+                print("%s: %s" % (system["name"], anomaly_reason), file=self.anomaly_file)
 
         self.image.finalize()
 
