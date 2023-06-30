@@ -35,10 +35,10 @@ def temperature_to_color(temperature, magnitude):
 
 class Image:
     def __init__(self):
-        self.minx = 0
-        self.maxx = 0
-        self.miny = 0
-        self.maxy = 0
+        self.minx = None
+        self.maxx = None
+        self.miny = None
+        self.maxy = None
 
         output_size = 10000
         self.input_dims = ((-42213, 40503), (-23405, 65630))
@@ -56,16 +56,16 @@ class Image:
 
     def process(self, system):
         updated = 0
-        if self.minx > system["coords"]["x"]:
+        if self.minx == None or self.minx > system["coords"]["x"]:
             self.minx = system["coords"]["x"]
             updated = 1
-        if self.maxx < system["coords"]["x"]:
+        if self.maxx == None or self.maxx < system["coords"]["x"]:
             self.maxx = system["coords"]["x"]
             updated = 1
-        if self.miny > system["coords"]["z"]:
+        if self.miny == None or self.miny > system["coords"]["z"]:
             self.miny = system["coords"]["z"]
             updated = 1
-        if self.maxy < system["coords"]["z"]:
+        if self.maxy == None or self.maxy < system["coords"]["z"]:
             self.maxy = system["coords"]["z"]
             updated = 1
 
