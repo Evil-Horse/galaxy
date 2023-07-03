@@ -13,6 +13,7 @@ class Galaxy:
         self.image = Image()
         self.anomaly_file = open("anomaly", 'w')
         self.subsectors = Subsectors()
+        self.anomalies = 0
 
     def __del__(self):
         self.json_file.close()
@@ -39,12 +40,14 @@ class Galaxy:
             anomaly_reason = anomaly.process(system)
             if anomaly_reason is not None:
                 print("%s: %s" % (system["name"], anomaly_reason), file=self.anomaly_file)
+                self.anomalies += 1
             self.subsectors.process(system)
 
         pbar.close()
         print("=======")
         self.image.finalize()
         self.subsectors.finalize()
+        print("Anomalies: %s" % self.anomalies)
 
 
 galaxy = Galaxy("galaxy.json.gz")
