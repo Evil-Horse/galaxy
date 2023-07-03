@@ -65,4 +65,4 @@ class Subsectors:
                 print("%s: %s systems" % (subsector, self.subsectors[subsector] + 1), file=f)
                 total += self.subsectors[subsector] + 1
 
-        print("Opened %s/%s systems" % (self.systems, total))
+        print("Opened %s/%s systems in %s subsectors" % (self.systems, total, len(self.subsectors)))
