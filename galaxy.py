@@ -39,7 +39,7 @@ class Galaxy:
             self.image.process(system)
             anomaly_reason = anomaly.process(system)
             if anomaly_reason is not None:
-                print("%s: %s" % (system["name"], anomaly_reason), file=self.anomaly_file)
+                print(f"{system['name']}: {anomaly_reason}", file=self.anomaly_file)
                 self.anomalies += 1
             self.subsectors.process(system)
 
@@ -47,7 +47,7 @@ class Galaxy:
         print("=======")
         self.image.finalize()
         self.subsectors.finalize()
-        print("Anomalies: %s" % self.anomalies)
+        print(f"Anomalies: {self.anomalies:,}")
 
 
 galaxy = Galaxy("galaxy.json.gz")

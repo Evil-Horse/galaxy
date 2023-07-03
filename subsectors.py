@@ -62,7 +62,7 @@ class Subsectors:
         total = 0
         with open("subsectors", 'w') as f:
             for subsector in self.subsectors:
-                print("%s: %s systems" % (subsector, self.subsectors[subsector] + 1), file=f)
+                print(f"{subsector}: {self.subsectors[subsector] + 1} systems", file=f)
                 total += self.subsectors[subsector] + 1
 
-        print("Opened %s/%s systems in %s subsectors" % (self.systems, total, len(self.subsectors)))
+        print(f"Opened {self.systems:,}/{total:,} systems in {len(self.subsectors):,} subsectors")

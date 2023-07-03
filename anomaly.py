@@ -18,6 +18,6 @@ def process(system):
                 return "Planet mass in unknown"
 
     if system["bodyCount"] + barycenters != len(system["bodies"]):
-        return "is not fully scanned (%s/%s)" % (len(system["bodies"]) - barycenters, system["bodyCount"])
+        return f"is not fully scanned ({len(system['bodies']) - barycenters}/{system['bodyCount']})"
 
     return None

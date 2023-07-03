@@ -6,7 +6,6 @@ from PIL import Image as PImage
 def normalize_dim(in_bounds, in_value, out_size):
     in_size = in_bounds[1] - in_bounds[0] + 1
     out_value = (in_value - in_bounds[0]) / in_size * out_size
-    #print("DEBUG: %s in (%d, %d) -> %d in (0, %d)" % (in_value, in_bounds[0], in_bounds[1], out_value, out_size-1))
     return floor(out_value)
 
 def temperature_to_color(temperature, magnitude):
@@ -71,8 +70,7 @@ class Image:
             updated = 1
 
         if updated == 1:
-            print("System %s: Coordinates: %d, %d (Borders: [%d - %d, %d - %d])" %
-                (system["name"], system["coords"]["x"], system["coords"]["z"], self.minx, self.maxx, self.miny, self.maxy), file=sys.stderr)
+            print(f'System {system["name"]}: Coordinates: {system["coords"]["x"]}, {system["coords"]["z"]} (Borders: [{self.minx} - {self.maxx}, {self.miny} - {self.maxy}])', file=sys.stderr)
 
         #generate color
         xdim = normalize_dim(self.input_dims[0], system["coords"]["x"], self.output_dims[0])
@@ -90,7 +88,5 @@ class Image:
                     continue
 
                 color = temperature_to_color(body["surfaceTemperature"], body["absoluteMagnitude"])
-                #print("(%d, %d) %s star: %f K -> %s"
-                #      % (xdim, zdim, system["name"], body["surfaceTemperature"], color))
                 self.image[xdim,zdim] += color
 
