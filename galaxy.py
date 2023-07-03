@@ -41,6 +41,8 @@ class Galaxy:
                 print("%s: %s" % (system["name"], anomaly_reason), file=self.anomaly_file)
             self.subsectors.process(system)
 
+        pbar.close()
+        print("=======")
         self.image.finalize()
         self.subsectors.finalize()
 
