@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 from math import floor
 from PIL import Image as PImage
@@ -71,7 +72,7 @@ class Image:
 
         if updated == 1:
             print("System %s: Coordinates: %d, %d (Borders: [%d - %d, %d - %d])" %
-                (system["name"], system["coords"]["x"], system["coords"]["z"], self.minx, self.maxx, self.miny, self.maxy))
+                (system["name"], system["coords"]["x"], system["coords"]["z"], self.minx, self.maxx, self.miny, self.maxy), file=sys.stderr)
 
         #generate color
         xdim = normalize_dim(self.input_dims[0], system["coords"]["x"], self.output_dims[0])
