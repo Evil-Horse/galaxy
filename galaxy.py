@@ -3,7 +3,7 @@ import json
 import tqdm
 
 from image import Image
-import anomaly
+from anomaly import Anomalies
 from subsectors import Subsectors
 
 class Galaxy:
@@ -11,9 +11,8 @@ class Galaxy:
         self.json_file = gzip.open(name, 'r')
 
         self.image = Image()
-        self.anomaly_file = open("anomaly", 'w')
+        self.anomalies = Anomalies()
         self.subsectors = Subsectors()
-        self.anomalies = 0
 
     def __del__(self):
         self.json_file.close()
@@ -37,17 +36,14 @@ class Galaxy:
             pbar.set_description(system["name"])
 
             self.image.process(system)
-            anomaly_reason = anomaly.process(system)
-            if anomaly_reason is not None:
-                print(f"{system['name']}: {anomaly_reason}", file=self.anomaly_file)
-                self.anomalies += 1
+            self.anomalies.process(system)
             self.subsectors.process(system)
 
         pbar.close()
         print("=======")
         self.image.finalize()
+        self.anomalies.finalize()
         self.subsectors.finalize()
-        print(f"Anomalies: {self.anomalies:,}")
 
 
 galaxy = Galaxy("galaxy.json.gz")

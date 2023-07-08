@@ -1,4 +1,4 @@
-def process(system):
+def check(system):
     if not "bodyCount" in system:
         return "Body count unknown"
 
@@ -21,3 +21,18 @@ def process(system):
         return f"is not fully scanned ({len(system['bodies']) - barycenters}/{system['bodyCount']})"
 
     return None
+
+class Anomalies:
+    def __init__(self):
+        self.anomaly_file = open("anomaly", 'w')
+        self.anomalies = 0
+
+    def process(self, system):
+        anomaly_reason = check(system)
+
+        if anomaly_reason is not None:
+            print(f"{system['name']}: {anomaly_reason}", file=self.anomaly_file)
+            self.anomalies += 1
+
+    def finalize(self):
+        print(f"Anomalies: {self.anomalies:,}")
