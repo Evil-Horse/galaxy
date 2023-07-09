@@ -45,13 +45,15 @@ class Galaxy:
 
         pbar.close()
         print("=======")
+        print("Milky Way Galaxy:")
         self.image.finalize()
-        self.anomalies.finalize()
         self.subsectors.finalize()
+        self.anomalies.finalize()
 
         for fav in favorite_sectors:
-            self.anomalies.finalize(fav)
+            print(f"\n{fav} Sector:")
             self.subsectors.finalize(fav)
+            self.anomalies.finalize(fav)
 
 galaxy = Galaxy("galaxy.json.gz")
 galaxy.load()
