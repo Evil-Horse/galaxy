@@ -1,3 +1,5 @@
+import utils
+
 def check(system):
     if not "bodyCount" in system:
         return "Body count unknown"
@@ -23,16 +25,22 @@ def check(system):
     return None
 
 class Anomalies:
-    def __init__(self):
+    def __init__(self, fav):
         self.anomaly_file = open("anomaly", 'w')
-        self.anomalies = 0
+        self.anomalies = utils.counter_init(fav)
+        self.fav = fav
 
     def process(self, system):
         anomaly_reason = check(system)
 
         if anomaly_reason is not None:
             print(f"{system['name']}: {anomaly_reason}", file=self.anomaly_file)
-            self.anomalies += 1
 
-    def finalize(self):
-        print(f"Anomalies: {self.anomalies:,}")
+            utils.counter_increment(self.anomalies, system['sector'], self.fav)
+
+    def finalize(self, sector = None):
+        if sector is None:
+            anomalies = self.anomalies['galaxy']
+        else:
+            anomalies = self.anomalies[sector]
+        print(f"Anomalies: {anomalies:,}")

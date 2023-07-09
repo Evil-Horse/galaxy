@@ -1,3 +1,5 @@
+import utils
+
 def split_generator(text):
     split = text.split(" ")
 
@@ -30,10 +32,20 @@ def test_generated(split):
 
     return True
 
+def sector_name(text):
+    split = split_generator(text)
+
+    if split is None:
+        return None
+
+    return ' '.join(split[:-2])
+
 class Subsectors:
-    def __init__(self):
-        self.systems = 0
+    def __init__(self, fav):
         self.subsectors = {}
+        self.systems = utils.counter_init(fav)
+        self.count = utils.counter_init(fav)
+        self.fav = fav
 
     def process(self, system):
         split = split_generator(system["name"])
@@ -52,17 +64,29 @@ class Subsectors:
 
         if not subsector in self.subsectors:
             self.subsectors[subsector] = number
+            utils.counter_increment(self.count, system['sector'], self.fav)
         else:
             if number > self.subsectors[subsector]:
                 self.subsectors[subsector] = number
 
-        self.systems += 1
+        utils.counter_increment(self.systems, system['sector'], self.fav)
 
-    def finalize(self):
+    def finalize(self, sector = None):
+        if sector is None:
+            with open("subsectors", 'w') as f:
+                for subsector in self.subsectors:
+                    print(f"{subsector}: {self.subsectors[subsector] + 1} systems", file=f)
+
+        if sector is None:
+            systems = self.systems['galaxy']
+            count = self.count['galaxy']
+        else:
+            systems = self.systems[sector]
+            count = self.count[sector]
+
         total = 0
-        with open("subsectors", 'w') as f:
-            for subsector in self.subsectors:
-                print(f"{subsector}: {self.subsectors[subsector] + 1} systems", file=f)
+        for subsector in self.subsectors:
+            if sector is None or sector == sector_name(subsector):
                 total += self.subsectors[subsector] + 1
 
-        print(f"Opened {self.systems:,}/{total:,} systems in {len(self.subsectors):,} subsectors")
+        print(f"Opened {systems:,}/{total:,} systems in {count:,} subsectors")

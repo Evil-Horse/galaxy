@@ -4,15 +4,17 @@ import tqdm
 
 from image import Image
 from anomaly import Anomalies
-from subsectors import Subsectors
+from subsectors import Subsectors, sector_name
+
+favorite_sectors = ('Boepp',)
 
 class Galaxy:
     def __init__(self, name):
         self.json_file = gzip.open(name, 'r')
 
         self.image = Image()
-        self.anomalies = Anomalies()
-        self.subsectors = Subsectors()
+        self.anomalies = Anomalies(favorite_sectors)
+        self.subsectors = Subsectors(favorite_sectors)
 
     def __del__(self):
         self.json_file.close()
@@ -35,6 +37,8 @@ class Galaxy:
             pbar.update(1)
             pbar.set_description(system["name"])
 
+            system["sector"] = sector_name(system["name"])
+
             self.image.process(system)
             self.anomalies.process(system)
             self.subsectors.process(system)
@@ -45,6 +49,9 @@ class Galaxy:
         self.anomalies.finalize()
         self.subsectors.finalize()
 
+        for fav in favorite_sectors:
+            self.anomalies.finalize(fav)
+            self.subsectors.finalize(fav)
 
 galaxy = Galaxy("galaxy.json.gz")
 galaxy.load()
