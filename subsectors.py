@@ -71,22 +71,23 @@ class Subsectors:
 
         utils.counter_increment(self.systems, system['sector'], self.fav)
 
-    def finalize(self, sector = None):
+    def finalize(self, data, sector = None):
         if sector is None:
             with open("subsectors", 'w') as f:
                 for subsector in self.subsectors:
                     print(f"{subsector}: {self.subsectors[subsector] + 1} systems", file=f)
 
-        if sector is None:
-            systems = self.systems['galaxy']
-            count = self.count['galaxy']
-        else:
-            systems = self.systems[sector]
-            count = self.count[sector]
+        key = 'galaxy' if sector is None else sector
+
+        systems = self.systems[key]
+        count = self.count[key]
 
         total = 0
         for subsector in self.subsectors:
             if sector is None or sector == sector_name(subsector):
                 total += self.subsectors[subsector] + 1
 
-        print(f"Opened {systems:,}/{total:,} systems in {count:,} subsectors")
+        subdata = data[key]
+        subdata["systems"] = systems
+        subdata["total"] = total
+        subdata["count"] = count

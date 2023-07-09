@@ -38,9 +38,10 @@ class Anomalies:
 
             utils.counter_increment(self.anomalies, system['sector'], self.fav)
 
-    def finalize(self, sector = None):
-        if sector is None:
-            anomalies = self.anomalies['galaxy']
-        else:
-            anomalies = self.anomalies[sector]
-        print(f"Anomalies: {anomalies:,}")
+    def finalize(self, data, sector = None):
+        key = 'galaxy' if sector is None else sector
+
+        anomalies = self.anomalies[key]
+
+        subdata = data[key]
+        subdata["anomalies"] = anomalies
