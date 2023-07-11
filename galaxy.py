@@ -55,7 +55,7 @@ class Galaxy:
         self.json_file.close()
 
     def load(self):
-        pbar = tqdm.tqdm()
+        pbar = tqdm.tqdm(total=self.olddata['galaxy']['systems'])
         for line in self.json_file:
             line = line[0:-1].decode()
 
