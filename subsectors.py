@@ -14,6 +14,10 @@ def test_generated(split):
     if len(split) < 3:
         return False
 
+    # Skip override sectors (e.g. Col 285 Sector)
+    if "Sector" in split:
+        return False
+
     # second part should contain '-'
     if not split[-2].__contains__('-'):
         return False
