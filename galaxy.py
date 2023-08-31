@@ -55,6 +55,8 @@ class Galaxy:
         self.json_file.close()
 
     def load(self):
+        i = 0
+        step = 10000
         pbar = tqdm.tqdm(total=self.olddata['galaxy']['systems'])
         for line in self.json_file:
             line = line[0:-1].decode()
@@ -69,8 +71,10 @@ class Galaxy:
                 line = line[0:-1]
             system = json.loads(line)
 
-            pbar.update(1)
-            pbar.set_description(system["name"])
+            i += 1
+            if i % step == 0:
+                pbar.update(step)
+                pbar.set_description(system["name"])
 
             system["sector"] = sector_name(system["name"])
 
