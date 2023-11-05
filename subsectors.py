@@ -18,6 +18,14 @@ def test_generated(split):
     if "Sector" in split:
         return False
 
+    # XXX Dark Region
+    if "Region" in split:
+        return False
+
+    # ICZ
+    if "ICZ" in split:
+        return False
+
     # second part should contain '-'
     if not split[-2].__contains__('-'):
         return False
