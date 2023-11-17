@@ -1,8 +1,7 @@
 import utils
 
 def check(system):
-    if not "bodyCount" in system:
-        return "Body count unknown"
+    string_list = []
 
     barycenters = 0
     for body in system["bodies"]:
@@ -13,16 +12,24 @@ def check(system):
         if not "solarMasses" in body:
             # star mass unknown, skip system
             if body["type"] == "Star":
-                return "Star mass in unknown"
+                string_list.append("Star mass is unknown")
 
         if not "earthMasses" in body:
             if body["type"] == "Planet":
-                return "Planet mass in unknown"
+                string_list.append("Planet mass is unknown")
 
-    if system["bodyCount"] + barycenters != len(system["bodies"]):
-        return f"is not fully scanned ({len(system['bodies']) - barycenters}/{system['bodyCount']})"
+    if not "bodyCount" in system:
+        string_list.append("Body count unknown")
+    elif system["bodyCount"] + barycenters != len(system["bodies"]):
+        string_list.append(f"is not fully scanned ({len(system['bodies']) - barycenters}/{system['bodyCount']})")
 
-    return None
+    # build reason string
+    separator = "\n" + " " * (2 + len(system["name"])) #TODO make alignment
+    string_joined = separator.join(string_list)
+    if string_joined == "":
+        return None
+
+    return string_joined
 
 class Anomalies:
     def __init__(self, fav):
