@@ -5,6 +5,7 @@ import tqdm
 from image import Image
 from anomaly import Anomalies
 from subsectors import Subsectors, sector_name
+from biopredictor import Predictor
 
 favorite_sectors = ('Boepp',)
 
@@ -41,6 +42,7 @@ class Galaxy:
         self.image = Image()
         self.anomalies = Anomalies(favorite_sectors)
         self.subsectors = Subsectors(favorite_sectors)
+        self.predictor = Predictor()
 
         self.data = {
             "galaxy": {}
@@ -81,11 +83,13 @@ class Galaxy:
             self.image.process(system)
             self.anomalies.process(system)
             self.subsectors.process(system)
+            self.predictor.process(system)
 
         pbar.close()
         self.image.finalize()
         self.subsectors.finalize(self.data)
         self.anomalies.finalize(self.data)
+        self.predictor.finalize()
 
         for fav in favorite_sectors:
             self.subsectors.finalize(self.data, fav)
