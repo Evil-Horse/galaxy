@@ -9,6 +9,9 @@ from biopredictor import Predictor
 
 favorite_sectors = ('Boepp',)
 
+# predictor is slow
+predictor_enabled = False
+
 def compare(old_data, data, key, subkey):
     value = data[key][subkey]
     old_value = old_data[key][subkey]
@@ -42,7 +45,8 @@ class Galaxy:
         self.image = Image()
         self.anomalies = Anomalies(favorite_sectors)
         self.subsectors = Subsectors(favorite_sectors)
-        self.predictor = Predictor()
+        if predictor_enabled:
+            self.predictor = Predictor()
 
         self.data = {
             "galaxy": {}
@@ -83,13 +87,15 @@ class Galaxy:
             self.image.process(system)
             self.anomalies.process(system)
             self.subsectors.process(system)
-            self.predictor.process(system)
+            if predictor_enabled:
+                self.predictor.process(system)
 
         pbar.close()
         self.image.finalize()
         self.subsectors.finalize(self.data)
         self.anomalies.finalize(self.data)
-        self.predictor.finalize()
+        if predictor_enabled:
+            self.predictor.finalize()
 
         for fav in favorite_sectors:
             self.subsectors.finalize(self.data, fav)
