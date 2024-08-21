@@ -231,15 +231,6 @@ def get_possible_colors(species, body, stars, colors, min_dist=None, max_dist=No
         if "solarRadius" not in star:
             continue
 
-        # Clypeus constraints:
-        if min_dist is not None and min_dist ** 2 > dist_au_squared:
-            #print(f'Speculumi: star {star["name"]} is too close ({min_dist} > {math.sqrt(dist_au_squared)})')
-            continue
-
-        if max_dist is not None and max_dist ** 2 < dist_au_squared:
-            #print(f'Lacrimam: star {star["name"]} is too far ({max_dist} < {math.sqrt(dist_au_squared)})')
-            continue
-
         color = colors[star_type]
         if color is not None:
             # we return this if no brightnesses known
@@ -265,6 +256,19 @@ def get_possible_colors(species, body, stars, colors, min_dist=None, max_dist=No
 
         if brightnesses.get(star["name"], 0.0) < max_brightness * 0.1:
             continue
+
+        star_coordinates = star["coordinates"]
+        dist_au_squared = (star_coordinates[0] - body_coordinates[0]) ** 2 + (star_coordinates[1] - body_coordinates[1]) ** 2 + (star_coordinates[2] - body_coordinates[2]) ** 2
+
+        # Clypeus constraints:
+        if min_dist is not None and min_dist ** 2 > dist_au_squared:
+            #print(f'Speculumi: star {star["name"]} is too close ({min_dist} > {math.sqrt(dist_au_squared)})')
+            continue
+
+        if max_dist is not None and max_dist ** 2 < dist_au_squared:
+            #print(f'Lacrimam: star {star["name"]} is too far ({max_dist} < {math.sqrt(dist_au_squared)})')
+            continue
+
 
         color = colors[star_type]
         if color is not None:
