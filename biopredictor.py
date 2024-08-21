@@ -2259,6 +2259,11 @@ def tussock_albata(genus, species, region, body, stars, colors):
     if not 175.0 <= temperature <= 180.0:
         return ret
 
+    subtype = body['subType']
+
+    if subtype not in ["High metal content world", "Rocky body"]:
+        return ret
+
     volcanism = body.get("volcanism", "No volcanism")
 
     if volcanism != "No volcanism":
@@ -2290,6 +2295,11 @@ def tussock_capillum(genus, species, region, body, stars, colors):
     if not 80.0 <= temperature <= 129.0:
         return ret
 
+    subtype = body['subType']
+
+    if subtype not in ["Rocky body", "Rocky Ice world"]:
+        return ret
+
     spec = f"{genus} {species}"
     set_colors = get_possible_colors(spec, body, stars, colors)
 
@@ -2316,6 +2326,11 @@ def tussock_caputus(genus, species, region, body, stars, colors):
     temperature = body["surfaceTemperature"]
 
     if not 181.0 <= temperature <= 190.0:
+        return ret
+
+    subtype = body['subType']
+
+    if subtype not in ["High metal content world", "Rocky body"]:
         return ret
 
     volcanism = body.get("volcanism", "No volcanism")
@@ -2351,6 +2366,11 @@ def tussock_catena(genus, species, region, body, stars, colors):
     if not 152.0 <= temperature <= 177.0:
         return ret
 
+    subtype = body['subType']
+
+    if subtype not in ["High metal content world", "Rocky body"]:
+        return ret
+
     spec = f"{genus} {species}"
     set_colors = get_possible_colors(spec, body, stars, colors)
 
@@ -2377,6 +2397,11 @@ def tussock_cultro(genus, species, region, body, stars, colors):
     temperature = body["surfaceTemperature"]
 
     if not 152.0 <= temperature <= 177.0:
+        return ret
+
+    subtype = body['subType']
+
+    if subtype not in ["High metal content world", "Rocky body"]:
         return ret
 
     spec = f"{genus} {species}"
@@ -2407,6 +2432,11 @@ def tussock_divisa(genus, species, region, body, stars, colors):
     if not 152.0 <= temperature <= 177.0:
         return ret
 
+    subtype = body['subType']
+
+    if subtype not in ["High metal content world", "Rocky body"]:
+        return ret
+
     spec = f"{genus} {species}"
     set_colors = get_possible_colors(spec, body, stars, colors)
 
@@ -2433,6 +2463,11 @@ def tussock_ignis(genus, species, region, body, stars, colors):
     temperature = body["surfaceTemperature"]
 
     if not 150.0 <= temperature <= 170.0:
+        return ret
+
+    subtype = body['subType']
+
+    if subtype not in ["High metal content world", "Rocky body"]:
         return ret
 
     volcanism = body.get("volcanism", "No volcanism")
@@ -2468,6 +2503,11 @@ def tussock_pennata(genus, species, region, body, stars, colors):
     if not 145.0 <= temperature <= 154.0:
         return ret
 
+    subtype = body['subType']
+
+    if subtype not in ["High metal content world", "Rocky body"]:
+        return ret
+
     volcanism = body.get("volcanism", "No volcanism")
 
     if volcanism != "No volcanism":
@@ -2499,6 +2539,11 @@ def tussock_pennatis(genus, species, region, body, stars, colors):
     temperature = body["surfaceTemperature"]
 
     if not 146.0 <= temperature <= 196.0:
+        return ret
+
+    subtype = body['subType']
+
+    if subtype not in ["High metal content world", "Rocky body"]:
         return ret
 
     volcanism = body.get("volcanism", "No volcanism")
@@ -2534,6 +2579,11 @@ def tussock_propagito(genus, species, region, body, stars, colors):
     if not 145.0 <= temperature <= 197.0:
         return ret
 
+    subtype = body['subType']
+
+    if subtype not in ["High metal content world", "Rocky body"]:
+        return ret
+
     volcanism = body.get("volcanism", "No volcanism")
 
     if volcanism != "No volcanism":
@@ -2567,6 +2617,11 @@ def tussock_serrati(genus, species, region, body, stars, colors):
     if not 171.0 <= temperature <= 174.0:
         return ret
 
+    subtype = body['subType']
+
+    if subtype not in ["High metal content world", "Rocky body"]:
+        return ret
+
     volcanism = body.get("volcanism", "No volcanism")
 
     if volcanism != "No volcanism":
@@ -2596,6 +2651,11 @@ def tussock_stigmasis(genus, species, region, body, stars, colors):
     if not 132.0 <= temperature <= 207.0:
         return ret
 
+    subtype = body['subType']
+
+    if subtype not in ["High metal content world", "Rocky body"]:
+        return ret
+
     spec = f"{genus} {species}"
     set_colors = get_possible_colors(spec, body, stars, colors)
 
@@ -2622,6 +2682,11 @@ def tussock_triticum(genus, species, region, body, stars, colors):
     temperature = body["surfaceTemperature"]
 
     if not 191.0 <= temperature <= 196.0:
+        return ret
+
+    subtype = body['subType']
+
+    if subtype not in ["High metal content world", "Rocky body"]:
         return ret
 
     volcanism = body.get("volcanism", "No volcanism")
@@ -2657,6 +2722,11 @@ def tussock_ventusa(genus, species, region, body, stars, colors):
     if not 155.0 <= temperature <= 160.0:
         return ret
 
+    subtype = body['subType']
+
+    if subtype not in ["High metal content world", "Rocky body"]:
+        return ret
+
     spec = f"{genus} {species}"
     set_colors = get_possible_colors(spec, body, stars, colors)
 
@@ -2679,6 +2749,11 @@ def tussock_virgam(genus, species, region, body, stars, colors):
     temperature = body["surfaceTemperature"]
 
     if not 390.0 <= temperature <= 450.0:
+        return ret
+
+    subtype = body['subType']
+
+    if subtype not in ["High metal content world", "Rocky body"]:
         return ret
 
     spec = f"{genus} {species}"
