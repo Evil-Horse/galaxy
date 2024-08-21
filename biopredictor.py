@@ -2954,6 +2954,10 @@ class Predictor:
                             continue
 
                     if atmosphere_type is not None and atmosphere_type.startswith("Thin"):
+                        if body["updateTime"] >= "2021-05-19" and body["isLandable"] == False:
+                            #print(f'Skipping non-landable in Odyssey body {body["name"]}, last updated {body["updateTime"]}')
+                            continue
+
                         planets.append(body)
 
         # no valuable planets, skip the system
