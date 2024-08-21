@@ -701,19 +701,24 @@ def cactoida_pullulanta(genus, species, region, body, stars, colors):
     return ret
 
 # Water 100%, 390-450K
-# CO2 97.5+% 160-207K
+# CO2 97.5+%, SO2 only 160-207K
 def cactoida_vermis(genus, species, region, body, stars, colors):
     ret = []
 
     temperature = body["surfaceTemperature"]
 
+    valid = False
+
     water = body.get("atmosphereComposition", {}).get('Water', 0.0)
-    if 0.0 < water < 100.0 and not 390.0 <= temperature <= 450.0:
-        return ret
+    if water == 100.0 and 390.0 <= temperature <= 450.0:
+        valid = True
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
     so2 = body.get("atmosphereComposition", {}).get('Sulphur dioxide', 0.0)
-    if co2 + so2 < 100.0 or co2 < 97.5 or not 160.0 <= temperature <= 207.0:
+    if co2 >= 97.5 and co2 + so2 == 100.0 and 160.0 <= temperature <= 207.0:
+        valid = True
+
+    if not valid:
         return ret
 
     spec = f"{genus} {species}"
@@ -774,12 +779,17 @@ def clypeus_lacrimam(genus, species, region, body, stars, colors):
 
     temperature = body["surfaceTemperature"]
 
+    valid = False
+
     water = body.get("atmosphereComposition", {}).get('Water', 0.0)
-    if 0.0 < water < 100.0 and not 390.0 <= temperature <= 452.0:
-        return ret
+    if water == 100.0 and 390.0 <= temperature <= 452.0:
+        valid = True
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
-    if co2 < 97.5 and not 190.0 <= temperature <= 196.0:
+    if co2 >= 97.5 and 190.0 <= temperature <= 196.0:
+        valid = True
+
+    if not valid:
         return ret
 
     subtype = body['subType']
@@ -804,12 +814,17 @@ def clypeus_margaritus(genus, species, region, body, stars, colors):
 
     temperature = body["surfaceTemperature"]
 
+    valid = False
+
     water = body.get("atmosphereComposition", {}).get('Water', 0.0)
-    if 0.0 < water < 100.0 and not 390.0 <= temperature <= 452.0:
-        return ret
+    if water == 100.0 and 390.0 <= temperature <= 452.0:
+        valid = True
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
-    if co2 < 97.5 and not 190.0 <= temperature <= 196.0:
+    if co2 >= 97.5 and 190.0 <= temperature <= 196.0:
+        valid = True
+
+    if not valid:
         return ret
 
     subtype = body['subType']
@@ -836,16 +851,17 @@ def clypeus_speculumi(genus, species, region, body, stars, colors):
 
     temperature = body["surfaceTemperature"]
 
+    valid = False
+
     water = body.get("atmosphereComposition", {}).get('Water', 0.0)
-    if 0.0 < water < 100.0:
-        return ret
-    elif water == 100.0 and not 390.0 <= temperature <= 452.0:
-        return ret
+    if water == 100.0 and 390.0 <= temperature <= 452.0:
+        valid = True
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
-    if co2 < 97.5:
-        return ret
-    elif co2 >= 97.5 and not 190.0 <= temperature <= 196.0:
+    if co2 >= 97.5 and 190.0 <= temperature <= 196.0:
+        valid = True
+
+    if not valid:
         return ret
 
     subtype = body['subType']
@@ -1402,17 +1418,22 @@ def frutexa_flammasis(genus, species, region, body, stars, colors):
 def frutexa_metallicum(genus, species, region, body, stars, colors):
     ret = []
 
+    valid = False
+
     temperature = body["surfaceTemperature"]
     water = body.get("atmosphereComposition", {}).get('Water', 0.0)
-    if 0.0 < water < 100.0 and not 390.0 <= temperature <= 400.0:
-        return ret
+    if water == 100.0 and 390.0 <= temperature <= 400.0:
+        valid = True
 
     ammonia = body.get("atmosphereComposition", {}).get('Ammonia', 0.0)
-    if 0.0 < ammonia < 100.0 and not 152.0 <= temperature <= 176.0:
-        return ret
+    if ammonia == 100.0 and 152.0 <= temperature <= 176.0:
+        valid = True
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
-    if 0.0 < co2 < 97.5 and not 146.0 <= temperature <= 195.0:
+    if co2 >= 97.5 and 146.0 <= temperature <= 195.0:
+        valid = True
+
+    if not valid:
         return ret
 
     subtype = body['subType']
@@ -1934,18 +1955,23 @@ def stratum_paleas(genus, species, region, body, stars, colors):
     if gravity > 0.594972:
         return ret
 
+    valid = False
+
     temperature = body["surfaceTemperature"]
     water = body.get("atmosphereComposition", {}).get('Water', 0.0)
-    if 0.0 < water < 100.0 and not 390.0 <= temperature <= 450.0:
-        return ret
+    if water == 100.0 and 390.0 <= temperature <= 450.0:
+        valid = True
 
     so2 = body.get("atmosphereComposition", {}).get('Sulphur dioxide', 0.0)
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
-    if so2 >= 50.0 or co2 == 0.0 and temperature < 165.0:
-        return ret
+    if co2 > 0.0 and so2 < 50.0 and temperature >= 165.0:
+        valid = True
 
     ammonia = body.get("atmosphereComposition", {}).get('Ammonia', 0.0)
-    if ammonia < 70.0 and not 165.0 <= temperature <= 176.0:
+    if ammonia >= 70.0 and 165.0 <= temperature <= 176.0:
+        valid = True
+
+    if not valid:
         return ret
 
     subtype = body['subType']
