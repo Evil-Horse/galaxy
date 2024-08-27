@@ -409,8 +409,8 @@ def aleoida_spica(genus, species, region, body, stars, colors):
     if region in ARM_SAGITTARIUS_CARINA:
         return ret
 
-    co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
-    if co2 < 97.5:
+    ammonia = body.get("atmosphereComposition", {}).get('Ammonia', 0.0)
+    if ammonia < 100.0:
         return ret
 
     temperature = body["surfaceTemperature"]
