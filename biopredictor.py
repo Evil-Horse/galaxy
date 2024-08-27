@@ -2933,6 +2933,32 @@ class Predictor:
         else:
             region = "Out of bounds"
 
+        bodies = {}
+
+        for body in system["bodies"]:
+            bodies[body["bodyId"]] = body
+
+        for body in system["bodies"]:
+            if "parents" in body:
+                for parent in body["parents"]:
+                    for key in parent:
+                        id = parent[key]
+                        if key == "Star" and (id not in bodies or "subType" not in bodies[id]):
+                            #print(f'looks like star {id} is missing in system {system["name"]}, adding dummy M')
+                            M_star = {
+                                "name" : f"{system["name"]} dummy {id}",
+                                "type" : "Star",
+                                "bodyId" : id,
+                                "subType" : "M (Red dwarf) Star",
+                                "surfaceTemperature" : 2000,
+                                "solarRadius" : 0.30,
+                                "updateTime" : "1970-01-01",
+                            }
+
+                            system["bodies"].append(M_star)
+                            bodies[id] = M_star
+
+
         for body in system["bodies"]:
             if body["type"] == "Star":
                 stars.append(body)
