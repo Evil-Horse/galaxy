@@ -2889,7 +2889,7 @@ def get_odyssey_genus(name):
 class Predictor:
     def __init__(self):
         # list of tuples: (region, system_name, species, priority)
-        self.predicted = []
+        self.predicted = {}
 
         with gzip.open("codex.json.gz", "r") as codex:
             entries = json.load(codex)
@@ -3003,38 +3003,53 @@ class Predictor:
             # check for every possible bio
             gravity = planet["gravity"]
 
+            predicted = []
+
             # maximum known 0.610985
             # 0.611807 = 6 m/s^2
             if gravity < 0.611807:
-                self.predicted += check_bacterium(region, planet, stars)
-                self.predicted += check_stratum(region, planet, stars)
+                predicted += check_bacterium(region, planet, stars)
+                predicted += check_stratum(region, planet, stars)
 
             # 0.275313 = 2.7 m/s^2
             if gravity < 0.275313:
-                self.predicted += check_aleoida(region, planet, stars)
-                self.predicted += check_cactoida(region, planet, stars)
-                self.predicted += check_clypeus(region, planet, stars)
-                self.predicted += check_concha(region, planet, stars)
-                self.predicted += check_fonticulua(region, planet, stars)
-                self.predicted += check_frutexa(region, planet, stars)
-                self.predicted += check_osseus(region, planet, stars)
-                self.predicted += check_recepta(region, planet, stars)
-                self.predicted += check_tussock(region, planet, stars)
+                predicted += check_aleoida(region, planet, stars)
+                predicted += check_cactoida(region, planet, stars)
+                predicted += check_clypeus(region, planet, stars)
+                predicted += check_concha(region, planet, stars)
+                predicted += check_fonticulua(region, planet, stars)
+                predicted += check_frutexa(region, planet, stars)
+                predicted += check_osseus(region, planet, stars)
+                predicted += check_recepta(region, planet, stars)
+                predicted += check_tussock(region, planet, stars)
 
             # 0.152952 = 1.5 m/s^2
             if gravity < 0.152952:
-                self.predicted += check_tubus(region, planet, stars)
+                predicted += check_tubus(region, planet, stars)
+
+            # predicted: list of tuples
+            # (region, body name, species name, priority)
+
+            for entry in predicted:
+                region, bodyname, species, priority = entry
+
+                if region not in self.predicted:
+                    self.predicted[region] = {}
+
+                if species not in self.predicted[region]:
+                    self.predicted[region][species] = {
+                        "priority" : priority,
+                        "locations" : [],
+                    }
+
+                self.predicted[region][species]["locations"].append({
+                    "system" : system["name"],
+                    "body" : bodyname,
+                    "x" : system["coords"]["x"],
+                    "y" : system["coords"]["y"],
+                    "z" : system["coords"]["z"],
+                })
 
     def finalize(self):
-        loglevel = 1 #print everything
-
-        with open("biopredictor", "w") as f:
-            for item in self.predicted:
-                region, body, species, priority = item
-                priority_str = ""
-                if priority == 3:
-                    priority_str = "GALACTIC NEW! "
-                if priority == 2:
-                    priority_str = "Region new "
-                if priority >= loglevel:
-                    print(f'{priority_str}({region}) {body} -> {species}', file=f)
+        with open("biopredictor.json", "w") as f:
+            json.dump(self.predicted, f)
