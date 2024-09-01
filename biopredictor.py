@@ -1350,7 +1350,7 @@ def frutexa_flabellum(genus, species, region, body, stars, colors):
     ret = []
 
     # NOT Scutum-Centaurus Arm
-    if region in ARM_SCUTUM_CENTAURUS:
+    if region in ARM_SCUTUM_CENTAURUS | set(["Odin’s Hold", "Galactic Centre"]):
         return ret
 
     ammonia = body.get("atmosphereComposition", {}).get('Ammonia', 0.0)
