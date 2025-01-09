@@ -406,7 +406,7 @@ def aleoida_spica(genus, species, region, body, stars, colors):
     ret = []
 
     # NOT Sagittarius-Carina Arm
-    if region in ARM_SAGITTARIUS_CARINA:
+    if region in ARM_SAGITTARIUS_CARINA | set(["Inner Scutum-Centaurus Arm", "Izanami"]):
         return ret
 
     ammonia = body.get("atmosphereComposition", {}).get('Ammonia', 0.0)
