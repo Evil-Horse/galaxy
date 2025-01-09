@@ -287,10 +287,255 @@ def get_color_priority(region, variant):
 
     return 1
 
+def check_region(genus, species, region):
+    genus_species = f'{genus} {species}'
+
+    all_regions = [
+        "Aleoida Arcus",
+        "Aleoida Coronamus",
+        "Aleoida Gravis",
+        "Bacterium Alcyoneum",
+        "Bacterium Aurasus",
+        "Bacterium Cerbrus",
+        "Cactoida Vermis",
+        "Clypeus Lacrimam",
+        "Clypeus Margaritus",
+        "Clypeus Speculumi",
+        "Concha Aureolas",
+        "Concha Labiata",
+        "Fonticulua Campestris",
+        "Fonticulua Digitos",
+        "Fonticulua Fluctus",
+        "Fonticulua Lapida",
+        "Fonticulua Segmentatus",
+        "Fonticulua Upupam",
+        "Frutexa Collum",
+        "Frutexa Metallicum",
+        "Frutexa Sponsae",
+        "Osseus Discus",
+        "Osseus Pumice",
+        "Osseus Spiralis",
+        "Recepta Umbrux",
+        "Stratum Araneamus",
+        "Stratum Paleas",
+        "Stratum Tectonicas",
+        "Tubus Rosarium",
+        "Tubus Sororibus",
+        "Tussock Capillum",
+        "Tussock Stigmasis",
+        "Tussock Virgam",
+    ]
+    if genus_species in all_regions:
+        return True
+
+    if genus_species == "Aleoida Laminiae":
+        # Orion-Cygnus Arm; Sagittarius-Carina Arm including Odin's Hold and Galactic Centre
+        if region not in ARM_SAGITTARIUS_CARINA | ARM_ORION_CYGNUS | set(["Odin's Hold", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Aleoida Spica":
+        # NOT Sagittarius-Carina Arm
+        if region in ARM_SAGITTARIUS_CARINA | set(["Inner Scutum-Centaurus Arm", "Izanami"]):
+            return False
+        return True
+
+    if genus_species == "Cactoida Cortexum":
+        # Orion-Cygnus Arm including Odin's Hold and Galactic Centre
+        if region not in ARM_ORION_CYGNUS | set(["Odin's Hold", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Cactoida Lapis":
+        # Sagittarius-Carina Arm including Odin's Hold and Galactic Centre
+        if region not in ARM_SAGITTARIUS_CARINA | set(["Odin's Hold", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Cactoida Peperatis":
+        # Scutum-Centaurus Arm including Odin's Hold and Galactic Centre
+        if region not in ARM_SCUTUM_CENTAURUS | set(["Odin's Hold", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Cactoida Pullulanta":
+        # Perseus Arm including Ryker's Hope and Galactic Centre
+        if region not in ARM_PERSEUS | set(["Ryker's Hope", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Frutexa Acus":
+        # Orion-Cygnus Arm including Odin's Hold and Galactic Centre
+        if region not in ARM_ORION_CYGNUS | set(["Odin's Hold", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Frutexa Fera":
+        # Outer Arm including Empyrean Straits and Galactic Centre
+        if region not in ARM_OUTER | set(["Empyrean Straits", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Frutexa Flabellum":
+        # NOT Scutum-Centaurus Arm
+        if region in ARM_SCUTUM_CENTAURUS | set(["Odin's Hold", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Frutexa Flammasis":
+        # Scutum-Centaurus Arm including Odin's Hold and Galactic Centre
+        if region not in ARM_SCUTUM_CENTAURUS | set(["Odin's Hold", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Osseus Cornibus":
+        # Perseus Arm including Ryker's Hope and Galactic Centre
+        if region not in ARM_PERSEUS | set(["Ryker's Hope", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Osseus Fractus":
+        # NOT Perseus Arm but including Odin's Hold and Empyrean Straits
+        if region in ARM_PERSEUS | set(["Ryker's Hope", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Osseus Pellebantus":
+        # NOT Perseus Arm but including Odin's Hold and Empyrean Straits
+        if region in ARM_PERSEUS | set(["Ryker's Hope", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Stratum Cucumisis":
+        # Sagittarius-Carina Arm including Odin's Hold and Galactic Centre
+        if region not in ARM_SAGITTARIUS_CARINA | set(["Odin's Hold", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Stratum Excutitus":
+        # Orion-Cygnus Arm including Odin's Hold and Galactic Centre
+        if region not in ARM_ORION_CYGNUS | set(["Odin's Hold", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Stratum Frigus":
+        # Perseus Arm including Ryker's Hope and excluding Galactic Centre
+        if region not in (ARM_PERSEUS | set(["Ryker's Hope"])) - set(["Galactic Centre"]):
+            return False
+        return True
+    
+    if genus_species == "Stratum Laminamus":
+        # Orion-Cygnus Arm including Odin's Hold and Galactic Centre
+        if region not in ARM_ORION_CYGNUS | set(["Odin's Hold", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Stratum Limaxus":
+        # Scutum-Centaurus Arm excluding Odin's Hold and Galactic Centre
+        if region not in ARM_SCUTUM_CENTAURUS - set(["Odin's Hold", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Tubus Cavas":
+        # Scutum-Centaurus Arm including Odin's Hold and Galactic Centre
+        if region not in ARM_SCUTUM_CENTAURUS | set(["Odin's Hold", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Tubus Compagibus":
+        # Sagittarius-Carina Arm including Odin's Hold and Galactic Centre
+        if region not in ARM_SAGITTARIUS_CARINA | set(["Odin's Hold", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Tubus Conifer":
+        # Perseus Arm including Ryker's Hope and Galactic Centre
+        if region not in ARM_PERSEUS | set(["Ryker's Hope", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Tussock Albata":
+        # Sagittarius-Carina Arm, Perseus Arm including Ryker's Hope but excluding Galactic Centre
+        if region not in (ARM_SAGITTARIUS_CARINA | ARM_PERSEUS | set(["Ryker's Hope"])) - set(["Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Tussock Caputus":
+        # Sagittarius-Carina Arm, Perseus Arm including Ryker's Hope but excluding Galactic Centre
+        if region not in (ARM_SAGITTARIUS_CARINA | ARM_PERSEUS | set(["Ryker's Hope"])) - set(["Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Tussock Catena":
+        # Scutum-Centaurus Arm excluding Galactic Central Regions
+        if region not in ARM_SCUTUM_CENTAURUS - ARM_CENTRAL:
+            return False
+        return True
+
+    if genus_species == "Tussock Cultro":
+        # Orion-Cygnus Arm including Odin's Hold, Empyrean Straits and Galactic Centre
+        if region not in ARM_ORION_CYGNUS | set(["Odin's Hold", "Empyrean Straits", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Tussock Divisa":
+        # Perseus Arm including Ryker's Hope
+        if region not in ARM_PERSEUS | set(["Ryker's Hope"]):
+            return False
+        return True
+
+    if genus_species == "Tussock Ignis":
+        # Sagittarius-Carina Arm and Perseus Arm including Ryker's Hope
+        if region not in ARM_SAGITTARIUS_CARINA | ARM_PERSEUS | set(["Ryker's Hope"]):
+            return False
+        return True
+
+    if genus_species == "Tussock Pennata":
+        # Sagittarius-Carina Arm and Perseus Arm including Ryker's Hope
+        if region not in ARM_SAGITTARIUS_CARINA | ARM_PERSEUS | set(["Ryker's Hope"]):
+            return False
+        return True
+
+    if genus_species == "Tussock Pennatis":
+        # Outer Arm including Empyrean Straits and Galactic Centre
+        if region not in ARM_OUTER | set(["Empyrean Straits", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Tussock Propagito":
+        # Scutum-Centaurus Arm including Odin's Hold and Galactic Centre
+        if region not in ARM_SCUTUM_CENTAURUS | set(["Odin's Hold", "Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Tussock Serrati":
+        # Sagittarius-Carina Arm and Perseus Arm including Ryker's Hope but excluding Galactic Centre
+        if region not in (ARM_SAGITTARIUS_CARINA | ARM_PERSEUS | set(["Ryker's Hope"])) - set(["Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Tussock Triticum":
+        # Sagittarius-Carina Arm and Perseus Arm including Ryker's Hope but excluding Galactic Centre
+        if region not in (ARM_SAGITTARIUS_CARINA | ARM_PERSEUS | set(["Ryker's Hope"])) - set(["Galactic Centre"]):
+            return False
+        return True
+
+    if genus_species == "Tussock Ventusa":
+        # Sagittarius-Carina Arm and Perseus Arm including Ryker's Hope but excluding Galactic Centre
+        if region not in (ARM_SAGITTARIUS_CARINA | ARM_PERSEUS | set(["Ryker's Hope"])) - set(["Galactic Centre"]):
+            return False
+        return True
+
+    print(f'Unknown species! {genus_species}')
+
 # Carbon Dioxide >= 97.5%
 # 175-180K
 def aleoida_arcus(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
+
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
     if co2 < 97.5:
         return ret
@@ -320,6 +565,10 @@ def aleoida_arcus(genus, species, region, body, stars, colors):
 # 180-190K
 def aleoida_coronamus(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
+
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
     if co2 < 97.5:
         return ret
@@ -348,6 +597,10 @@ def aleoida_coronamus(genus, species, region, body, stars, colors):
 # 190-197K
 def aleoida_gravis(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
+
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
     if co2 < 97.5:
         return ret
@@ -377,8 +630,7 @@ def aleoida_gravis(genus, species, region, body, stars, colors):
 def aleoida_laminiae(genus, species, region, body, stars, colors):
     ret = []
 
-    # Orion-Cygnus Arm; Sagittarius-Carina Arm including Odin's Hold and Galactic Centre
-    if region not in ARM_SAGITTARIUS_CARINA | ARM_ORION_CYGNUS | set(["Odin's Hold", "Galactic Centre"]):
+    if not check_region(genus, species, region):
         return ret
 
     ammonia = body.get("atmosphereComposition", {}).get('Ammonia', 0.0)
@@ -405,8 +657,7 @@ def aleoida_laminiae(genus, species, region, body, stars, colors):
 def aleoida_spica(genus, species, region, body, stars, colors):
     ret = []
 
-    # NOT Sagittarius-Carina Arm
-    if region in ARM_SAGITTARIUS_CARINA | set(["Inner Scutum-Centaurus Arm", "Izanami"]):
+    if not check_region(genus, species, region):
         return ret
 
     ammonia = body.get("atmosphereComposition", {}).get('Ammonia', 0.0)
@@ -472,6 +723,9 @@ def check_aleoida(region, body, stars):
 def bacterium_alcyoneum(genus, species, region, body, stars, colors):
     ret = []
 
+    if not check_region(genus, species, region):
+        return ret
+
     # 3.68 m/s^2 - unlikely
     gravity = body["gravity"]
     if gravity > 0.375253:
@@ -500,6 +754,10 @@ def bacterium_alcyoneum(genus, species, region, body, stars, colors):
 # 145-400K
 def bacterium_aurasus(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
+
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
     if co2 < 50.0:
         return ret
@@ -522,6 +780,10 @@ def bacterium_aurasus(genus, species, region, body, stars, colors):
 # 132-500K
 def bacterium_cerbrus(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
+
     ammonia = body.get("atmosphereComposition", {}).get('Ammonia', 0.0)
     if ammonia < 60.0:
         return ret
@@ -583,8 +845,7 @@ def check_bacterium(region, body, stars):
 def cactoida_cortexum(genus, species, region, body, stars, colors):
     ret = []
 
-    # Orion-Cygnus Arm including Odin's Hold and Galactic Centre
-    if region not in ARM_ORION_CYGNUS | set(["Odin's Hold", "Galactic Centre"]):
+    if not check_region(genus, species, region):
         return ret
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
@@ -616,8 +877,7 @@ def cactoida_cortexum(genus, species, region, body, stars, colors):
 def cactoida_lapis(genus, species, region, body, stars, colors):
     ret = []
 
-    # Sagittarius-Carina Arm including Odin's Hold and Galactic Centre
-    if region not in ARM_SAGITTARIUS_CARINA | set(["Odin's Hold", "Galactic Centre"]):
+    if not check_region(genus, species, region):
         return ret
 
     ammonia = body.get("atmosphereComposition", {}).get('Ammonia', 0.0)
@@ -644,8 +904,7 @@ def cactoida_lapis(genus, species, region, body, stars, colors):
 def cactoida_peperatis(genus, species, region, body, stars, colors):
     ret = []
 
-    # Scutum-Centaurus Arm including Odin's Hold and Galactic Centre
-    if region not in ARM_SCUTUM_CENTAURUS | set(["Odin's Hold", "Galactic Centre"]):
+    if not check_region(genus, species, region):
         return ret
 
     ammonia = body.get("atmosphereComposition", {}).get('Ammonia', 0.0)
@@ -672,8 +931,7 @@ def cactoida_peperatis(genus, species, region, body, stars, colors):
 def cactoida_pullulanta(genus, species, region, body, stars, colors):
     ret = []
 
-    # Perseus Arm including Ryker's Hope and Galactic Centre
-    if region not in ARM_PERSEUS | set(["Ryker's Hope", "Galactic Centre"]):
+    if not check_region(genus, species, region):
         return ret
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
@@ -704,6 +962,9 @@ def cactoida_pullulanta(genus, species, region, body, stars, colors):
 # CO2 97.5+%, SO2 only 160-207K
 def cactoida_vermis(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
 
     temperature = body["surfaceTemperature"]
 
@@ -777,6 +1038,9 @@ def check_cactoida(region, body, stars):
 def clypeus_lacrimam(genus, species, region, body, stars, colors):
     ret = []
 
+    if not check_region(genus, species, region):
+        return ret
+
     temperature = body["surfaceTemperature"]
 
     valid = False
@@ -811,6 +1075,9 @@ def clypeus_lacrimam(genus, species, region, body, stars, colors):
 # CO2 >= 97.5%, 190-196K
 def clypeus_margaritus(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
 
     temperature = body["surfaceTemperature"]
 
@@ -848,6 +1115,9 @@ def clypeus_margaritus(genus, species, region, body, stars, colors):
 # > 5 AU
 def clypeus_speculumi(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
 
     temperature = body["surfaceTemperature"]
 
@@ -921,6 +1191,10 @@ def check_clypeus(region, body, stars):
 # HMC, Rocky
 def concha_aureolas(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
+
     ammonia = body.get("atmosphereComposition", {}).get('Ammonia', 0.0)
     if ammonia < 100.0:
         return ret
@@ -951,6 +1225,10 @@ def concha_aureolas(genus, species, region, body, stars, colors):
 # No volcanism
 def concha_labiata(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
+
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
     if co2 < 97.5:
         return ret
@@ -1021,6 +1299,10 @@ def check_concha(region, body, stars):
 # 50-150K
 def fonticulua_campestris(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
+
     argon = body.get("atmosphereComposition", {}).get('Argon', 0.0)
     if argon < 50.0:
         return ret
@@ -1052,6 +1334,9 @@ def fonticulua_campestris(genus, species, region, body, stars, colors):
 # signal: 67.00 - 108.76
 def fonticulua_digitos(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
 
     # 0.634 m/s^2 - unlikely
     # planets exist up to 0.13g
@@ -1089,6 +1374,10 @@ def fonticulua_digitos(genus, species, region, body, stars, colors):
 # found: 143.80 - 199.29
 def fonticulua_fluctus(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
+
     oxygen = body.get("atmosphereComposition", {}).get('Oxygen', 0.0)
     if oxygen < 50.0:
         return ret
@@ -1119,6 +1408,10 @@ def fonticulua_fluctus(genus, species, region, body, stars, colors):
 # found: 50 - 80.77
 def fonticulua_lapida(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
+
     nitrogen = body.get("atmosphereComposition", {}).get('Nitrogen', 0.0)
     argon = body.get("atmosphereComposition", {}).get('Argon', 0.0)
     if nitrogen < 99.0 or argon > 0.0:
@@ -1150,6 +1443,10 @@ def fonticulua_lapida(genus, species, region, body, stars, colors):
 # found: 60.76 - 123.13
 def fonticulua_upupam(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
+
     nitrogen = body.get("atmosphereComposition", {}).get('Nitrogen', 0.0)
     argon = body.get("atmosphereComposition", {}).get('Argon', 0.0)
     if nitrogen < 50.0 or argon == 0.0:
@@ -1180,6 +1477,10 @@ def fonticulua_upupam(genus, species, region, body, stars, colors):
 # temperature: 50-80K
 def fonticulua_segmentatus(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
+
     neon = body.get("atmosphereComposition", {}).get('Neon', 0.0)
     argon = body.get("atmosphereComposition", {}).get('Argon', 0.0)
     if neon < 0.1 or argon > 0.0:
@@ -1251,8 +1552,7 @@ def check_fonticulua(region, body, stars):
 def frutexa_acus(genus, species, region, body, stars, colors):
     ret = []
 
-    # Orion-Cygnus Arm including Odin's Hold and Galactic Centre
-    if region not in ARM_ORION_CYGNUS | set(["Odin's Hold", "Galactic Centre"]):
+    if not check_region(genus, species, region):
         return ret
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
@@ -1286,6 +1586,9 @@ def frutexa_acus(genus, species, region, body, stars, colors):
 def frutexa_collum(genus, species, region, body, stars, colors):
     ret = []
 
+    if not check_region(genus, species, region):
+        return ret
+
     so2 = body.get("atmosphereComposition", {}).get('Sulphur dioxide', 0.0)
     if so2 < 100.0:
         return ret
@@ -1315,8 +1618,7 @@ def frutexa_collum(genus, species, region, body, stars, colors):
 def frutexa_fera(genus, species, region, body, stars, colors):
     ret = []
 
-    # Outer Arm including Empyrean Straits and Galactic Centre
-    if region not in ARM_OUTER | set(["Empyrean Straits", "Galactic Centre"]):
+    if not check_region(genus, species, region):
         return ret
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
@@ -1349,8 +1651,7 @@ def frutexa_fera(genus, species, region, body, stars, colors):
 def frutexa_flabellum(genus, species, region, body, stars, colors):
     ret = []
 
-    # NOT Scutum-Centaurus Arm
-    if region in ARM_SCUTUM_CENTAURUS | set(["Odin's Hold", "Galactic Centre"]):
+    if not check_region(genus, species, region):
         return ret
 
     ammonia = body.get("atmosphereComposition", {}).get('Ammonia', 0.0)
@@ -1383,8 +1684,7 @@ def frutexa_flabellum(genus, species, region, body, stars, colors):
 def frutexa_flammasis(genus, species, region, body, stars, colors):
     ret = []
 
-    # Scutum-Centaurus Arm including Odin's Hold and Galactic Centre
-    if region not in ARM_SCUTUM_CENTAURUS | set(["Odin's Hold", "Galactic Centre"]):
+    if not check_region(genus, species, region):
         return ret
 
     ammonia = body.get("atmosphereComposition", {}).get('Ammonia', 0.0)
@@ -1417,6 +1717,9 @@ def frutexa_flammasis(genus, species, region, body, stars, colors):
 # No volcanism
 def frutexa_metallicum(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
 
     valid = False
 
@@ -1462,6 +1765,9 @@ def frutexa_metallicum(genus, species, region, body, stars, colors):
 # No volcanism
 def frutexa_sponsae(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
 
     water = body.get("atmosphereComposition", {}).get('Water', 0.0)
     if water < 100.0:
@@ -1537,8 +1843,8 @@ def check_frutexa(region, body, stars):
 # 180-196K
 def osseus_cornibus(genus, species, region, body, stars, colors):
     ret = []
-    # Perseus Arm including Ryker's Hope and Galactic Centre
-    if region not in ARM_PERSEUS | set(["Ryker's Hope", "Galactic Centre"]):
+
+    if not check_region(genus, species, region):
         return ret
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
@@ -1569,8 +1875,8 @@ def osseus_cornibus(genus, species, region, body, stars, colors):
 # 180-190K
 def osseus_fractus(genus, species, region, body, stars, colors):
     ret = []
-    # NOT Perseus Arm but including Odin's Hold and Empyrean Straits
-    if region in ARM_PERSEUS | set(["Ryker's Hope", "Galactic Centre"]):
+
+    if not check_region(genus, species, region):
         return ret
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
@@ -1601,8 +1907,8 @@ def osseus_fractus(genus, species, region, body, stars, colors):
 # 191-197K
 def osseus_pellebantus(genus, species, region, body, stars, colors):
     ret = []
-    # NOT Perseus Arm but including Odin's Hold and Empyrean Straits
-    if region in ARM_PERSEUS | set(["Ryker's Hope", "Galactic Centre"]):
+
+    if not check_region(genus, species, region):
         return ret
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
@@ -1634,6 +1940,10 @@ def osseus_pellebantus(genus, species, region, body, stars, colors):
 # Rocky, HMC
 def osseus_spiralis(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
+
     ammonia = body.get("atmosphereComposition", {}).get('Ammonia', 0.0)
     if ammonia < 99.0:
         return ret
@@ -1701,6 +2011,9 @@ def check_osseus(region, body, stars):
 def recepta_umbrux(genus, species, region, body, stars, colors):
     ret = []
 
+    if not check_region(genus, species, region):
+        return ret
+
     so2 = body.get("atmosphereComposition", {}).get('Sulphur dioxide', 0.0)
     if so2 == 0.0:
         return ret
@@ -1759,6 +2072,9 @@ def check_recepta(region, body, stars):
 def stratum_araneamus(genus, species, region, body, stars, colors):
     ret = []
 
+    if not check_region(genus, species, region):
+        return ret
+
     # 0.550627 = 5.4 m/s^2
     gravity = body["gravity"]
     if gravity > 0.550273:
@@ -1785,8 +2101,7 @@ def stratum_araneamus(genus, species, region, body, stars, colors):
 def stratum_cucumisis(genus, species, region, body, stars, colors):
     ret = []
 
-    # Sagittarius-Carina Arm including Odin's Hold and Galactic Centre
-    if region not in ARM_SAGITTARIUS_CARINA | set(["Odin's Hold", "Galactic Centre"]):
+    if not check_region(genus, species, region):
         return ret
 
     so2 = body.get("atmosphereComposition", {}).get('Sulphur dioxide', 0.0)
@@ -1814,13 +2129,12 @@ def stratum_cucumisis(genus, species, region, body, stars, colors):
 def stratum_excutitus(genus, species, region, body, stars, colors):
     ret = []
 
+    if not check_region(genus, species, region):
+        return ret
+
     # 4.64 m/s^2 - unlikely
     gravity = body["gravity"]
     if gravity > 0.473151:
-        return ret
-
-    # Orion-Cygnus Arm including Odin's Hold and Galactic Centre
-    if region not in ARM_ORION_CYGNUS | set(["Odin's Hold", "Galactic Centre"]):
         return ret
 
     so2 = body.get("atmosphereComposition", {}).get('Sulphur dioxide', 0.0)
@@ -1847,13 +2161,12 @@ def stratum_excutitus(genus, species, region, body, stars, colors):
 def stratum_frigus(genus, species, region, body, stars, colors):
     ret = []
 
+    if not check_region(genus, species, region):
+        return ret
+
     # 0.550627 = 5.4 m/s^2
     gravity = body["gravity"]
     if gravity > 0.550600:
-        return ret
-
-    # Perseus Arm including Ryker's Hope and excluding Galactic Centre
-    if region not in (ARM_PERSEUS | set(["Ryker's Hope"])) - set(["Galactic Centre"]):
         return ret
 
     so2 = body.get("atmosphereComposition", {}).get('Sulphur dioxide', 0.0)
@@ -1881,13 +2194,12 @@ def stratum_frigus(genus, species, region, body, stars, colors):
 def stratum_laminamus(genus, species, region, body, stars, colors):
     ret = []
 
+    if not check_region(genus, species, region):
+        return ret
+
     # 0.342612 = 3.36 m/s^2
     gravity = body["gravity"]
     if gravity > 0.342592:
-        return ret
-
-    # Orion-Cygnus Arm including Odin's Hold and Galactic Centre
-    if region not in ARM_ORION_CYGNUS | set(["Odin's Hold", "Galactic Centre"]):
         return ret
 
     ammonia = body.get("atmosphereComposition", {}).get('Ammonia', 0.0)
@@ -1914,13 +2226,12 @@ def stratum_laminamus(genus, species, region, body, stars, colors):
 def stratum_limaxus(genus, species, region, body, stars, colors):
     ret = []
 
+    if not check_region(genus, species, region):
+        return ret
+
     # 0.377281 = 3.7 m/s^2
     gravity = body["gravity"]
     if gravity > 0.377205:
-        return ret
-
-    # Scutum-Centaurus Arm excluding Odin's Hold and Galactic Centre
-    if region not in ARM_SCUTUM_CENTAURUS - set(["Odin's Hold", "Galactic Centre"]):
         return ret
 
     so2 = body.get("atmosphereComposition", {}).get('Sulphur dioxide', 0.0)
@@ -1949,6 +2260,9 @@ def stratum_limaxus(genus, species, region, body, stars, colors):
 # Rocky
 def stratum_paleas(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
 
     # 5.835 m/s^2 - unlikely
     gravity = body["gravity"]
@@ -1993,6 +2307,9 @@ def stratum_paleas(genus, species, region, body, stars, colors):
 # HMC
 def stratum_tectonicas(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
 
     temperature = body["surfaceTemperature"]
 
@@ -2062,8 +2379,7 @@ def check_stratum(region, body, stars):
 def tubus_cavas(genus, species, region, body, stars, colors):
     ret = []
 
-    # Scutum-Centaurus Arm including Odin's Hold and Galactic Centre
-    if region not in ARM_SCUTUM_CENTAURUS | set(["Odin's Hold", "Galactic Centre"]):
+    if not check_region(genus, species, region):
         return ret
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
@@ -2101,8 +2417,7 @@ def tubus_cavas(genus, species, region, body, stars, colors):
 def tubus_compagibus(genus, species, region, body, stars, colors):
     ret = []
 
-    # Sagittarius-Carina Arm including Odin's Hold and Galactic Centre
-    if region not in ARM_SAGITTARIUS_CARINA | set(["Odin's Hold", "Galactic Centre"]):
+    if not check_region(genus, species, region):
         return ret
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
@@ -2140,8 +2455,7 @@ def tubus_compagibus(genus, species, region, body, stars, colors):
 def tubus_conifer(genus, species, region, body, stars, colors):
     ret = []
 
-    # Perseus Arm including Ryker's Hope and Galactic Centre
-    if region not in ARM_PERSEUS | set(["Ryker's Hope", "Galactic Centre"]):
+    if not check_region(genus, species, region):
         return ret
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
@@ -2178,6 +2492,9 @@ def tubus_conifer(genus, species, region, body, stars, colors):
 def tubus_rosarium(genus, species, region, body, stars, colors):
     ret = []
 
+    if not check_region(genus, species, region):
+        return ret
+
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
     if co2 <= 97.5:
         return ret
@@ -2207,6 +2524,9 @@ def tubus_rosarium(genus, species, region, body, stars, colors):
 # Carbon Dioxide >= 98% or Ammonia 100%
 def tubus_sororibus(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
 
     ammonia = body.get("atmosphereComposition", {}).get('Ammonia', 0.0)
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
@@ -2276,8 +2596,7 @@ def check_tubus(region, body, stars):
 def tussock_albata(genus, species, region, body, stars, colors):
     ret = []
 
-    # Sagittarius-Carina Arm, Perseus Arm including Ryker's Hope but excluding Galactic Centre
-    if region not in (ARM_SAGITTARIUS_CARINA | ARM_PERSEUS | set(["Ryker's Hope"])) - set(["Galactic Centre"]):
+    if not check_region(genus, species, region):
         return ret
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
@@ -2315,6 +2634,9 @@ def tussock_albata(genus, species, region, body, stars, colors):
 def tussock_capillum(genus, species, region, body, stars, colors):
     ret = []
 
+    if not check_region(genus, species, region):
+        return ret
+
     argon = body.get("atmosphereComposition", {}).get('Argon', 0.0)
     methane = body.get("atmosphereComposition", {}).get('Methane', 0.0)
     if 0.0 < methane < 100.0 or argon < 50.0:
@@ -2345,8 +2667,7 @@ def tussock_capillum(genus, species, region, body, stars, colors):
 def tussock_caputus(genus, species, region, body, stars, colors):
     ret = []
 
-    # Sagittarius-Carina Arm, Perseus Arm including Ryker's Hope but excluding Galactic Centre
-    if region not in (ARM_SAGITTARIUS_CARINA | ARM_PERSEUS | set(["Ryker's Hope"])) - set(["Galactic Centre"]):
+    if not check_region(genus, species, region):
         return ret
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
@@ -2383,8 +2704,7 @@ def tussock_caputus(genus, species, region, body, stars, colors):
 def tussock_catena(genus, species, region, body, stars, colors):
     ret = []
 
-    # Scutum-Centaurus Arm excluding Galactic Central Regions
-    if region not in ARM_SCUTUM_CENTAURUS - ARM_CENTRAL:
+    if not check_region(genus, species, region):
         return ret
 
     ammonia = body.get("atmosphereComposition", {}).get('Ammonia', 0.0)
@@ -2416,8 +2736,7 @@ def tussock_catena(genus, species, region, body, stars, colors):
 def tussock_cultro(genus, species, region, body, stars, colors):
     ret = []
 
-    # Orion-Cygnus Arm including Odin's Hold, Empyrean Straits and Galactic Centre
-    if region not in ARM_ORION_CYGNUS | set(["Odin's Hold", "Empyrean Straits", "Galactic Centre"]):
+    if not check_region(genus, species, region):
         return ret
 
     ammonia = body.get("atmosphereComposition", {}).get('Ammonia', 0.0)
@@ -2449,8 +2768,7 @@ def tussock_cultro(genus, species, region, body, stars, colors):
 def tussock_divisa(genus, species, region, body, stars, colors):
     ret = []
 
-    # Perseus Arm including Ryker's Hope
-    if region not in ARM_PERSEUS | set(["Ryker's Hope"]):
+    if not check_region(genus, species, region):
         return ret
 
     ammonia = body.get("atmosphereComposition", {}).get('Ammonia', 0.0)
@@ -2482,8 +2800,7 @@ def tussock_divisa(genus, species, region, body, stars, colors):
 def tussock_ignis(genus, species, region, body, stars, colors):
     ret = []
 
-    # Sagittarius-Carina Arm and Perseus Arm including Ryker's Hope
-    if region not in ARM_SAGITTARIUS_CARINA | ARM_PERSEUS | set(["Ryker's Hope"]):
+    if not check_region(genus, species, region):
         return ret
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
@@ -2520,8 +2837,7 @@ def tussock_ignis(genus, species, region, body, stars, colors):
 def tussock_pennata(genus, species, region, body, stars, colors):
     ret = []
 
-    # Sagittarius-Carina Arm and Perseus Arm including Ryker's Hope
-    if region not in ARM_SAGITTARIUS_CARINA | ARM_PERSEUS | set(["Ryker's Hope"]):
+    if not check_region(genus, species, region):
         return ret
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
@@ -2558,8 +2874,7 @@ def tussock_pennata(genus, species, region, body, stars, colors):
 def tussock_pennatis(genus, species, region, body, stars, colors):
     ret = []
 
-    # Outer Arm including Empyrean Straits and Galactic Centre
-    if region not in ARM_OUTER | set(["Empyrean Straits", "Galactic Centre"]):
+    if not check_region(genus, species, region):
         return ret
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
@@ -2596,8 +2911,7 @@ def tussock_pennatis(genus, species, region, body, stars, colors):
 def tussock_propagito(genus, species, region, body, stars, colors):
     ret = []
 
-    # Scutum-Centaurus Arm including Odin's Hold and Galactic Centre
-    if region not in ARM_SCUTUM_CENTAURUS | set(["Odin's Hold", "Galactic Centre"]):
+    if not check_region(genus, species, region):
         return ret
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
@@ -2634,8 +2948,7 @@ def tussock_propagito(genus, species, region, body, stars, colors):
 def tussock_serrati(genus, species, region, body, stars, colors):
     ret = []
 
-    # Sagittarius-Carina Arm and Perseus Arm including Ryker's Hope but excluding Galactic Centre
-    if region not in (ARM_SAGITTARIUS_CARINA | ARM_PERSEUS | set(["Ryker's Hope"])) - set(["Galactic Centre"]):
+    if not check_region(genus, species, region):
         return ret
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
@@ -2672,6 +2985,9 @@ def tussock_serrati(genus, species, region, body, stars, colors):
 def tussock_stigmasis(genus, species, region, body, stars, colors):
     ret = []
 
+    if not check_region(genus, species, region):
+        return ret
+
     so2 = body.get("atmosphereComposition", {}).get('Sulphur dioxide', 0.0)
     if so2 < 100.0:
         return ret
@@ -2701,8 +3017,7 @@ def tussock_stigmasis(genus, species, region, body, stars, colors):
 def tussock_triticum(genus, species, region, body, stars, colors):
     ret = []
 
-    # Sagittarius-Carina Arm and Perseus Arm including Ryker's Hope but excluding Galactic Centre
-    if region not in (ARM_SAGITTARIUS_CARINA | ARM_PERSEUS | set(["Ryker's Hope"])) - set(["Galactic Centre"]):
+    if not check_region(genus, species, region):
         return ret
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
@@ -2739,8 +3054,7 @@ def tussock_triticum(genus, species, region, body, stars, colors):
 def tussock_ventusa(genus, species, region, body, stars, colors):
     ret = []
 
-    # Sagittarius-Carina Arm and Perseus Arm including Ryker's Hope but excluding Galactic Centre
-    if region not in (ARM_SAGITTARIUS_CARINA | ARM_PERSEUS | set(["Ryker's Hope"])) - set(["Galactic Centre"]):
+    if not check_region(genus, species, region):
         return ret
 
     co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
@@ -2771,6 +3085,9 @@ def tussock_ventusa(genus, species, region, body, stars, colors):
 # 390-450K
 def tussock_virgam(genus, species, region, body, stars, colors):
     ret = []
+
+    if not check_region(genus, species, region):
+        return ret
 
     water = body.get("atmosphereComposition", {}).get('Water', 0.0)
     if water < 100.0:
