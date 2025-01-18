@@ -4,6 +4,7 @@ from RegionMap import findRegionForBoxel
 from distances import Coordinates
 import sys
 import math
+from datetime import date
 
 regions = {
     "$Codex_RegionName_1;" : 'Galactic Centre',
@@ -3207,6 +3208,7 @@ class Predictor:
     def __init__(self):
         # list of tuples: (region, system_name, species, priority)
         self.predicted = {}
+        self.predicted["timestamp"] = date.today().isoformat()
 
         with gzip.open("codex.json.gz", "r") as codex:
             entries = json.load(codex)
