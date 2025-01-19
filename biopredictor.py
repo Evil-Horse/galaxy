@@ -3207,8 +3207,10 @@ def get_odyssey_genus(name):
 class Predictor:
     def __init__(self):
         # list of tuples: (region, system_name, species, priority)
-        self.predicted = {}
-        self.predicted["timestamp"] = date.today().isoformat()
+        self.predicted = {
+            "timestamp": date.today().isoformat(),
+            "bio": {}
+        }
 
         with gzip.open("codex.json.gz", "r") as codex:
             entries = json.load(codex)
@@ -3352,16 +3354,16 @@ class Predictor:
             for entry in predicted:
                 region, bodyname, species, priority = entry
 
-                if region not in self.predicted:
-                    self.predicted[region] = {}
+                if region not in self.predicted["bio"]:
+                    self.predicted["bio"][region] = {}
 
-                if species not in self.predicted[region]:
-                    self.predicted[region][species] = {
+                if species not in self.predicted["bio"][region]:
+                    self.predicted["bio"][region][species] = {
                         "priority" : priority,
                         "locations" : [],
                     }
 
-                self.predicted[region][species]["locations"].append({
+                self.predicted["bio"][region][species]["locations"].append({
                     "system" : system["name"],
                     "body" : bodyname,
                     "x" : system["coords"]["x"],
