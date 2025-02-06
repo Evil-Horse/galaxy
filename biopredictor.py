@@ -1,6 +1,6 @@
 import gzip
 import json
-from RegionMap import findRegionForBoxel
+from RegionMap import findRegion
 from distances import Coordinates
 import sys
 import math
@@ -3248,7 +3248,11 @@ class Predictor:
         stars = []
         planets = []
 
-        region_data = findRegionForBoxel(system["id64"])["region"]
+        x = system["coords"]["x"]
+        y = system["coords"]["y"]
+        z = system["coords"]["z"]
+
+        region_data = findRegion(x, y, z)
         if region_data is not None:
             region = region_data[1]
         else:
