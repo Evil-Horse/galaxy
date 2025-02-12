@@ -10,7 +10,7 @@ from biopredictor import Predictor
 favorite_sectors = ('Boepp',)
 
 # predictor is slow
-predictor_enabled = False
+predictor_enabled = True
 
 def compare(old_data, data, key, subkey):
     value = data[key][subkey]
