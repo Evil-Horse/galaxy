@@ -255,7 +255,7 @@ def get_possible_colors(species, body, stars, colors, min_dist=None, max_dist=No
         if star_type is None:
             continue
 
-        if brightnesses.get(star["name"], 0.0) < max_brightness * 0.1:
+        if brightnesses.get(star["name"], 0.0) < max_brightness:
             continue
 
         star_coordinates = star["coordinates"]
