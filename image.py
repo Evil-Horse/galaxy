@@ -35,11 +35,6 @@ def temperature_to_color(temperature, magnitude):
 
 class Image:
     def __init__(self):
-        self.minx = None
-        self.maxx = None
-        self.miny = None
-        self.maxy = None
-
         output_size = 10000
         self.input_dims = ((-42213, 40503), (-23405, 65630))
         self.output_dims = (output_size, output_size, 3)
@@ -55,23 +50,6 @@ class Image:
         img.save("img.png")
 
     def process(self, system):
-        updated = 0
-        if self.minx == None or self.minx > system["coords"]["x"]:
-            self.minx = system["coords"]["x"]
-            updated = 1
-        if self.maxx == None or self.maxx < system["coords"]["x"]:
-            self.maxx = system["coords"]["x"]
-            updated = 1
-        if self.miny == None or self.miny > system["coords"]["z"]:
-            self.miny = system["coords"]["z"]
-            updated = 1
-        if self.maxy == None or self.maxy < system["coords"]["z"]:
-            self.maxy = system["coords"]["z"]
-            updated = 1
-
-        if updated == 1:
-            print(f'System {system["name"]}: Coordinates: {system["coords"]["x"]}, {system["coords"]["z"]} (Borders: [{self.minx} - {self.maxx}, {self.miny} - {self.maxy}])', file=sys.stderr)
-
         #generate color
         xdim = normalize_dim(self.input_dims[0], system["coords"]["x"], self.output_dims[0])
         zdim = normalize_dim(self.input_dims[1], system["coords"]["z"], self.output_dims[1])
