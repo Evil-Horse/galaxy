@@ -705,7 +705,7 @@ def check_aleoida(region, body, stars):
 
     genus = "Aleoida"
     name = body["name"]
-    if name in known_planets and genus in known_planets[name]:
+    if name in known_planets and genus in known_planets[name]["by_genus"]:
         if len(known_planets[name]["by_genus"][genus]) > 2:
             print(name, "WTF", known_planets[name]["by_genus"][genus], file=sys.stderr)
         for e in known_planets[name]["by_genus"][genus]:
@@ -829,7 +829,7 @@ def check_bacterium(region, body, stars):
 
     genus = "Bacterium"
     name = body["name"]
-    if name in known_planets and genus in known_planets[name]:
+    if name in known_planets and genus in known_planets[name]["by_genus"]:
         if len(known_planets[name]["by_genus"][genus]) > 2:
             print(name, "WTF", known_planets[name]["by_genus"][genus], file=sys.stderr)
         for e in known_planets[name]["by_genus"][genus]:
@@ -1018,7 +1018,7 @@ def check_cactoida(region, body, stars):
 
     genus = "Cactoida"
     name = body["name"]
-    if name in known_planets and genus in known_planets[name]:
+    if name in known_planets and genus in known_planets[name]["by_genus"]:
         if len(known_planets[name]["by_genus"][genus]) > 2:
             print(name, "WTF", known_planets[name]["by_genus"][genus], file=sys.stderr)
         for e in known_planets[name]["by_genus"][genus]:
@@ -1175,7 +1175,7 @@ def check_clypeus(region, body, stars):
 
     genus = "Clypeus"
     name = body["name"]
-    if name in known_planets and genus in known_planets[name]:
+    if name in known_planets and genus in known_planets[name]["by_genus"]:
         if len(known_planets[name]["by_genus"][genus]) > 2:
             print(name, "WTF", known_planets[name]["by_genus"][genus], file=sys.stderr)
         for e in known_planets[name]["by_genus"][genus]:
@@ -1284,7 +1284,7 @@ def check_concha(region, body, stars):
 
     genus = "Concha"
     name = body["name"]
-    if name in known_planets and genus in known_planets[name]:
+    if name in known_planets and genus in known_planets[name]["by_genus"]:
         if len(known_planets[name]["by_genus"][genus]) > 2:
             print(name, "WTF", known_planets[name]["by_genus"][genus], file=sys.stderr)
         for e in known_planets[name]["by_genus"][genus]:
@@ -1532,7 +1532,7 @@ def check_fonticulua(region, body, stars):
 
     genus = "Fonticulua"
     name = body["name"]
-    if name in known_planets and genus in known_planets[name]:
+    if name in known_planets and genus in known_planets[name]["by_genus"]:
         if len(known_planets[name]["by_genus"][genus]) > 2:
             print(name, "WTF", known_planets[name]["by_genus"][genus], file=sys.stderr)
         for e in known_planets[name]["by_genus"][genus]:
@@ -1824,7 +1824,7 @@ def check_frutexa(region, body, stars):
 
     genus = "Frutexa"
     name = body["name"]
-    if name in known_planets and genus in known_planets[name]:
+    if name in known_planets and genus in known_planets[name]["by_genus"]:
         if len(known_planets[name]["by_genus"][genus]) > 2:
             print(name, "WTF", known_planets[name]["by_genus"][genus], file=sys.stderr)
         for e in known_planets[name]["by_genus"][genus]:
@@ -1994,7 +1994,7 @@ def check_osseus(region, body, stars):
 
     genus = "Osseus"
     name = body["name"]
-    if name in known_planets and genus in known_planets[name]:
+    if name in known_planets and genus in known_planets[name]["by_genus"]:
         if len(known_planets[name]["by_genus"][genus]) > 2:
             print(name, "WTF", known_planets[name]["by_genus"][genus], file=sys.stderr)
         for e in known_planets[name]["by_genus"][genus]:
@@ -2059,7 +2059,7 @@ def check_recepta(region, body, stars):
 
     genus = "Recepta"
     name = body["name"]
-    if name in known_planets and genus in known_planets[name]:
+    if name in known_planets and genus in known_planets[name]["by_genus"]:
         if len(known_planets[name]["by_genus"][genus]) > 2:
             print(name, "WTF", known_planets[name]["by_genus"][genus], file=sys.stderr)
         for e in known_planets[name]["by_genus"][genus]:
@@ -2357,7 +2357,7 @@ def check_stratum(region, body, stars):
 
     genus = "Stratum"
     name = body["name"]
-    if name in known_planets and genus in known_planets[name]:
+    if name in known_planets and genus in known_planets[name]["by_genus"]:
         if len(known_planets[name]["by_genus"][genus]) > 2:
             print(name, "WTF", known_planets[name]["by_genus"][genus], file=sys.stderr)
         for e in known_planets[name]["by_genus"][genus]:
@@ -2578,7 +2578,7 @@ def check_tubus(region, body, stars):
 
     genus = "Tubus"
     name = body["name"]
-    if name in known_planets and genus in known_planets[name]:
+    if name in known_planets and genus in known_planets[name]["by_genus"]:
         if len(known_planets[name]["by_genus"][genus]) > 2:
             print(name, "WTF", known_planets[name]["by_genus"][genus], file=sys.stderr)
         for e in known_planets[name]["by_genus"][genus]:
@@ -3142,7 +3142,7 @@ def check_tussock(region, body, stars):
 
     genus = "Tussock"
     name = body["name"]
-    if name in known_planets and genus in known_planets[name]:
+    if name in known_planets and genus in known_planets[name]["by_genus"]:
         if len(known_planets[name]["by_genus"][genus]) > 2:
             print(name, "WTF", known_planets[name]["by_genus"][genus], file=sys.stderr)
         for e in known_planets[name]["by_genus"][genus]:
