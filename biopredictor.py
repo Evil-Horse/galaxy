@@ -426,6 +426,10 @@ def check_region(genus, species, region):
         return True
     
     if genus_species == "Stratum Laminamus":
+        # Does not spawn here
+        if region == "Inner Scutum-Centaurus Arm":
+            return False
+
         # Orion-Cygnus Arm including Odin's Hold and Galactic Centre
         if region not in ARM_ORION_CYGNUS | set(["Odin's Hold", "Galactic Centre"]):
             return False
