@@ -330,24 +330,43 @@ def check_region(genus, species, region):
         return True
 
     if genus_species == "Aleoida Laminiae":
+        # does not spawn: 15, 33, 34, 35
+        if region in ["Outer Orion-Perseus Conflux", "Elysian Shore", "Sanguineous Rim", "Outer Orion Spur"]:
+            return False
+
         # Orion-Cygnus Arm; Sagittarius-Carina Arm including Odin's Hold and Galactic Centre
         if region not in ARM_SAGITTARIUS_CARINA | ARM_ORION_CYGNUS | set(["Odin's Hold", "Galactic Centre"]):
             return False
         return True
 
     if genus_species == "Aleoida Spica":
+        if region == "Outer Orion Spur":
+            return True
+
         # NOT Sagittarius-Carina Arm
         if region in ARM_SAGITTARIUS_CARINA | set(["Inner Scutum-Centaurus Arm", "Izanami"]):
             return False
         return True
 
     if genus_species == "Cactoida Cortexum":
+        # does not spawn: 9, 15, 33, 34
+        if region in ["Outer Orion-Perseus Conflux", "Elysian Shore", "Sanguineous Rim", "Inner Scutum-Centaurus Arm"]:
+            return False
+
         # Orion-Cygnus Arm including Odin's Hold and Galactic Centre
         if region not in ARM_ORION_CYGNUS | set(["Odin's Hold", "Galactic Centre"]):
             return False
         return True
 
     if genus_species == "Cactoida Lapis":
+        # does not spawn: 8, 16, 17, 35
+        if region in ["Inner Orion-Perseus Conflux", "Orion-Cygnus Arm", "Temple", "Outer Orion Spur"]:
+            return False
+
+        # spawns: 9, 24
+        if region in ["Inner Scutum-Centaurus Arm", "Formorian Frontier"]:
+            return True
+
         # Sagittarius-Carina Arm including Odin's Hold and Galactic Centre
         if region not in ARM_SAGITTARIUS_CARINA | set(["Odin's Hold", "Galactic Centre"]):
             return False
@@ -366,6 +385,10 @@ def check_region(genus, species, region):
         return True
 
     if genus_species == "Frutexa Acus":
+        # does not spawn: 9, 15, 33, 34
+        if region in ["Outer Orion-Perseus Conflux", "Elysian Shore", "Sanguineous Rim", "Inner Scutum-Centaurus Arm"]:
+            return False
+
         # Orion-Cygnus Arm including Odin's Hold and Galactic Centre
         if region not in ARM_ORION_CYGNUS | set(["Odin's Hold", "Galactic Centre"]):
             return False
@@ -408,12 +431,24 @@ def check_region(genus, species, region):
         return True
 
     if genus_species == "Stratum Cucumisis":
+        # does not spawn: 8, 16, 17, 35
+        if region in ["Inner Orion-Perseus Conflux", "Orion-Cygnus Arm", "Temple", "Outer Orion Spur"]:
+            return False
+
+        # spawns: 9
+        if region == "Inner Scutum-Centaurus Arm":
+            return True
+
         # Sagittarius-Carina Arm including Odin's Hold and Galactic Centre
         if region not in ARM_SAGITTARIUS_CARINA | set(["Odin's Hold", "Galactic Centre"]):
             return False
         return True
 
     if genus_species == "Stratum Excutitus":
+        # does not spawn: 9, 15, 33, 34
+        if region in ["Inner Scutum-Centaurus Arm", "Outer Orion-Perseus Conflux", "Elysian Shore", "Sanguineous Rim"]:
+            return False
+
         # Orion-Cygnus Arm including Odin's Hold and Galactic Centre
         if region not in ARM_ORION_CYGNUS | set(["Odin's Hold", "Galactic Centre"]):
             return False
@@ -426,8 +461,8 @@ def check_region(genus, species, region):
         return True
     
     if genus_species == "Stratum Laminamus":
-        # Does not spawn here
-        if region == "Inner Scutum-Centaurus Arm":
+        # does not spawn: 9, 15, 33, 34
+        if region in ["Inner Scutum-Centaurus Arm", "Outer Orion-Perseus Conflux", "Elysian Shore", "Sanguineous Rim"]:
             return False
 
         # Orion-Cygnus Arm including Odin's Hold and Galactic Centre
@@ -448,6 +483,14 @@ def check_region(genus, species, region):
         return True
 
     if genus_species == "Tubus Compagibus":
+        # does not spawn: 8, 16, 17, 35
+        if region in ["Inner Orion-Perseus Conflux", "Orion-Cygnus Arm", "Temple", "Outer Orion Spur"]:
+            return False
+
+        # spawns: 9, 24
+        if region in ["Inner Scutum-Centaurus Arm", "Formorian Frontier"]:
+            return True
+
         # Sagittarius-Carina Arm including Odin's Hold and Galactic Centre
         if region not in ARM_SAGITTARIUS_CARINA | set(["Odin's Hold", "Galactic Centre"]):
             return False
@@ -478,8 +521,12 @@ def check_region(genus, species, region):
         return True
 
     if genus_species == "Tussock Cultro":
-        # Orion-Cygnus Arm including Odin's Hold, Empyrean Straits and Galactic Centre
-        if region not in ARM_ORION_CYGNUS | set(["Odin's Hold", "Empyrean Straits", "Galactic Centre"]):
+        # does not spawn: 9, 15, 33, 34
+        if region in ["Inner Scutum-Centaurus Arm", "Outer Orion-Perseus Conflux", "Elysian Shore", "Sanguineous Rim"]:
+            return False
+
+        # Orion-Cygnus Arm including Odin's Hold and Galactic Centre
+        if region not in ARM_ORION_CYGNUS | set(["Odin's Hold", "Galactic Centre"]):
             return False
         return True
 
