@@ -76,7 +76,7 @@ class Orbit:
         if self.semiMajorAxis == 0.0:
             return self.meanAnomaly
 
-        currentMeanAnomaly = self.meanAnomaly + (360.0 * diff / self.orbitalPeriod)
+        currentMeanAnomaly = self.meanAnomaly + (360.0 * diff / (self.orbitalPeriod * 86400))
         return currentMeanAnomaly
 
 
