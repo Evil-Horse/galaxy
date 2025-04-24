@@ -2296,6 +2296,11 @@ def stratum_limaxus(genus, species, region, body, stars, colors):
     if not 165.0 <= temperature <= 190.0:
         return ret
 
+    subtype = body['subType']
+
+    if subtype != "Rocky body":
+        return ret
+
     spec = f"{genus} {species}"
     set_colors = get_possible_colors(spec, body, stars, colors)
 
