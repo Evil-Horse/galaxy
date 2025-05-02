@@ -459,7 +459,7 @@ def check_region(genus, species, region):
         if region not in (ARM_PERSEUS | set(["Ryker's Hope"])) - set(["Galactic Centre"]):
             return False
         return True
-    
+
     if genus_species == "Stratum Laminamus":
         # does not spawn: 9, 15, 33, 34
         if region in ["Inner Scutum-Centaurus Arm", "Outer Orion-Perseus Conflux", "Elysian Shore", "Sanguineous Rim"]:
