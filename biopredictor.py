@@ -2552,8 +2552,8 @@ def tubus_rosarium(genus, species, region, body, stars, colors):
     if not check_region(genus, species, region):
         return ret
 
-    co2 = body.get("atmosphereComposition", {}).get('Carbon dioxide', 0.0)
-    if co2 <= 97.5:
+    ammonia = body.get("atmosphereComposition", {}).get('Ammonia', 0.0)
+    if ammonia < 100.0:
         return ret
 
     temperature = body["surfaceTemperature"]
