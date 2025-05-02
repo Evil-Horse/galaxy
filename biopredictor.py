@@ -3285,7 +3285,7 @@ class Predictor:
                             "by_genus" : {},
                         }
 
-                    if genus not in known_planets[body]:
+                    if genus not in known_planets[body]["by_genus"]:
                         known_planets[body]["by_genus"][genus] = set()
 
                     known_planets[body]["by_genus"][genus].add(english_name)
