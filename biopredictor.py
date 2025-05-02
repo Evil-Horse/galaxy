@@ -3222,6 +3222,507 @@ def check_tussock(region, body, stars):
     ret += tussock_virgam    (genus, "Virgam"   , region, body, stars, colors)
     return ret
 
+conditions = {
+  "Aleoida" : {
+    "colors" : {
+      "O" : None,
+      "B" : CANONN_COLOR_YE,
+      "A" : CANONN_COLOR_GR,
+      "F" : CANONN_COLOR_TE,
+      "G" : None,
+      "K" : CANONN_COLOR_TU,
+      "M" : CANONN_COLOR_EM,
+      "L" : CANONN_COLOR_LI,
+      "T" : CANONN_COLOR_SG,
+      "Y" : CANONN_COLOR_AM,
+      "TTS" : CANONN_COLOR_MV,
+      "Ae" : None,
+      "W" : CANONN_COLOR_GY,
+      "D" : CANONN_COLOR_IN,
+      "N" : CANONN_COLOR_OC,
+      "BH" : None,
+      "C" : None,
+    },
+    "max_gravity" : 0.275313,
+    "specs" : {
+      "Arcus" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 175.0, "max_incl" : 180.0}} ],
+      "Coronamus" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 180.0, "max_incl" : 190.0}, "volcanism" : [ "No volcanism" ]} ],
+      "Gravis" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 190.0, "max_incl" : 197.0}, "volcanism" : [ "No volcanism" ]} ],
+      "Laminiae" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 152.0, "max_incl" : 177.0}} ],
+      "Spica" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 170.0, "max_incl" : 177.0}} ],
+    },
+  },
+  "Bacterium" : {
+    "colors" : {
+      "O" : CANONN_COLOR_TU,
+      "B" : CANONN_COLOR_GY,
+      "A" : CANONN_COLOR_YE,
+      "F" : CANONN_COLOR_LI,
+      "G" : CANONN_COLOR_EM,
+      "K" : CANONN_COLOR_GR,
+      "M" : CANONN_COLOR_TE,
+      "L" : CANONN_COLOR_SG,
+      "T" : CANONN_COLOR_RE,
+      "Y" : CANONN_COLOR_MV,
+      "TTS" : CANONN_COLOR_MR,
+      "Ae" : CANONN_COLOR_OR,
+      "W" : CANONN_COLOR_AM,
+      "D" : CANONN_COLOR_OC,
+      "N" : CANONN_COLOR_IN,
+      "BH" : None,
+      "C" : None,
+    },
+    "max_gravity" : 0.611807,
+    "specs" : {
+      "Alcyoneum" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 60.0}}, "gravity" : 0.375253, "temperature" : { "min_incl" : 152.0, "max_incl" : 177.0}} ],
+      "Aurasus" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 50.0}}, "gravity" : 0.611807, "temperature" : { "min_incl" : 145.0, "max_incl" : 400.0}} ],
+      "Cerbrus" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 60.0}}, "gravity" : 0.611807, "temperature" : { "min_incl" : 132.0, "max_incl" : 500.0}} ],
+    },
+  },
+  "Cactoida" : {
+    "colors" : {
+      "O" : CANONN_COLOR_GY,
+      "B" : None,
+      "A" : CANONN_COLOR_GR,
+      "F" : CANONN_COLOR_YE,
+      "G" : CANONN_COLOR_TE,
+      "K" : None,
+      "M" : CANONN_COLOR_AM,
+      "L" : CANONN_COLOR_MV,
+      "T" : CANONN_COLOR_OR,
+      "Y" : CANONN_COLOR_OC,
+      "TTS" : CANONN_COLOR_RE,
+      "Ae" : None,
+      "W" : CANONN_COLOR_IN,
+      "D" : CANONN_COLOR_TU,
+      "N" : CANONN_COLOR_SG,
+      "BH" : None,
+      "C" : None,
+    },
+    "max_gravity" : 0.275313,
+    "specs" : {
+      "Vermis" : [
+        { "atm_composition" : { "Water" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 390.0, "max_incl" : 450.0}},
+        { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5},('Carbon dioxide', 'Sulphur dioxide') : 100.0}, "gravity" : 0.275313, "temperature" : { "min_incl" : 160.0, "max_incl" : 207.0}}
+      ],
+      "Cortexum" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 180.0, "max_incl" : 196.0}, "volcanism" : [ "No volcanism" ]} ],
+      "Lapis" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 99.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 160.0, "max_incl" : 177.0}} ],
+      "Peperatis" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 160.0, "max_incl" : 177.0}} ],
+      "Pullulanta" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 180.0, "max_incl" : 196.0}, "volcanism" : [ "No volcanism" ]} ],
+    }
+  },
+  "Clypeus" : {
+    "colors" : {
+      "O" : None,
+      "B" : CANONN_COLOR_MR,
+      "A" : CANONN_COLOR_OR,
+      "F" : CANONN_COLOR_MV,
+      "G" : CANONN_COLOR_AM,
+      "K" : CANONN_COLOR_GY,
+      "M" : CANONN_COLOR_TU,
+      "L" : CANONN_COLOR_TE,
+      "T" : None,
+      "Y" : CANONN_COLOR_GR,
+      "TTS" : None,
+      "Ae" : None,
+      "W" : None,
+      "D" : CANONN_COLOR_LI,
+      "N" : CANONN_COLOR_YE,
+      "BH" : None,
+      "C" : None,
+    },
+    "max_gravity" : 0.275313,
+    "specs" : {
+      "Lacrimam" : [
+        { "atm_composition" : { "Water" : { "min_incl" : 100.0}}, "max_dist" : 4.0, "gravity" : 0.275313, "temperature" : { "min_incl" : 390.0, "max_incl" : 452.0}, "subtypes" : [ "Rocky body" ]},
+        { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "max_dist" : 4.0, "gravity" : 0.275313, "temperature" : { "min_incl" : 190.0, "max_incl" : 196.0}, "subtypes" : [ "Rocky body" ]}
+      ],
+      "Margaritus" : [
+        { "atm_composition" : { "Water" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 390.0, "max_incl" : 452.0}, "subtypes" : [ "High metal content world" ]},
+        { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 190.0, "max_incl" : 196.0}, "subtypes" : [ "High metal content world" ]}
+      ],
+      "Speculumi" : [
+        { "atm_composition" : { "Water" : { "min_incl" : 100.0}}, "min_dist" : 4.0, "gravity" : 0.275313, "temperature" : { "min_incl" : 390.0, "max_incl" : 452.0}, "subtypes" : [ "Rocky body" ]},
+        { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "min_dist" : 4.0, "gravity" : 0.275313, "temperature" : { "min_incl" : 190.0, "max_incl" : 196.0}, "subtypes" : [ "Rocky body" ]}
+      ],
+    }
+  },
+  "Concha" : {
+    "colors" : {
+      "O" : None,
+      "B" : CANONN_COLOR_IN,
+      "A" : CANONN_COLOR_GY,
+      "F" : CANONN_COLOR_TE,
+      "G" : CANONN_COLOR_TU,
+      "K" : CANONN_COLOR_RE,
+      "M" : None,
+      "L" : CANONN_COLOR_OR,
+      "T" : None,
+      "Y" : CANONN_COLOR_YE,
+      "TTS" : None,
+      "Ae" : None,
+      "W" : CANONN_COLOR_LI,
+      "D" : CANONN_COLOR_GR,
+      "N" : CANONN_COLOR_EM,
+      "BH" : None,
+      "C" : None,
+    },
+    "max_gravity" : 0.275313,
+    "specs" : {
+      "Aureolas" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 152.0, "max_incl" : 176.0}, "subtypes" : [ "High metal content world", "Rocky body" ]} ],
+      "Labiata" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 150.0, "max_incl" : 199.0}, "subtypes" : [ "High metal content world", "Rocky body" ], "volcanism" : [ "No volcanism" ]} ],
+    }
+  },
+  "Fonticulua" : {
+    "colors" : {
+      "O" : CANONN_COLOR_GY,
+      "B" : CANONN_COLOR_LI,
+      "A" : CANONN_COLOR_GR,
+      "F" : CANONN_COLOR_YE,
+      "G" : CANONN_COLOR_TE,
+      "K" : CANONN_COLOR_EM,
+      "M" : CANONN_COLOR_AM,
+      "L" : CANONN_COLOR_MV,
+      "T" : CANONN_COLOR_OR,
+      "Y" : CANONN_COLOR_OC,
+      "TTS" : CANONN_COLOR_RE,
+      "Ae" : CANONN_COLOR_MR,
+      "W" : CANONN_COLOR_IN,
+      "D" : CANONN_COLOR_TU,
+      "N" : CANONN_COLOR_SG,
+      "BH" : None,
+      "C" : None,
+    },
+    "max_gravity" : 0.275313,
+    "specs" : {
+      "Campestris" : [ { "atm_composition" : { "Argon" : { "min_incl" : 50.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 50.0, "max_incl" : 150.0}, "subtypes" : ['Icy body']} ],
+      "Digitos" : [ { "atm_composition" : { "Methane" : { "min_incl" : 100.0}}, "gravity" : 0.064729, "temperature" : { "min_incl" : 83.0, "max_incl" : 109.0}, "subtypes" : ['Icy body']} ],
+      "Fluctus" : [ { "atm_composition" : { "Oxygen" : { "min_incl" : 50.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 143.0, "max_incl" : 200.0}, "subtypes" : ['Icy body']} ],
+      "Lapida" : [ { "atm_composition" :{ "Nitrogen" : { "min_incl" : 99.0}, "Argon" : { "max_incl" : 0.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 50.0, "max_incl" : 81.0}, "subtypes" : ['Icy body']} ],
+      "Segmentatus" : [ { "atm_composition" : { "Neon" : { "min_excl" : 0.1}, "Argon" : { "max_incl" : 0.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 50.0, "max_incl" : 80.0}, "subtypes" : ['Icy body']} ],
+      "Upupam" : [ { "atm_composition" :{ "Nitrogen" : { "min_incl" : 50.0}, "Argon" : { "min_excl" : 0.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 60.0, "max_incl" : 124.0}, "subtypes" : ['Icy body']} ],
+    }
+  },
+  "Frutexa" : {
+    "colors" : {
+      "O" : CANONN_COLOR_YE,
+      "B" : CANONN_COLOR_LI,
+      "A" : None,
+      "F" : CANONN_COLOR_GR,
+      "G" : CANONN_COLOR_EM,
+      "K" : None,
+      "M" : CANONN_COLOR_GY,
+      "L" : CANONN_COLOR_TE,
+      "T" : None,
+      "Y" : None,
+      "TTS" : CANONN_COLOR_MV,
+      "Ae" : None,
+      "W" : CANONN_COLOR_OR,
+      "D" : CANONN_COLOR_IN,
+      "N" : CANONN_COLOR_RE,
+      "BH" : None,
+      "C" : None,
+    },
+    "max_gravity" : 0.275313,
+    "specs" : {
+      "Acus" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 146.0, "max_incl" : 196.0}, "subtypes" : ['Rocky body']} ],
+      "Collum" : [ { "atm_composition" : { "Sulphur dioxide" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 132.0, "max_incl" : 167.0}, "subtypes" : [ 'High metal content world', 'Rocky body' ]} ],
+      "Flabellum" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 99.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 152.0, "max_incl" : 177.0}, "subtypes" : ['Rocky body']} ],
+      "Flammasis" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 152.0, "max_incl" : 177.0}, "subtypes" : ['Rocky body']} ],
+      "Fera" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 146.0, "max_incl" : 196.0}, "subtypes" : ['Rocky body']} ],
+      "Metallicum" : [
+        { "atm_composition" : { "Water" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 390.0, "max_incl" : 400.0}, "subtypes" : ['High metal content world'], "volcanism" : [ "No volcanism" ]},
+        { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 152.0, "max_incl" : 176.0}, "subtypes" : ['High metal content world'], "volcanism" : [ "No volcanism" ]},
+        { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 146.0, "max_incl" : 195.0}, "subtypes" : ['High metal content world'], "volcanism" : [ "No volcanism" ]}
+      ],
+      "Sponsae" : [ { "atm_composition" : { "Water" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 392.0, "max_incl" : 452.0}, "subtypes" : ['Rocky body'], "volcanism" : [ "No volcanism" ]} ],
+    }
+  },
+  "Osseus" : {
+    "colors" : {
+      "O" : CANONN_COLOR_YE,
+      "B" : None,
+      "A" : CANONN_COLOR_LI,
+      "F" : CANONN_COLOR_TU,
+      "G" : CANONN_COLOR_GY,
+      "K" : CANONN_COLOR_IN,
+      "M" : None,
+      "L" : None,
+      "T" : CANONN_COLOR_EM,
+      "Y" : CANONN_COLOR_MR,
+      "TTS" : CANONN_COLOR_GR,
+      "Ae" : None,
+      "W" : None,
+      "D" : None,
+      "N" : None,
+      "BH" : None,
+      "C" : None,
+    },
+    "max_gravity" : 0.275313,
+    "specs" : {
+      "Cornibus" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 180.0, "max_incl" : 196.0}, "volcanism" : [ "No volcanism" ]} ],
+      "Fractus" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 180.0, "max_incl" : 190.0}, "volcanism" : [ "No volcanism" ]} ],
+      "Pellebantus" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 191.0, "max_incl" : 197.0}, "volcanism" : [ "No volcanism" ]} ],
+      "Spiralis" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 99.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 160.0, "max_incl" : 177.0}, "subtypes" : [ "High metal content world", 'Rocky body' ]} ],
+    }
+  },
+  "Recepta" : {
+    "colors" : {
+      "O" : None,
+      "B" : CANONN_COLOR_TU,
+      "A" : CANONN_COLOR_AM,
+      "F" : CANONN_COLOR_MV,
+      "G" : CANONN_COLOR_OR,
+      "K" : CANONN_COLOR_RE,
+      "M" : CANONN_COLOR_MR,
+      "L" : CANONN_COLOR_OC,
+      "T" : CANONN_COLOR_TE,
+      "Y" : CANONN_COLOR_LI,
+      "TTS" : CANONN_COLOR_SG,
+      "Ae" : CANONN_COLOR_GY,
+      "W" : None,
+      "D" : CANONN_COLOR_YE,
+      "N" : CANONN_COLOR_EM,
+      "BH" : None,
+      "C" : None,
+    },
+    "max_gravity" : 0.275313,
+    "specs" : {
+      "Umbrux" : [ { "atm_composition" : { "Sulphur dioxide" : { "min_excl" : 0.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 132.0, "max_incl" : 273.0}} ],
+    }
+  },
+  "Stratum" : {
+    "colors" : {
+      "O" : None,
+      "B" : None,
+      "A" : None,
+      "F" : CANONN_COLOR_EM,
+      "G" : None,
+      "K" : CANONN_COLOR_LI,
+      "M" : CANONN_COLOR_GR,
+      "L" : CANONN_COLOR_TU,
+      "T" : CANONN_COLOR_GY,
+      "Y" : CANONN_COLOR_IN,
+      "TTS" : CANONN_COLOR_AM,
+      "Ae" : CANONN_COLOR_TE,
+      "W" : CANONN_COLOR_RE,
+      "D" : CANONN_COLOR_MV,
+      "N" : None,
+      "BH" : None,
+      "C" : None,
+    },
+    "max_gravity" : 0.611807,
+    "specs" : {
+      "Araneamus" : [ { "atm_composition" : { "Sulphur dioxide" : { "min_excl" : 50.0}}, "gravity" : 0.550273, "temperature" : { "min_excl" : 165.0}} ],
+      "Cucumisis" : [
+        { "atm_composition" : { "Sulphur dioxide" : { "min_excl" : 0.0}}, "gravity" : 0.611807, "temperature" : { "min_excl" : 191.0}},
+        { "atm_composition" : { "Carbon dioxide" : { "min_excl" : 0.0}}, "gravity" : 0.611807, "temperature" : { "min_excl" : 191.0}}
+      ],
+      "Excutitus" : [
+        { "atm_composition" : { "Sulphur dioxide" : { "min_excl" : 0.0}}, "gravity" : 0.473151, "temperature" : { "min_incl" : 165.0, "max_incl" : 190.0}},
+        { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 100.0}}, "gravity" : 0.473151, "temperature" : { "min_incl" : 165.0, "max_incl" : 190.0}}
+      ],
+      "Laminamus" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 75.0}}, "gravity" : 0.342592, "temperature" : { "min_incl" : 165.0, "max_incl" : 177.0}} ],
+      "Limaxus" : [
+        { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 100.0}}, "gravity" : 0.377205, "temperature" : { "min_incl" : 165.0, "max_incl" : 190.0}, "subtypes" : ['Rocky body']},
+        { "atm_composition" : { "Sulphur dioxide" : { "min_excl" : 0.0}}, "gravity" : 0.377205, "temperature" : { "min_incl" : 165.0, "max_incl" : 190.0}, "subtypes" : ['Rocky body']}
+      ],
+      "Frigus" : [
+        { "atm_composition" : { "Sulphur dioxide" : { "min_excl" : 0.0}}, "gravity" : 0.550600, "temperature" : { "min_excl" : 191.0}},
+        { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 100.0}}, "gravity" : 0.550600, "temperature" : { "min_excl" : 191.0}}
+      ],
+      "Paleas" : [
+        { "atm_composition" : { "Carbon dioxide" : { "min_excl" : 0.0}, "Sulphur dioxide" : { "max_excl" : 50.0}}, "gravity" : 0.594972, "temperature" : { "min_incl" : 165.0}, "subtypes" : ['Rocky body']},
+        { "atm_composition" : { "Ammonia" : { "min_incl" : 70.0}}, "gravity" : 0.594972, "temperature" : { "min_incl" : 165.0, "max_incl" : 176.0}, "subtypes" : ['Rocky body']},
+        { "atm_composition" : { "Water" : { "min_incl" : 100.0}}, "gravity" : 0.594972, "temperature" : { "min_incl" : 390.0, "max_incl" : 450.0}, "subtypes" : ['Rocky body']}
+      ],
+      "Tectonicas" : [ { "gravity" : 0.611807, "temperature" : { "min_incl" : 165.0}, "subtypes" : ['High metal content world']} ],
+    }
+  },
+  "Tubus" : {
+    "colors" : {
+      "O" : CANONN_COLOR_GR,
+      "B" : CANONN_COLOR_EM,
+      "A" : CANONN_COLOR_IN,
+      "F" : CANONN_COLOR_GY,
+      "G" : CANONN_COLOR_RE,
+      "K" : CANONN_COLOR_MR,
+      "M" : CANONN_COLOR_TE,
+      "L" : CANONN_COLOR_TU,
+      "T" : CANONN_COLOR_MV,
+      "Y" : None,
+      "TTS" : CANONN_COLOR_OC,
+      "Ae" : None,
+      "W" : CANONN_COLOR_LI,
+      "D" : CANONN_COLOR_YE,
+      "N" : CANONN_COLOR_AM,
+      "BH" : None,
+      "C" : None,
+    },
+    "max_gravity" : 0.152952,
+    "specs" : {
+      "Cavas" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.152952, "temperature" : { "min_incl" : 160.0, "max_incl" : 197.0}, "subtypes" : ['Rocky body'], "volcanism" : [ "No volcanism" ]} ],
+      "Conifer" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.152952, "temperature" : { "min_incl" : 160.0, "max_incl" : 196.0}, "subtypes" : ['Rocky body'], "volcanism" : [ "No volcanism" ]} ],
+      "Sororibus" : [
+        { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 98.0}}, "gravity" : 0.152952, "temperature" : { "min_incl" : 160.0, "max_incl" : 194.0}, "subtypes" : ['High metal content world']},
+        { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.152952, "temperature" : { "min_incl" : 160.0, "max_incl" : 194.0}, "subtypes" : ['High metal content world']}
+      ],
+      "Compagibus" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.152952, "temperature" : { "min_incl" : 160.0, "max_incl" : 197.0}, "subtypes" : ['Rocky body'], "volcanism" : [ "No volcanism" ]} ],
+      "Rosarium" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.152952, "temperature" : { "min_incl" : 160.0, "max_incl" : 177.0}, "subtypes" : ['Rocky body']} ],
+    }
+  },
+  "Tussock" : {
+    "colors" : {
+      "O" : None,
+      "B" : None,
+      "A" : None,
+      "F" : CANONN_COLOR_YE,
+      "G" : CANONN_COLOR_LI,
+      "K" : CANONN_COLOR_GR,
+      "M" : CANONN_COLOR_EM,
+      "L" : CANONN_COLOR_SG,
+      "T" : CANONN_COLOR_TE,
+      "Y" : CANONN_COLOR_RE,
+      "TTS" : None,
+      "Ae" : None,
+      "W" : CANONN_COLOR_OR,
+      "D" : CANONN_COLOR_MR,
+      "N" : CANONN_COLOR_YE,
+      "BH" : None,
+      "C" : None,
+    },
+    "max_gravity" : 0.275313,
+    "specs" : {
+      "Albata" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 175.0, "max_incl" : 180.0}, "subtypes" : [ "High metal content world", 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
+      "Caputus" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 181.0, "max_incl" : 190.0}, "subtypes" : [ "High metal content world", 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
+      "Capillum" : [
+        { "atm_composition" : { "Argon" : { "min_incl" : 50.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 80.0, "max_incl" : 129.0}, "subtypes" : [ "Rocky body", "Rocky Ice world" ]},
+        { "atm_composition" : { "Methane" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 80.0, "max_incl" : 129.0}, "subtypes" : [ "Rocky body", "Rocky Ice world" ]}
+      ],
+      "Catena" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 152.0, "max_incl" : 177.0}, "subtypes" : [ "High metal content world", 'Rocky body' ]} ],
+      "Cultro" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 152.0, "max_incl" : 177.0}, "subtypes" : [ "High metal content world", 'Rocky body' ]} ],
+      "Divisa" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 152.0, "max_incl" : 177.0}, "subtypes" : [ "High metal content world", 'Rocky body' ]} ],
+      "Ignis" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 150.0, "max_incl" : 170.0}, "subtypes" : [ "High metal content world", 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
+      "Pennata" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 145.0, "max_incl" : 154.0}, "subtypes" : [ "High metal content world", 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
+      "Pennatis" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 146.0, "max_incl" : 196.0}, "subtypes" : [ "High metal content world", 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
+      "Propagito" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 145.0, "max_incl" : 197.0}, "subtypes" : [ "High metal content world", 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
+      "Serrati" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 171.0, "max_incl" : 174.0}, "subtypes" : [ "High metal content world", 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
+      "Stigmasis" : [ { "atm_composition" : { "Sulphur dioxide" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 132.0, "max_incl" : 207.0}, "subtypes" : [ 'High metal content world', 'Rocky body' ]} ],
+      "Triticum" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 191.0, "max_incl" : 196.0}, "subtypes" : [ 'High metal content world', 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
+      "Ventusa" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 155.0, "max_incl" : 160.0}, "subtypes" : [ "High metal content world", 'Rocky body' ]} ],
+      "Virgam" : [ { "atm_composition" : { "Water" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 390.0, "max_incl" : 450.0}, "subtypes" : [ "High metal content world", 'Rocky body' ]} ],
+    }
+  }
+}
+
+def check_environment(genus, species, body, spec):
+    # gravity is too high
+    if body["gravity"] > spec.get("gravity", None):
+        return False
+
+    # check atmosphere composition
+    for gas, gas_req in spec.get("atm_composition", {}).items():
+
+        # special hack for Vermis
+        if type(gas) is tuple:
+            cond = gas_req
+            value = 0.0
+            for subgas in gas:
+                value += body.get("atmosphereComposition", {}).get(subgas, 0.0)
+
+            if value != cond:
+                return False
+            continue
+
+        value = body.get("atmosphereComposition", {}).get(gas, 0.0)
+
+        if (cond := gas_req.get("min_incl", None)) is not None:
+            if cond == 0.0:
+                raise ValueError(f"{gas} >= {cond} will match anything for {genus} {species}")
+
+            if value < cond:
+                return False
+
+        if (cond := gas_req.get("min_excl", None)) is not None:
+            if value <= cond:
+                return False
+
+        if (cond := gas_req.get("max_incl", None)) is not None:
+            if cond == 100.0:
+                raise ValueError(f"{gas} <= {cond} will match anything for {genus} {species}")
+
+            if value > cond:
+                return False
+
+        if (cond := gas_req.get("max_excl", None)) is not None:
+            if value >= cond:
+                return False
+
+    if (cond := spec.get("subtypes", [])) != []:
+        if body['subType'] not in cond:
+            return False
+
+    if (cond := spec.get("volcanism", [])) != []:
+        if body.get("volcanism", "No volcanism") not in cond:
+            return False
+
+    temp = body["surfaceTemperature"]
+    if (cond := spec["temperature"].get("min_incl", None)) is not None:
+        if temp < cond:
+            return False
+
+    if (cond := spec["temperature"].get("min_excl", None)) is not None:
+        if temp <= cond:
+            return False
+
+    if (cond := spec["temperature"].get("max_incl", None)) is not None:
+        if temp > cond:
+            return False
+
+    return True
+
+def check_v2(region, body, stars):
+    ret = []
+    for genus, genus_data in conditions.items():
+        if body["gravity"] >= genus_data["max_gravity"]:
+            continue
+
+        # check if everything has been scanned
+        name = body["name"]
+        if name in known_planets and genus in known_planets[name]["by_genus"]:
+            if len(known_planets[name]["by_genus"][genus]) > 1:
+                print(name, "WTF-2", known_planets[name]["by_genus"][genus], file=sys.stderr)
+            for e in known_planets[name]["by_genus"][genus]:
+                ret.append((region, name, e, 1))
+            continue
+
+        colors = genus_data["colors"]
+        for species, species_spec_list in genus_data["specs"].items():
+            if not check_region(genus, species, region):
+                continue
+
+            for species_spec in species_spec_list:
+                if check_environment(genus, species, body, species_spec):
+                    #print(body["name"], genus, species, spec)
+                    s = f"{genus} {species}"
+
+                    # due to a bug, only Emerald Araneamus exists
+                    if s == "Stratum Araneamus":
+                        string = f"Stratum Araneamus - {CANONN_COLOR_EM}"
+                        region_priority = get_color_priority(region, string)
+                        ret.append((region, body["name"], string, region_priority))
+                        continue
+
+                    min_dist = species_spec.get("min_dist", None)
+                    max_dist = species_spec.get("max_dist", None)
+                    set_colors = get_possible_colors(s, body, stars, colors, min_dist = min_dist, max_dist = max_dist)
+
+                    for color in set_colors:
+                        string = f"{s} - {color}"
+                        region_priority = get_color_priority(region, string)
+                        ret.append((region, body["name"], string, region_priority))
+    return ret
+
 global_entries = set()
 regional_entries = {}
 
@@ -3419,6 +3920,13 @@ class Predictor:
 
             # predicted: list of tuples
             # (region, body name, species name, priority)
+
+            predicted_v2 = check_v2(region, planet, stars)
+            for entry in predicted:
+                assert(entry in predicted_v2), f"{planet['name']}: {entry} has not predicted"
+
+            for entry in predicted_v2:
+                assert(entry in predicted), f"{planet['name']}: {entry} became predicted"
 
             for entry in predicted:
                 region, bodyname, species, priority = entry
