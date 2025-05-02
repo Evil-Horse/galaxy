@@ -3299,6 +3299,15 @@ class Predictor:
 
                     regional_entries[region].add(english_name)
 
+        with open("invalid-data", "w") as f:
+            for planet in known_planets:
+                if planet is None:
+                    continue
+
+                for genus in known_planets[planet]["by_genus"]:
+                    if len(known_planets[planet]["by_genus"][genus]) > 1:
+                        print(f'Invalid data for {planet}: {known_planets[planet]["by_genus"][genus]}', file=f)
+
 
     def process(self, system):
         stars = []
