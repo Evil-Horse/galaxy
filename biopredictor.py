@@ -2696,7 +2696,7 @@ def tussock_capillum(genus, species, region, body, stars, colors):
 
     argon = body.get("atmosphereComposition", {}).get('Argon', 0.0)
     methane = body.get("atmosphereComposition", {}).get('Methane', 0.0)
-    if 0.0 < methane < 100.0 or argon < 50.0:
+    if not (methane == 100.0 or argon >= 50.0):
         return ret
 
     temperature = body["surfaceTemperature"]
