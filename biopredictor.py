@@ -3245,11 +3245,11 @@ conditions = {
     },
     "max_gravity" : 0.275313,
     "specs" : {
-      "Arcus" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 175.0, "max_incl" : 180.0}} ],
-      "Coronamus" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 180.0, "max_incl" : 190.0}, "volcanism" : [ "No volcanism" ]} ],
-      "Gravis" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 190.0, "max_incl" : 197.0}, "volcanism" : [ "No volcanism" ]} ],
-      "Laminiae" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 152.0, "max_incl" : 177.0}} ],
-      "Spica" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 170.0, "max_incl" : 177.0}} ],
+      "Arcus" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 175.0 <= x <= 180.0} ],
+      "Coronamus" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 180.0 <= x <= 190.0, "volcanism" : [ "No volcanism" ]} ],
+      "Gravis" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 190.0 <= x <= 197.0, "volcanism" : [ "No volcanism" ]} ],
+      "Laminiae" : [ { "atm_composition" : { "Ammonia" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 152.0 <= x <= 177.0} ],
+      "Spica" : [ { "atm_composition" : { "Ammonia" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 170.0 <= x <= 177.0} ],
     },
   },
   "Bacterium" : {
@@ -3274,9 +3274,9 @@ conditions = {
     },
     "max_gravity" : 0.611807,
     "specs" : {
-      "Alcyoneum" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 60.0}}, "gravity" : 0.375253, "temperature" : { "min_incl" : 152.0, "max_incl" : 177.0}} ],
-      "Aurasus" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 50.0}}, "gravity" : 0.611807, "temperature" : { "min_incl" : 145.0, "max_incl" : 400.0}} ],
-      "Cerbrus" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 60.0}}, "gravity" : 0.611807, "temperature" : { "min_incl" : 132.0, "max_incl" : 500.0}} ],
+      "Alcyoneum" : [ { "atm_composition" : { "Ammonia" : lambda x: 60.0 <= x}, "gravity" : 0.375253, "temperature" : lambda x: 152.0 <= x <= 177.0} ],
+      "Aurasus" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 50.0 <= x}, "gravity" : 0.611807, "temperature" : lambda x: 145.0 <= x <= 400.0} ],
+      "Cerbrus" : [ { "atm_composition" : { "Ammonia" : lambda x: 60.0 <= x}, "gravity" : 0.611807, "temperature" : lambda x: 132.0 <= x <= 500.0} ],
     },
   },
   "Cactoida" : {
@@ -3302,13 +3302,13 @@ conditions = {
     "max_gravity" : 0.275313,
     "specs" : {
       "Vermis" : [
-        { "atm_composition" : { "Water" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 390.0, "max_incl" : 450.0}},
-        { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5},('Carbon dioxide', 'Sulphur dioxide') : 100.0}, "gravity" : 0.275313, "temperature" : { "min_incl" : 160.0, "max_incl" : 207.0}}
+        { "atm_composition" : { "Water" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 390.0 <= x <= 450.0},
+        { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x,('Carbon dioxide', 'Sulphur dioxide') : 100.0}, "gravity" : 0.275313, "temperature" : lambda x: 160.0 <= x <= 207.0}
       ],
-      "Cortexum" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 180.0, "max_incl" : 196.0}, "volcanism" : [ "No volcanism" ]} ],
-      "Lapis" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 99.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 160.0, "max_incl" : 177.0}} ],
-      "Peperatis" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 160.0, "max_incl" : 177.0}} ],
-      "Pullulanta" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 180.0, "max_incl" : 196.0}, "volcanism" : [ "No volcanism" ]} ],
+      "Cortexum" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 180.0 <= x <= 196.0, "volcanism" : [ "No volcanism" ]} ],
+      "Lapis" : [ { "atm_composition" : { "Ammonia" : lambda x: 99.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 160.0 <= x <= 177.0} ],
+      "Peperatis" : [ { "atm_composition" : { "Ammonia" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 160.0 <= x <= 177.0} ],
+      "Pullulanta" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 180.0 <= x <= 196.0, "volcanism" : [ "No volcanism" ]} ],
     }
   },
   "Clypeus" : {
@@ -3334,16 +3334,16 @@ conditions = {
     "max_gravity" : 0.275313,
     "specs" : {
       "Lacrimam" : [
-        { "atm_composition" : { "Water" : { "min_incl" : 100.0}}, "max_dist" : 4.0, "gravity" : 0.275313, "temperature" : { "min_incl" : 390.0, "max_incl" : 452.0}, "subtypes" : [ "Rocky body" ]},
-        { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "max_dist" : 4.0, "gravity" : 0.275313, "temperature" : { "min_incl" : 190.0, "max_incl" : 196.0}, "subtypes" : [ "Rocky body" ]}
+        { "atm_composition" : { "Water" : lambda x: 100.0 <= x}, "max_dist" : 4.0, "gravity" : 0.275313, "temperature" : lambda x: 390.0 <= x <= 452.0, "subtypes" : [ "Rocky body" ]},
+        { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "max_dist" : 4.0, "gravity" : 0.275313, "temperature" : lambda x: 190.0 <= x <= 196.0, "subtypes" : [ "Rocky body" ]}
       ],
       "Margaritus" : [
-        { "atm_composition" : { "Water" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 390.0, "max_incl" : 452.0}, "subtypes" : [ "High metal content world" ]},
-        { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 190.0, "max_incl" : 196.0}, "subtypes" : [ "High metal content world" ]}
+        { "atm_composition" : { "Water" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 390.0 <= x <= 452.0, "subtypes" : [ "High metal content world" ]},
+        { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 190.0 <= x <= 196.0, "subtypes" : [ "High metal content world" ]}
       ],
       "Speculumi" : [
-        { "atm_composition" : { "Water" : { "min_incl" : 100.0}}, "min_dist" : 4.0, "gravity" : 0.275313, "temperature" : { "min_incl" : 390.0, "max_incl" : 452.0}, "subtypes" : [ "Rocky body" ]},
-        { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "min_dist" : 4.0, "gravity" : 0.275313, "temperature" : { "min_incl" : 190.0, "max_incl" : 196.0}, "subtypes" : [ "Rocky body" ]}
+        { "atm_composition" : { "Water" : lambda x: 100.0 <= x}, "min_dist" : 4.0, "gravity" : 0.275313, "temperature" : lambda x: 390.0 <= x <= 452.0, "subtypes" : [ "Rocky body" ]},
+        { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "min_dist" : 4.0, "gravity" : 0.275313, "temperature" : lambda x: 190.0 <= x <= 196.0, "subtypes" : [ "Rocky body" ]}
       ],
     }
   },
@@ -3369,8 +3369,8 @@ conditions = {
     },
     "max_gravity" : 0.275313,
     "specs" : {
-      "Aureolas" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 152.0, "max_incl" : 176.0}, "subtypes" : [ "High metal content world", "Rocky body" ]} ],
-      "Labiata" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 150.0, "max_incl" : 199.0}, "subtypes" : [ "High metal content world", "Rocky body" ], "volcanism" : [ "No volcanism" ]} ],
+      "Aureolas" : [ { "atm_composition" : { "Ammonia" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 152.0 <= x <= 176.0, "subtypes" : [ "High metal content world", "Rocky body" ]} ],
+      "Labiata" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 150.0 <= x <= 199.0, "subtypes" : [ "High metal content world", "Rocky body" ], "volcanism" : [ "No volcanism" ]} ],
     }
   },
   "Fonticulua" : {
@@ -3395,12 +3395,12 @@ conditions = {
     },
     "max_gravity" : 0.275313,
     "specs" : {
-      "Campestris" : [ { "atm_composition" : { "Argon" : { "min_incl" : 50.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 50.0, "max_incl" : 150.0}, "subtypes" : ['Icy body']} ],
-      "Digitos" : [ { "atm_composition" : { "Methane" : { "min_incl" : 100.0}}, "gravity" : 0.064729, "temperature" : { "min_incl" : 83.0, "max_incl" : 109.0}, "subtypes" : ['Icy body']} ],
-      "Fluctus" : [ { "atm_composition" : { "Oxygen" : { "min_incl" : 50.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 143.0, "max_incl" : 200.0}, "subtypes" : ['Icy body']} ],
-      "Lapida" : [ { "atm_composition" :{ "Nitrogen" : { "min_incl" : 99.0}, "Argon" : { "max_incl" : 0.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 50.0, "max_incl" : 81.0}, "subtypes" : ['Icy body']} ],
-      "Segmentatus" : [ { "atm_composition" : { "Neon" : { "min_excl" : 0.1}, "Argon" : { "max_incl" : 0.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 50.0, "max_incl" : 80.0}, "subtypes" : ['Icy body']} ],
-      "Upupam" : [ { "atm_composition" :{ "Nitrogen" : { "min_incl" : 50.0}, "Argon" : { "min_excl" : 0.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 60.0, "max_incl" : 124.0}, "subtypes" : ['Icy body']} ],
+      "Campestris" : [ { "atm_composition" : { "Argon" : lambda x: 50.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 50.0 <= x <= 150.0, "subtypes" : ['Icy body']} ],
+      "Digitos" : [ { "atm_composition" : { "Methane" : lambda x: 100.0 <= x}, "gravity" : 0.064729, "temperature" : lambda x: 83.0 <= x <= 109.0, "subtypes" : ['Icy body']} ],
+      "Fluctus" : [ { "atm_composition" : { "Oxygen" : lambda x: 50.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 143.0 <= x <= 200.0, "subtypes" : ['Icy body']} ],
+      "Lapida" : [ { "atm_composition" :{ "Nitrogen" : lambda x: 99.0 <= x, "Argon" : lambda x: x <= 0.0}, "gravity" : 0.275313, "temperature" : lambda x: 50.0 <= x <= 81.0, "subtypes" : ['Icy body']} ],
+      "Segmentatus" : [ { "atm_composition" : { "Neon" : lambda x: 0.1 < x, "Argon" : lambda x: x <= 0.0}, "gravity" : 0.275313, "temperature" : lambda x: 50.0 <= x <= 80.0, "subtypes" : ['Icy body']} ],
+      "Upupam" : [ { "atm_composition" :{ "Nitrogen" : lambda x: 50.0 <= x, "Argon" : lambda x: 0.0 < x}, "gravity" : 0.275313, "temperature" : lambda x: 60.0 <= x <= 124.0, "subtypes" : ['Icy body']} ],
     }
   },
   "Frutexa" : {
@@ -3425,17 +3425,17 @@ conditions = {
     },
     "max_gravity" : 0.275313,
     "specs" : {
-      "Acus" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 146.0, "max_incl" : 196.0}, "subtypes" : ['Rocky body']} ],
-      "Collum" : [ { "atm_composition" : { "Sulphur dioxide" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 132.0, "max_incl" : 167.0}, "subtypes" : [ 'High metal content world', 'Rocky body' ]} ],
-      "Flabellum" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 99.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 152.0, "max_incl" : 177.0}, "subtypes" : ['Rocky body']} ],
-      "Flammasis" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 152.0, "max_incl" : 177.0}, "subtypes" : ['Rocky body']} ],
-      "Fera" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 146.0, "max_incl" : 196.0}, "subtypes" : ['Rocky body']} ],
+      "Acus" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 146.0 <= x <= 196.0, "subtypes" : ['Rocky body']} ],
+      "Collum" : [ { "atm_composition" : { "Sulphur dioxide" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 132.0 <= x <= 167.0, "subtypes" : [ 'High metal content world', 'Rocky body' ]} ],
+      "Flabellum" : [ { "atm_composition" : { "Ammonia" : lambda x: 99.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 152.0 <= x <= 177.0, "subtypes" : ['Rocky body']} ],
+      "Flammasis" : [ { "atm_composition" : { "Ammonia" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 152.0 <= x <= 177.0, "subtypes" : ['Rocky body']} ],
+      "Fera" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 146.0 <= x <= 196.0, "subtypes" : ['Rocky body']} ],
       "Metallicum" : [
-        { "atm_composition" : { "Water" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 390.0, "max_incl" : 400.0}, "subtypes" : ['High metal content world'], "volcanism" : [ "No volcanism" ]},
-        { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 152.0, "max_incl" : 176.0}, "subtypes" : ['High metal content world'], "volcanism" : [ "No volcanism" ]},
-        { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 146.0, "max_incl" : 195.0}, "subtypes" : ['High metal content world'], "volcanism" : [ "No volcanism" ]}
+        { "atm_composition" : { "Water" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 390.0 <= x <= 400.0, "subtypes" : ['High metal content world'], "volcanism" : [ "No volcanism" ]},
+        { "atm_composition" : { "Ammonia" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 152.0 <= x <= 176.0, "subtypes" : ['High metal content world'], "volcanism" : [ "No volcanism" ]},
+        { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 146.0 <= x <= 195.0, "subtypes" : ['High metal content world'], "volcanism" : [ "No volcanism" ]}
       ],
-      "Sponsae" : [ { "atm_composition" : { "Water" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 392.0, "max_incl" : 452.0}, "subtypes" : ['Rocky body'], "volcanism" : [ "No volcanism" ]} ],
+      "Sponsae" : [ { "atm_composition" : { "Water" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 392.0 <= x <= 452.0, "subtypes" : ['Rocky body'], "volcanism" : [ "No volcanism" ]} ],
     }
   },
   "Osseus" : {
@@ -3460,10 +3460,10 @@ conditions = {
     },
     "max_gravity" : 0.275313,
     "specs" : {
-      "Cornibus" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 180.0, "max_incl" : 196.0}, "volcanism" : [ "No volcanism" ]} ],
-      "Fractus" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 180.0, "max_incl" : 190.0}, "volcanism" : [ "No volcanism" ]} ],
-      "Pellebantus" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 191.0, "max_incl" : 197.0}, "volcanism" : [ "No volcanism" ]} ],
-      "Spiralis" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 99.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 160.0, "max_incl" : 177.0}, "subtypes" : [ "High metal content world", 'Rocky body' ]} ],
+      "Cornibus" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 180.0 <= x <= 196.0, "volcanism" : [ "No volcanism" ]} ],
+      "Fractus" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 180.0 <= x <= 190.0, "volcanism" : [ "No volcanism" ]} ],
+      "Pellebantus" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 191.0 <= x <= 197.0, "volcanism" : [ "No volcanism" ]} ],
+      "Spiralis" : [ { "atm_composition" : { "Ammonia" : lambda x: 99.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 160.0 <= x <= 177.0, "subtypes" : [ "High metal content world", 'Rocky body' ]} ],
     }
   },
   "Recepta" : {
@@ -3488,7 +3488,7 @@ conditions = {
     },
     "max_gravity" : 0.275313,
     "specs" : {
-      "Umbrux" : [ { "atm_composition" : { "Sulphur dioxide" : { "min_excl" : 0.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 132.0, "max_incl" : 273.0}} ],
+      "Umbrux" : [ { "atm_composition" : { "Sulphur dioxide" : lambda x: 0.0 < x}, "gravity" : 0.275313, "temperature" : lambda x: 132.0 <= x <= 273.0} ],
     }
   },
   "Stratum" : {
@@ -3513,30 +3513,30 @@ conditions = {
     },
     "max_gravity" : 0.611807,
     "specs" : {
-      "Araneamus" : [ { "atm_composition" : { "Sulphur dioxide" : { "min_excl" : 50.0}}, "gravity" : 0.550273, "temperature" : { "min_excl" : 165.0}} ],
+      "Araneamus" : [ { "atm_composition" : { "Sulphur dioxide" : lambda x: 50.0 < x}, "gravity" : 0.550273, "temperature" : lambda x: 165.0 < x} ],
       "Cucumisis" : [
-        { "atm_composition" : { "Sulphur dioxide" : { "min_excl" : 0.0}}, "gravity" : 0.611807, "temperature" : { "min_excl" : 191.0}},
-        { "atm_composition" : { "Carbon dioxide" : { "min_excl" : 0.0}}, "gravity" : 0.611807, "temperature" : { "min_excl" : 191.0}}
+        { "atm_composition" : { "Sulphur dioxide" : lambda x: 0.0 < x}, "gravity" : 0.611807, "temperature" : lambda x: 191.0 < x},
+        { "atm_composition" : { "Carbon dioxide" : lambda x: 0.0 < x}, "gravity" : 0.611807, "temperature" : lambda x: 191.0 < x}
       ],
       "Excutitus" : [
-        { "atm_composition" : { "Sulphur dioxide" : { "min_excl" : 0.0}}, "gravity" : 0.473151, "temperature" : { "min_incl" : 165.0, "max_incl" : 190.0}},
-        { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 100.0}}, "gravity" : 0.473151, "temperature" : { "min_incl" : 165.0, "max_incl" : 190.0}}
+        { "atm_composition" : { "Sulphur dioxide" : lambda x: 0.0 < x}, "gravity" : 0.473151, "temperature" : lambda x: 165.0 <= x <= 190.0},
+        { "atm_composition" : { "Carbon dioxide" : lambda x: 100.0 <= x}, "gravity" : 0.473151, "temperature" : lambda x: 165.0 <= x <= 190.0}
       ],
-      "Laminamus" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 75.0}}, "gravity" : 0.342592, "temperature" : { "min_incl" : 165.0, "max_incl" : 177.0}} ],
+      "Laminamus" : [ { "atm_composition" : { "Ammonia" : lambda x: 75.0 <= x}, "gravity" : 0.342592, "temperature" : lambda x: 165.0 <= x <= 177.0} ],
       "Limaxus" : [
-        { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 100.0}}, "gravity" : 0.377205, "temperature" : { "min_incl" : 165.0, "max_incl" : 190.0}, "subtypes" : ['Rocky body']},
-        { "atm_composition" : { "Sulphur dioxide" : { "min_excl" : 0.0}}, "gravity" : 0.377205, "temperature" : { "min_incl" : 165.0, "max_incl" : 190.0}, "subtypes" : ['Rocky body']}
+        { "atm_composition" : { "Carbon dioxide" : lambda x: 100.0 <= x}, "gravity" : 0.377205, "temperature" : lambda x: 165.0 <= x <= 190.0, "subtypes" : ['Rocky body']},
+        { "atm_composition" : { "Sulphur dioxide" : lambda x: 0.0 < x}, "gravity" : 0.377205, "temperature" : lambda x: 165.0 <= x <= 190.0, "subtypes" : ['Rocky body']}
       ],
       "Frigus" : [
-        { "atm_composition" : { "Sulphur dioxide" : { "min_excl" : 0.0}}, "gravity" : 0.550600, "temperature" : { "min_excl" : 191.0}},
-        { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 100.0}}, "gravity" : 0.550600, "temperature" : { "min_excl" : 191.0}}
+        { "atm_composition" : { "Sulphur dioxide" : lambda x: 0.0 < x}, "gravity" : 0.550600, "temperature" : lambda x: 191.0 < x},
+        { "atm_composition" : { "Carbon dioxide" : lambda x: 100.0 <= x}, "gravity" : 0.550600, "temperature" : lambda x: 191.0 < x}
       ],
       "Paleas" : [
-        { "atm_composition" : { "Carbon dioxide" : { "min_excl" : 0.0}, "Sulphur dioxide" : { "max_excl" : 50.0}}, "gravity" : 0.594972, "temperature" : { "min_incl" : 165.0}, "subtypes" : ['Rocky body']},
-        { "atm_composition" : { "Ammonia" : { "min_incl" : 70.0}}, "gravity" : 0.594972, "temperature" : { "min_incl" : 165.0, "max_incl" : 176.0}, "subtypes" : ['Rocky body']},
-        { "atm_composition" : { "Water" : { "min_incl" : 100.0}}, "gravity" : 0.594972, "temperature" : { "min_incl" : 390.0, "max_incl" : 450.0}, "subtypes" : ['Rocky body']}
+        { "atm_composition" : { "Carbon dioxide" : lambda x: 0.0 < x, "Sulphur dioxide" : lambda x: x < 50.0}, "gravity" : 0.594972, "temperature" : lambda x: 165.0 <= x, "subtypes" : ['Rocky body']},
+        { "atm_composition" : { "Ammonia" : lambda x: 70.0 <= x}, "gravity" : 0.594972, "temperature" : lambda x: 165.0 <= x <= 176.0, "subtypes" : ['Rocky body']},
+        { "atm_composition" : { "Water" : lambda x: 100.0 <= x}, "gravity" : 0.594972, "temperature" : lambda x: 390.0 <= x <= 450.0, "subtypes" : ['Rocky body']}
       ],
-      "Tectonicas" : [ { "gravity" : 0.611807, "temperature" : { "min_incl" : 165.0}, "subtypes" : ['High metal content world']} ],
+      "Tectonicas" : [ { "gravity" : 0.611807, "temperature" : lambda x: 165.0 <= x, "subtypes" : ['High metal content world']} ],
     }
   },
   "Tubus" : {
@@ -3561,14 +3561,14 @@ conditions = {
     },
     "max_gravity" : 0.152952,
     "specs" : {
-      "Cavas" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.152952, "temperature" : { "min_incl" : 160.0, "max_incl" : 197.0}, "subtypes" : ['Rocky body'], "volcanism" : [ "No volcanism" ]} ],
-      "Conifer" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.152952, "temperature" : { "min_incl" : 160.0, "max_incl" : 196.0}, "subtypes" : ['Rocky body'], "volcanism" : [ "No volcanism" ]} ],
+      "Cavas" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.152952, "temperature" : lambda x: 160.0 <= x <= 197.0, "subtypes" : ['Rocky body'], "volcanism" : [ "No volcanism" ]} ],
+      "Conifer" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.152952, "temperature" : lambda x: 160.0 <= x <= 196.0, "subtypes" : ['Rocky body'], "volcanism" : [ "No volcanism" ]} ],
       "Sororibus" : [
-        { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 98.0}}, "gravity" : 0.152952, "temperature" : { "min_incl" : 160.0, "max_incl" : 194.0}, "subtypes" : ['High metal content world']},
-        { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.152952, "temperature" : { "min_incl" : 160.0, "max_incl" : 194.0}, "subtypes" : ['High metal content world']}
+        { "atm_composition" : { "Carbon dioxide" : lambda x: 98.0 <= x}, "gravity" : 0.152952, "temperature" : lambda x: 160.0 <= x <= 194.0, "subtypes" : ['High metal content world']},
+        { "atm_composition" : { "Ammonia" : lambda x: 100.0 <= x}, "gravity" : 0.152952, "temperature" : lambda x: 160.0 <= x <= 194.0, "subtypes" : ['High metal content world']}
       ],
-      "Compagibus" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.152952, "temperature" : { "min_incl" : 160.0, "max_incl" : 197.0}, "subtypes" : ['Rocky body'], "volcanism" : [ "No volcanism" ]} ],
-      "Rosarium" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.152952, "temperature" : { "min_incl" : 160.0, "max_incl" : 177.0}, "subtypes" : ['Rocky body']} ],
+      "Compagibus" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.152952, "temperature" : lambda x: 160.0 <= x <= 197.0, "subtypes" : ['Rocky body'], "volcanism" : [ "No volcanism" ]} ],
+      "Rosarium" : [ { "atm_composition" : { "Ammonia" : lambda x: 100.0 <= x}, "gravity" : 0.152952, "temperature" : lambda x: 160.0 <= x <= 177.0, "subtypes" : ['Rocky body']} ],
     }
   },
   "Tussock" : {
@@ -3593,24 +3593,24 @@ conditions = {
     },
     "max_gravity" : 0.275313,
     "specs" : {
-      "Albata" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 175.0, "max_incl" : 180.0}, "subtypes" : [ "High metal content world", 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
-      "Caputus" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 181.0, "max_incl" : 190.0}, "subtypes" : [ "High metal content world", 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
+      "Albata" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 175.0 <= x <= 180.0, "subtypes" : [ "High metal content world", 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
+      "Caputus" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 181.0 <= x <= 190.0, "subtypes" : [ "High metal content world", 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
       "Capillum" : [
-        { "atm_composition" : { "Argon" : { "min_incl" : 50.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 80.0, "max_incl" : 129.0}, "subtypes" : [ "Rocky body", "Rocky Ice world" ]},
-        { "atm_composition" : { "Methane" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 80.0, "max_incl" : 129.0}, "subtypes" : [ "Rocky body", "Rocky Ice world" ]}
+        { "atm_composition" : { "Argon" : lambda x: 50.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 80.0 <= x <= 129.0, "subtypes" : [ "Rocky body", "Rocky Ice world" ]},
+        { "atm_composition" : { "Methane" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 80.0 <= x <= 129.0, "subtypes" : [ "Rocky body", "Rocky Ice world" ]}
       ],
-      "Catena" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 152.0, "max_incl" : 177.0}, "subtypes" : [ "High metal content world", 'Rocky body' ]} ],
-      "Cultro" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 152.0, "max_incl" : 177.0}, "subtypes" : [ "High metal content world", 'Rocky body' ]} ],
-      "Divisa" : [ { "atm_composition" : { "Ammonia" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 152.0, "max_incl" : 177.0}, "subtypes" : [ "High metal content world", 'Rocky body' ]} ],
-      "Ignis" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 150.0, "max_incl" : 170.0}, "subtypes" : [ "High metal content world", 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
-      "Pennata" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 145.0, "max_incl" : 154.0}, "subtypes" : [ "High metal content world", 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
-      "Pennatis" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 146.0, "max_incl" : 196.0}, "subtypes" : [ "High metal content world", 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
-      "Propagito" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 145.0, "max_incl" : 197.0}, "subtypes" : [ "High metal content world", 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
-      "Serrati" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 171.0, "max_incl" : 174.0}, "subtypes" : [ "High metal content world", 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
-      "Stigmasis" : [ { "atm_composition" : { "Sulphur dioxide" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 132.0, "max_incl" : 207.0}, "subtypes" : [ 'High metal content world', 'Rocky body' ]} ],
-      "Triticum" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 191.0, "max_incl" : 196.0}, "subtypes" : [ 'High metal content world', 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
-      "Ventusa" : [ { "atm_composition" : { "Carbon dioxide" : { "min_incl" : 97.5}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 155.0, "max_incl" : 160.0}, "subtypes" : [ "High metal content world", 'Rocky body' ]} ],
-      "Virgam" : [ { "atm_composition" : { "Water" : { "min_incl" : 100.0}}, "gravity" : 0.275313, "temperature" : { "min_incl" : 390.0, "max_incl" : 450.0}, "subtypes" : [ "High metal content world", 'Rocky body' ]} ],
+      "Catena" : [ { "atm_composition" : { "Ammonia" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 152.0 <= x <= 177.0, "subtypes" : [ "High metal content world", 'Rocky body' ]} ],
+      "Cultro" : [ { "atm_composition" : { "Ammonia" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 152.0 <= x <= 177.0, "subtypes" : [ "High metal content world", 'Rocky body' ]} ],
+      "Divisa" : [ { "atm_composition" : { "Ammonia" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 152.0 <= x <= 177.0, "subtypes" : [ "High metal content world", 'Rocky body' ]} ],
+      "Ignis" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 150.0 <= x <= 170.0, "subtypes" : [ "High metal content world", 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
+      "Pennata" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 145.0 <= x <= 154.0, "subtypes" : [ "High metal content world", 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
+      "Pennatis" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 146.0 <= x <= 196.0, "subtypes" : [ "High metal content world", 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
+      "Propagito" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 145.0 <= x <= 197.0, "subtypes" : [ "High metal content world", 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
+      "Serrati" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 171.0 <= x <= 174.0, "subtypes" : [ "High metal content world", 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
+      "Stigmasis" : [ { "atm_composition" : { "Sulphur dioxide" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 132.0 <= x <= 207.0, "subtypes" : [ 'High metal content world', 'Rocky body' ]} ],
+      "Triticum" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 191.0 <= x <= 196.0, "subtypes" : [ 'High metal content world', 'Rocky body' ], "volcanism" : [ "No volcanism" ]} ],
+      "Ventusa" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 155.0 <= x <= 160.0, "subtypes" : [ "High metal content world", 'Rocky body' ]} ],
+      "Virgam" : [ { "atm_composition" : { "Water" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 390.0 <= x <= 450.0, "subtypes" : [ "High metal content world", 'Rocky body' ]} ],
     }
   }
 }
@@ -3634,28 +3634,9 @@ def check_environment(genus, species, body, spec):
                 return False
             continue
 
-        value = body.get("atmosphereComposition", {}).get(gas, 0.0)
-
-        if (cond := gas_req.get("min_incl", None)) is not None:
-            if cond == 0.0:
-                raise ValueError(f"{gas} >= {cond} will match anything for {genus} {species}")
-
-            if value < cond:
-                return False
-
-        if (cond := gas_req.get("min_excl", None)) is not None:
-            if value <= cond:
-                return False
-
-        if (cond := gas_req.get("max_incl", None)) is not None:
-            if cond == 100.0:
-                raise ValueError(f"{gas} <= {cond} will match anything for {genus} {species}")
-
-            if value > cond:
-                return False
-
-        if (cond := gas_req.get("max_excl", None)) is not None:
-            if value >= cond:
+        if type(gas) is str:
+            value = body.get("atmosphereComposition", {}).get(gas, 0.0)
+            if not gas_req(value):
                 return False
 
     if (cond := spec.get("subtypes", [])) != []:
@@ -3667,17 +3648,8 @@ def check_environment(genus, species, body, spec):
             return False
 
     temp = body["surfaceTemperature"]
-    if (cond := spec["temperature"].get("min_incl", None)) is not None:
-        if temp < cond:
-            return False
-
-    if (cond := spec["temperature"].get("min_excl", None)) is not None:
-        if temp <= cond:
-            return False
-
-    if (cond := spec["temperature"].get("max_incl", None)) is not None:
-        if temp > cond:
-            return False
+    if not spec["temperature"](temp):
+        return False
 
     return True
 
