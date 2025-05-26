@@ -727,7 +727,7 @@ conditions = {
     },
     "max_gravity" : 0.275313,
     "specs" : {
-      "Aureolas" : [ { "atm_composition" : { "Ammonia" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 152.0 <= x <= 176.0, "subtypes" : [ "High metal content world", "Rocky body" ]} ],
+      "Aureolas" : [ { "atm_composition" : { "Ammonia" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 152.0 <= x <= 176.0, "semimajor_axis" : lambda x: x < 0.04, "subtypes" : [ "High metal content world", "Rocky body" ]} ],
       "Labiata" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 150.0 <= x <= 199.0, "subtypes" : [ "High metal content world", "Rocky body" ], "volcanism" : [ "No volcanism" ]} ],
     }
   },
@@ -1007,6 +1007,11 @@ def check_environment(genus, species, body, spec):
 
     temp = body["surfaceTemperature"]
     if not spec["temperature"](temp):
+        return False
+
+    sma = body.get("semiMajorAxis", None)
+    if sma is not None and "semimajor_axis" in spec and not spec["semimajor_axis"](sma):
+        #print(f"Skipping {body['name']} - semimajor axis is too big ({body['semiMajorAxis']})")
         return False
 
     return True
