@@ -4,7 +4,7 @@ from RegionMap import findRegion
 from distances import Coordinates
 import sys
 import math
-from datetime import date
+from datetime import date, datetime, UTC
 
 regions = {
     "$Codex_RegionName_1;" : 'Galactic Centre',
@@ -1103,6 +1103,8 @@ class Predictor:
             "timestamp": date.today().isoformat(),
             "bio": {}
         }
+        self.datetime = datetime.now(tz=UTC).replace(minute=0, second=0, microsecond=0)
+        print(f'Predicting biology as of {self.datetime}', file=sys.stderr)
 
         with gzip.open("codex.json.gz", "r") as codex:
             entries = json.load(codex)
@@ -1216,7 +1218,7 @@ class Predictor:
         if planets == []:
             return
 
-        c = Coordinates(system["bodies"])
+        c = Coordinates(system["bodies"], self.datetime)
 #        if system["name"] == "Col 359 Sector OT-Q d5-56":
 #            c.get_all_coordinates()
 

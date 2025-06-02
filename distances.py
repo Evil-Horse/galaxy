@@ -10,7 +10,7 @@ class Body:
     PLANET = 2
     STAR = 3
 
-    def __init__(self, entry: dict):
+    def __init__(self, entry: dict, currentTime: datetime):
         if entry["type"] == "Barycentre":
             self.type = self.BARYCENTRE
         elif entry["type"] == "Planet":
@@ -32,7 +32,7 @@ class Body:
         self.orbitalPeriod: float = entry.get("orbitalPeriod", 0.0)
         self.periapsis:     float = entry.get("argOfPeriapsis", 0.0)
         self.semiMajorAxis: float = entry.get("semiMajorAxis", 0.0)
-        self.orbit:         Orbit = Orbit(self)
+        self.orbit:         Orbit = Orbit(self, currentTime)
 
         self.parentIDs: list[int] = list()
         for j in entry.get("parents", []):
@@ -40,7 +40,7 @@ class Body:
                 self.parentIDs.append(id)
 
 class Orbit:
-    def __init__(self, body: Body):
+    def __init__(self, body: Body, currentTime: datetime):
         self.isValid = (body.type == Body.BARYCENTRE  or  body.orbitalPeriod != 0.0)
         self.semiMajorAxis =    body.semiMajorAxis
         self.eccentricity =     body.eccentricity
@@ -56,6 +56,7 @@ class Orbit:
         self.argOfPeriapsis = (360.0 - self.argOfPeriapsis) % 360.0
 
         # ради тестов
+        self.currentTime = currentTime
         self.meanAnomaly = self.getCurrentMeanAnomaly()
 
         #rotations
@@ -72,7 +73,7 @@ class Orbit:
 
     def getCurrentMeanAnomaly(self) -> float:
         # this object has moved since the last scan
-        diff = (datetime.now(UTC) - self.scanTimestamp).total_seconds()
+        diff = (self.currentTime - self.scanTimestamp).total_seconds()
         if self.semiMajorAxis == 0.0:
             return self.meanAnomaly
 
@@ -172,10 +173,10 @@ class Coordinates:
         for bodyID in self.allBodies:
             body = self.allBodies[bodyID]
 
-    def __init__(self, bodies):
+    def __init__(self, bodies, currentTime):
         self.allBodies.clear()
 
         for entry in bodies:
-            body = Body(entry)
+            body = Body(entry, currentTime)
             self.allBodies[body.bodyID] = body
 
