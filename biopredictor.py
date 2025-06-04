@@ -244,7 +244,7 @@ def get_possible_stars(body, stars, threshold = 1.0):
     above_threshold = {k: v for k, v in brightnesses.items() if v["brightness"] >= brightnesses[brightest]["brightness"] * threshold}
     return above_threshold
 
-def get_possible_colors_v2(valid_stars, species, colors, min_dist=None, max_dist=None):
+def get_possible_colors(valid_stars, species, colors, min_dist=None, max_dist=None):
     set_colors = set()
 
     for k, v in valid_stars.items():
@@ -999,7 +999,7 @@ def check_environment(genus, species, body, spec):
 
     return True
 
-def check_v2(region, body, stars):
+def check(region, body, stars):
     ret = []
 
     valid_stars = get_possible_stars(body, stars)
@@ -1035,7 +1035,7 @@ def check_v2(region, body, stars):
 
                     min_dist = species_spec.get("min_dist", None)
                     max_dist = species_spec.get("max_dist", None)
-                    set_colors = get_possible_colors_v2(valid_stars, s, colors, min_dist = min_dist, max_dist = max_dist)
+                    set_colors = get_possible_colors(valid_stars, s, colors, min_dist = min_dist, max_dist = max_dist)
 
                     for color in set_colors:
                         string = f"{s} - {color}"
@@ -1219,9 +1219,9 @@ class Predictor:
             # predicted: list of tuples
             # (region, body name, species name, priority)
 
-            predicted_v2 = check_v2(region, planet, stars)
+            predicted = check(region, planet, stars)
 
-            for entry in predicted_v2:
+            for entry in predicted:
                 region, bodyname, species, priority = entry
 
                 if region not in self.predicted["bio"]:
