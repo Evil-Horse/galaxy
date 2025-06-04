@@ -277,6 +277,57 @@ def get_possible_colors(species, body, stars, colors, min_dist=None, max_dist=No
 
     return set_colors
 
+def get_possible_stars(body, stars, threshold = 1.0):
+    body_coordinates = body["coordinates"]
+    brightnesses = {}
+    for star in stars:
+        star_type = get_mapped_star_type(star.get("subType", None))
+        if star_type is None:
+            #print(f'{star["name"]}: type is none')
+            continue
+
+        # get distance
+        star_coordinates = star["coordinates"]
+        dist_au_squared = (star_coordinates[0] - body_coordinates[0]) ** 2 + (star_coordinates[1] - body_coordinates[1]) ** 2 + (star_coordinates[2] - body_coordinates[2]) ** 2
+        if dist_au_squared == 0.0:
+            #print(f'{star["name"]}: dist is zero')
+            continue
+
+        if "solarRadius" not in star:
+            #print(f'{star["name"]}: solar radius is unknown')
+            continue
+
+        brightness = star["solarRadius"] ** 2 * star["surfaceTemperature"] ** 4 / dist_au_squared
+        brightnesses[star["name"]] = {
+            "brightness" : brightness,
+            "star_type" : star_type,
+            "distance" : math.sqrt(dist_au_squared),
+        }
+
+    if len(brightnesses) == 0:
+        return {}
+
+    brightest = max(brightnesses, key=lambda x: brightnesses[x]["brightness"])
+
+    above_threshold = {k: v for k, v in brightnesses.items() if v["brightness"] >= brightnesses[brightest]["brightness"] * threshold}
+    return above_threshold
+
+def get_possible_colors_v2(valid_stars, species, colors, min_dist=None, max_dist=None):
+    set_colors = set()
+
+    for k, v in valid_stars.items():
+        if min_dist is not None and min_dist > v["distance"]:
+            continue
+
+        if max_dist is not None and max_dist < v["distance"]:
+            continue
+
+        color = colors[v["star_type"]]
+        if color is not None:
+            set_colors.add(color)
+
+    return set_colors
+
 def get_color_priority(region, variant):
     # galaxy-wide discovery
     if variant not in global_entries:
@@ -1018,6 +1069,8 @@ def check_environment(genus, species, body, spec):
 
 def check_v2(region, body, stars):
     ret = []
+
+    valid_stars = get_possible_stars(body, stars)
     for genus, genus_data in conditions.items():
         if body["gravity"] >= genus_data["max_gravity"]:
             continue
@@ -1050,7 +1103,7 @@ def check_v2(region, body, stars):
 
                     min_dist = species_spec.get("min_dist", None)
                     max_dist = species_spec.get("max_dist", None)
-                    set_colors = get_possible_colors(s, body, stars, colors, min_dist = min_dist, max_dist = max_dist)
+                    set_colors = get_possible_colors_v2(valid_stars, s, colors, min_dist = min_dist, max_dist = max_dist)
 
                     for color in set_colors:
                         string = f"{s} - {color}"
