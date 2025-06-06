@@ -53,11 +53,9 @@ def sector_name(text):
     return ' '.join(split[:-2])
 
 class Subsectors:
-    def __init__(self, fav):
-        self.subsectors = {}
-        self.systems = utils.counter_init(fav)
-        self.count = utils.counter_init(fav)
+    def __init__(self, fav, cursor):
         self.fav = fav
+        self.cursor = cursor
 
     def process(self, system):
         split = split_generator(system["name"])
@@ -74,30 +72,48 @@ class Subsectors:
         subsector = '-'.join(normalized_split[:-1])
         number = int(normalized_split[-1])
 
-        if not subsector in self.subsectors:
-            self.subsectors[subsector] = number
-            utils.counter_increment(self.count, system['sector'], self.fav)
-        else:
-            if number > self.subsectors[subsector]:
-                self.subsectors[subsector] = number
-
-        utils.counter_increment(self.systems, system['sector'], self.fav)
+        self.cursor.execute('''
+        UPDATE systems SET (sector, subsector, number) = (?, ?, ?) WHERE name = ?
+        ''', (system['sector'], subsector, number, system["name"]))
 
     def finalize(self, data, sector = None):
         if sector is None:
             with open("subsectors", 'w') as f:
-                for subsector in self.subsectors:
-                    print(f"{subsector}: {self.subsectors[subsector] + 1} systems", file=f)
+                self.cursor.execute('''
+                    SELECT sector, subsector, MAX(number + 1) FROM systems WHERE subsector IS NOT NULL GROUP BY subsector
+                ''')
+                while fetched := self.cursor.fetchone():
+                    print(f"{fetched[1]}: {fetched[2]} systems", file=f)
 
         key = 'galaxy' if sector is None else sector
 
-        systems = self.systems[key]
-        count = self.count[key]
+        if key != 'galaxy':
+            self.cursor.execute('''
+                SELECT COUNT(subsector), SUM(number + 1) FROM systems WHERE sector = ?
+            ''', (key, ))
+            fetched = self.cursor.fetchone()
+            systems = fetched[0]
+            total = fetched[1]
 
-        total = 0
-        for subsector in self.subsectors:
-            if sector is None or sector == sector_name(subsector):
-                total += self.subsectors[subsector] + 1
+            self.cursor.execute('''
+                SELECT COUNT(subsector) FROM systems WHERE sector = ?
+            ''', (key, ))
+            fetched = self.cursor.fetchone()
+            count = fetched[0]
+        else:
+            self.cursor.execute('''
+                SELECT COUNT(subsector), SUM(number + 1) FROM systems WHERE sector IS NOT NULL
+            ''')
+            fetched = self.cursor.fetchone()
+            systems = fetched[0]
+            total = fetched[1]
+
+            self.cursor.execute('''
+                SELECT COUNT(subsector) FROM systems WHERE sector IS NOT NULL
+            ''')
+            fetched = self.cursor.fetchone()
+            print(fetched)
+            count = fetched[0]
 
         subdata = data[key]
         subdata["systems"] = systems

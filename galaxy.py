@@ -1,6 +1,7 @@
 import gzip
 import json
 import tqdm
+import sqlite3
 
 from image import Image
 from anomaly import Anomalies
@@ -10,7 +11,7 @@ from biopredictor import Predictor
 favorite_sectors = ('Boepp',)
 
 # predictor is slow
-predictor_enabled = True
+predictor_enabled = False
 
 def compare(old_data, data, key, subkey):
     value = data[key][subkey]
@@ -40,13 +41,30 @@ def print_data(old, data):
 
 class Galaxy:
     def __init__(self, name):
+        self.con = sqlite3.connect("galaxy.sqlite")
+        self.cur = self.con.cursor()
+        self.cur.execute('''
+        CREATE TABLE IF NOT EXISTS systems (
+            id64 INTEGER PRIMARY KEY,
+            name TEXT UNIQUE NOT NULL,
+            last_updated DATETIME NOT NULL,
+            sector TEXT,
+            subsector TEXT,
+            number INTEGER,
+            anomalies INTEGER NOT NULL DEFAULT 0
+        )
+        ''')
+        self.cur.execute('''
+        CREATE INDEX IF NOT EXISTS idx_name ON systems(name)
+        ''')
+
         self.json_file = gzip.open(name, 'r')
 
-        self.image = Image()
-        self.anomalies = Anomalies(favorite_sectors)
-        self.subsectors = Subsectors(favorite_sectors)
+        self.image = Image(self.cur)
+        self.anomalies = Anomalies(favorite_sectors, self.cur)
+        self.subsectors = Subsectors(favorite_sectors, self.cur)
         if predictor_enabled:
-            self.predictor = Predictor()
+            self.predictor = Predictor(self.cur)
 
         self.data = {
             "galaxy": {}
@@ -81,14 +99,41 @@ class Galaxy:
             if i % step == 0:
                 pbar.update(step)
                 pbar.set_description(system["name"])
+                self.con.commit()
 
             system["sector"] = sector_name(system["name"])
+
+            # check if system has been updates
+            self.cur.execute('''
+            SELECT last_updated, name FROM systems WHERE name = ?
+            ''', (system["name"], ))
+
+            fetched_count = 0
+            updated = True
+            while fetched := self.cur.fetchone():
+                fetched_count += 1
+                if fetched[0] == system["date"]:
+                    updated = False
+
+            if fetched_count > 1:
+                print(f'Fetched multiple systems with name = {system["name"]}')
+                break
+
+            if not updated:
+                continue
 
             self.image.process(system)
             self.anomalies.process(system)
             self.subsectors.process(system)
             if predictor_enabled:
                 self.predictor.process(system)
+
+            self.cur.execute('''
+                INSERT OR REPLACE INTO systems
+                (id64, name, last_updated)
+                    VALUES
+                (?, ?, ?)''',
+            (system["id64"], system["name"], system["date"]))
 
         pbar.close()
         self.image.finalize()
@@ -101,9 +146,10 @@ class Galaxy:
             self.subsectors.finalize(self.data, fav)
             self.anomalies.finalize(self.data, fav)
 
-        print_data(self.olddata, self.data)
-        with open("olddata.json", 'w') as f:
-            json.dump(self.data, f)
+        self.con.commit()
+        #print_data(self.olddata, self.data)
+        #with open("olddata.json", 'w') as f:
+        #    json.dump(self.data, f)
 
 galaxy = Galaxy("galaxy.json.gz")
 galaxy.load()

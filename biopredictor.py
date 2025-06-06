@@ -1082,7 +1082,7 @@ def get_odyssey_genus(name):
     return None
 
 class Predictor:
-    def __init__(self):
+    def __init__(self, cursor):
         # list of tuples: (region, system_name, species, priority)
         self.predicted = {
             "timestamp": date.today().isoformat(),
@@ -1130,6 +1130,21 @@ class Predictor:
                 for genus in known_planets[planet]["by_genus"]:
                     if len(known_planets[planet]["by_genus"][genus]) > 1:
                         print(f'Invalid data for {planet}: {known_planets[planet]["by_genus"][genus]}', file=f)
+
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS predictor (
+            region TEXT NOT NULL,
+            system TEXT NOT NULL,
+            x_coord FLOAT NOT NULL,
+            y_coord FLOAT NOT NULL,
+            z_coord FLOAT NOT NULL,
+            body TEXT NOT NULL,
+            species TEXT NOT NULL,
+            priority INTEGER,
+            PRIMARY KEY (body, species)
+        )
+        ''')
+        self.cursor = cursor
 
 
     def process(self, system):
@@ -1224,23 +1239,48 @@ class Predictor:
             for entry in predicted:
                 region, bodyname, species, priority = entry
 
-                if region not in self.predicted["bio"]:
-                    self.predicted["bio"][region] = {}
-
-                if species not in self.predicted["bio"][region]:
-                    self.predicted["bio"][region][species] = {
-                        "priority" : priority,
-                        "locations" : [],
-                    }
-
-                self.predicted["bio"][region][species]["locations"].append({
-                    "system" : system["name"],
-                    "body" : bodyname,
-                    "x" : system["coords"]["x"],
-                    "y" : system["coords"]["y"],
-                    "z" : system["coords"]["z"],
-                })
+                self.cursor.execute('''
+                INSERT OR REPLACE INTO predictor
+                    (region, system, x_coord, y_coord, z_coord, body, species, priority)
+                VALUES
+                    (?, ?, ?, ?, ?, ?, ?, ?)
+                ''',
+                (region, system["name"], system["coords"]["x"], system["coords"]["y"], system["coords"]["z"], bodyname, species, priority))
 
     def finalize(self):
+        self.cursor.execute('''
+            SELECT region, system, x_coord, y_coord, z_coord, body, species, priority FROM predictor
+        ''')
+        while fetched := self.cursor.fetchone():
+            region = fetched[0]
+            system = {
+                "name" : fetched[1],
+                "coords" : {
+                    "x" : fetched[2],
+                    "y" : fetched[3],
+                    "z" : fetched[4]
+                }
+            }
+            bodyname = fetched[5]
+            species = fetched[6]
+            priority = fetched[7]
+
+            if region not in self.predicted["bio"]:
+                self.predicted["bio"][region] = {}
+
+            if species not in self.predicted["bio"][region]:
+                self.predicted["bio"][region][species] = {
+                    "priority" : priority,
+                    "locations" : [],
+                }
+
+            self.predicted["bio"][region][species]["locations"].append({
+                "system" : system["name"],
+                "body" : bodyname,
+                "x" : system["coords"]["x"],
+                "y" : system["coords"]["y"],
+                "z" : system["coords"]["z"],
+            })
+
         with open("biopredictor.json", "w") as f:
             json.dump(self.predicted, f)
