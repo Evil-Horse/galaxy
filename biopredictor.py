@@ -1224,6 +1224,10 @@ class Predictor:
             for entry in predicted:
                 region, bodyname, species, priority = entry
 
+                # skip local discoveries
+                if priority == 1:
+                    continue
+
                 if region not in self.predicted["bio"]:
                     self.predicted["bio"][region] = {}
 
