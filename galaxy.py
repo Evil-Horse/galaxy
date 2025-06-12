@@ -44,9 +44,9 @@ class Galaxy:
         self.con = sqlite3.connect("galaxy.sqlite")
         self.cur = self.con.cursor()
         self.cur.execute('''
-        CREATE TABLE IF NOT EXISTS systems (
+        CREATE TABLE IF NOT EXISTS data_systems (
             id64 INTEGER PRIMARY KEY,
-            name TEXT UNIQUE NOT NULL,
+            name TEXT NOT NULL,
             last_updated DATETIME NOT NULL,
             sector TEXT,
             subsector TEXT,
@@ -55,7 +55,7 @@ class Galaxy:
         )
         ''')
         self.cur.execute('''
-        CREATE INDEX IF NOT EXISTS idx_name ON systems(name)
+            CREATE INDEX IF NOT EXISTS idx_id64 ON data_systems(id64)
         ''')
 
         self.json_file = gzip.open(name, 'r')
@@ -80,6 +80,7 @@ class Galaxy:
 
     def load(self):
         i = 0
+        updated_systems = 0
         step = 10000
         pbar = tqdm.tqdm(total=self.olddata['galaxy']['systems'])
         for line in self.json_file:
@@ -105,46 +106,45 @@ class Galaxy:
 
             # check if system has been updates
             self.cur.execute('''
-            SELECT last_updated, name FROM systems WHERE name = ?
-            ''', (system["name"], ))
+                SELECT last_updated, id64 FROM data_systems WHERE id64 = ?
+            ''', (system["id64"], ))
 
-            fetched_count = 0
             updated = True
             while fetched := self.cur.fetchone():
-                fetched_count += 1
                 if fetched[0] == system["date"]:
                     updated = False
-
-            if fetched_count > 1:
-                print(f'Fetched multiple systems with name = {system["name"]}')
-                break
 
             if not updated:
                 continue
 
+            updated_systems += 1
+            #print(f'Updated system {system["name"]}')
+
             self.image.process(system)
-            self.anomalies.process(system)
-            self.subsectors.process(system)
-            if predictor_enabled:
-                self.predictor.process(system)
+#            self.anomalies.process(system)
+#            self.subsectors.process(system)
+#            if predictor_enabled:
+#                self.predictor.process(system)
 
             self.cur.execute('''
-                INSERT OR REPLACE INTO systems
+                INSERT OR REPLACE INTO data_systems
                 (id64, name, last_updated)
                     VALUES
                 (?, ?, ?)''',
             (system["id64"], system["name"], system["date"]))
 
         pbar.close()
-        self.image.finalize()
-        self.subsectors.finalize(self.data)
-        self.anomalies.finalize(self.data)
-        if predictor_enabled:
-            self.predictor.finalize()
+        print(f'Processing done, updated {updated_systems} systems')
 
-        for fav in favorite_sectors:
-            self.subsectors.finalize(self.data, fav)
-            self.anomalies.finalize(self.data, fav)
+        self.image.finalize()
+#        self.subsectors.finalize(self.data)
+#        self.anomalies.finalize(self.data)
+#        if predictor_enabled:
+#            self.predictor.finalize()
+
+#        for fav in favorite_sectors:
+#            self.subsectors.finalize(self.data, fav)
+#            self.anomalies.finalize(self.data, fav)
 
         self.con.commit()
         #print_data(self.olddata, self.data)

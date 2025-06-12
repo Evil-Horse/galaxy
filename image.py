@@ -41,7 +41,7 @@ class Image:
         self.image = np.zeros(self.output_dims, dtype=np.float64)
 
         cursor.execute('''
-        CREATE TABLE IF NOT EXISTS image (
+        CREATE TABLE IF NOT EXISTS module_image (
             id64 INTEGER PRIMARY KEY,
             name TEXT NOT NULL,
             x_coord FLOAT NOT NULL,
@@ -56,7 +56,7 @@ class Image:
 
     def finalize(self):
         self.cursor.execute('''
-        SELECT id64, name, x_coord, z_coord, r_color, g_color, b_color FROM image
+            SELECT id64, name, x_coord, z_coord, r_color, g_color, b_color FROM module_image
         ''')
         while fetched := self.cursor.fetchone():
             xdim = normalize_dim(self.input_dims[0], fetched[2], self.output_dims[0])
@@ -90,7 +90,7 @@ class Image:
                 color += temperature_to_color(body["surfaceTemperature"], body["absoluteMagnitude"])
 
         self.cursor.execute('''
-        INSERT OR REPLACE INTO image
+        INSERT OR REPLACE INTO module_image
             (id64, name, x_coord, z_coord, r_color, g_color, b_color)
         VALUES
             (?, ?, ?, ?, ?, ?, ?)
