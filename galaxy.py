@@ -50,8 +50,7 @@ class Galaxy:
             last_updated DATETIME NOT NULL,
             sector TEXT,
             subsector TEXT,
-            number INTEGER,
-            anomalies INTEGER NOT NULL DEFAULT 0
+            number INTEGER
         )
         ''')
         self.cur.execute('''
@@ -121,7 +120,7 @@ class Galaxy:
             #print(f'Updated system {system["name"]}')
 
             self.image.process(system)
-#            self.anomalies.process(system)
+            self.anomalies.process(system)
 #            self.subsectors.process(system)
 #            if predictor_enabled:
 #                self.predictor.process(system)
@@ -137,14 +136,14 @@ class Galaxy:
         print(f'Processing done, updated {updated_systems} systems')
 
         self.image.finalize()
+        self.anomalies.finalize(self.data)
 #        self.subsectors.finalize(self.data)
-#        self.anomalies.finalize(self.data)
 #        if predictor_enabled:
 #            self.predictor.finalize()
 
-#        for fav in favorite_sectors:
+        for fav in favorite_sectors:
+            self.anomalies.finalize(self.data, fav)
 #            self.subsectors.finalize(self.data, fav)
-#            self.anomalies.finalize(self.data, fav)
 
         self.con.commit()
         #print_data(self.olddata, self.data)

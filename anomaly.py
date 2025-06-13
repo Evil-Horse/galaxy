@@ -46,19 +46,31 @@ class Anomalies:
         self.fav = fav
         self.cursor = cursor
 
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS module_anomaly (
+            id64 INTEGER PRIMARY KEY,
+            name TEXT NOT NULL,
+            sector TEXT,
+            anomalies INTEGER NOT NULL DEFAULT 0
+        )
+        ''')
+
     def process(self, system):
         anomaly_reason = check(system)
 
         if anomaly_reason is not None:
             self.cursor.execute('''
-                UPDATE systems SET anomalies = ? WHERE name = ?
-            ''', (anomaly_reason, system["name"]))
+                INSERT OR REPLACE INTO module_anomaly
+                    (id64, name, sector, anomalies)
+                VALUES
+                    (?, ?, ?, ?)
+            ''', (system["id64"], system["name"], system["sector"], anomaly_reason))
 
     def finalize(self, data, sector = None):
         if sector is None:
             with open("anomaly", 'w') as f:
                 self.cursor.execute('''
-                    SELECT name, anomalies FROM systems WHERE anomalies != 0
+                    SELECT name, anomalies FROM module_anomaly WHERE anomalies != 0
                 ''')
                 while fetched := self.cursor.fetchone():
                     anomaly_reason = enum_to_string(fetched[0], fetched[1])
@@ -68,13 +80,13 @@ class Anomalies:
 
         if key != 'galaxy':
             self.cursor.execute('''
-                SELECT COUNT(anomalies) FROM systems WHERE sector = ?
+                SELECT COUNT(anomalies) FROM module_anomaly WHERE sector = ?
             ''', (key, ))
             fetched = self.cursor.fetchone()
             anomalies = fetched[0]
         else:
             self.cursor.execute('''
-                SELECT COUNT(anomalies) FROM systems WHERE sector IS NOT NULL
+                SELECT COUNT(anomalies) FROM module_anomaly WHERE sector IS NOT NULL
             ''')
             fetched = self.cursor.fetchone()
             anomalies = fetched[0]
