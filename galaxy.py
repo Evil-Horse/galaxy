@@ -48,9 +48,7 @@ class Galaxy:
             id64 INTEGER PRIMARY KEY,
             name TEXT NOT NULL,
             last_updated DATETIME NOT NULL,
-            sector TEXT,
-            subsector TEXT,
-            number INTEGER
+            sector TEXT
         )
         ''')
         self.cur.execute('''
@@ -121,7 +119,7 @@ class Galaxy:
 
             self.image.process(system)
             self.anomalies.process(system)
-#            self.subsectors.process(system)
+            self.subsectors.process(system)
 #            if predictor_enabled:
 #                self.predictor.process(system)
 
@@ -137,13 +135,13 @@ class Galaxy:
 
         self.image.finalize()
         self.anomalies.finalize(self.data)
-#        self.subsectors.finalize(self.data)
+        self.subsectors.finalize(self.data)
 #        if predictor_enabled:
 #            self.predictor.finalize()
 
         for fav in favorite_sectors:
             self.anomalies.finalize(self.data, fav)
-#            self.subsectors.finalize(self.data, fav)
+            self.subsectors.finalize(self.data, fav)
 
         self.con.commit()
         #print_data(self.olddata, self.data)

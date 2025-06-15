@@ -57,6 +57,16 @@ class Subsectors:
         self.fav = fav
         self.cursor = cursor
 
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS module_subsectors (
+            id64 INTEGER PRIMARY KEY,
+            name TEXT NOT NULL,
+            sector TEXT,
+            subsector TEXT,
+            number INTEGER
+        )
+        ''')
+
     def process(self, system):
         split = split_generator(system["name"])
 
@@ -73,14 +83,17 @@ class Subsectors:
         number = int(normalized_split[-1])
 
         self.cursor.execute('''
-        UPDATE systems SET (sector, subsector, number) = (?, ?, ?) WHERE name = ?
-        ''', (system['sector'], subsector, number, system["name"]))
+            INSERT OR REPLACE INTO module_subsectors
+                (id64, name, sector, subsector, number)
+            VALUES
+                (?, ?, ?, ?, ?)
+        ''', (system["id64"], system["name"], system["sector"], subsector, number))
 
     def finalize(self, data, sector = None):
         if sector is None:
             with open("subsectors", 'w') as f:
                 self.cursor.execute('''
-                    SELECT sector, subsector, MAX(number + 1) FROM systems WHERE subsector IS NOT NULL GROUP BY subsector
+                    SELECT sector, subsector, MAX(number + 1) FROM module_subsectors WHERE subsector IS NOT NULL GROUP BY subsector
                 ''')
                 while fetched := self.cursor.fetchone():
                     print(f"{fetched[1]}: {fetched[2]} systems", file=f)
@@ -89,30 +102,29 @@ class Subsectors:
 
         if key != 'galaxy':
             self.cursor.execute('''
-                SELECT COUNT(subsector), SUM(number + 1) FROM systems WHERE sector = ?
+                SELECT COUNT(subsector), SUM(number + 1) FROM module_subsectors WHERE sector = ?
             ''', (key, ))
             fetched = self.cursor.fetchone()
             systems = fetched[0]
             total = fetched[1]
 
             self.cursor.execute('''
-                SELECT COUNT(subsector) FROM systems WHERE sector = ?
+                SELECT COUNT(subsector) FROM module_subsectors WHERE sector = ?
             ''', (key, ))
             fetched = self.cursor.fetchone()
             count = fetched[0]
         else:
             self.cursor.execute('''
-                SELECT COUNT(subsector), SUM(number + 1) FROM systems WHERE sector IS NOT NULL
+                SELECT COUNT(subsector), SUM(number + 1) FROM module_subsectors WHERE sector IS NOT NULL
             ''')
             fetched = self.cursor.fetchone()
             systems = fetched[0]
             total = fetched[1]
 
             self.cursor.execute('''
-                SELECT COUNT(subsector) FROM systems WHERE sector IS NOT NULL
+                SELECT COUNT(subsector) FROM module_subsectors WHERE sector IS NOT NULL
             ''')
             fetched = self.cursor.fetchone()
-            print(fetched)
             count = fetched[0]
 
         subdata = data[key]
