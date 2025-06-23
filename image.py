@@ -34,13 +34,13 @@ def temperature_to_color(temperature, magnitude):
     return color
 
 class Image:
-    def __init__(self, cursor):
+    def __init__(self, connection):
         output_size = 10000
         self.input_dims = ((-42213, 40503), (-23405, 65630))
         self.output_dims = (output_size, output_size, 3)
         self.image = np.zeros(self.output_dims, dtype=np.float64)
 
-        cursor.execute('''
+        connection.execute('''
         CREATE TABLE IF NOT EXISTS module_image (
             id64 INTEGER PRIMARY KEY,
             name TEXT NOT NULL,
@@ -52,13 +52,10 @@ class Image:
         )
         ''')
 
-        self.cursor = cursor
+        self.connection = connection
 
     def finalize(self):
-        self.cursor.execute('''
-            SELECT id64, name, x_coord, z_coord, r_color, g_color, b_color FROM module_image
-        ''')
-        while fetched := self.cursor.fetchone():
+        for fetched in self.connection.execute("SELECT id64, name, x_coord, z_coord, r_color, g_color, b_color FROM module_image"):
             xdim = normalize_dim(self.input_dims[0], fetched[2], self.output_dims[0])
             zdim = normalize_dim(self.input_dims[1], fetched[3], self.output_dims[1])
 
@@ -81,15 +78,15 @@ class Image:
                 continue
 
             if body["type"] == "Star":
-                if not 'surfaceTemperature' in body:
+                if body["surfaceTemperature"] is None:
                     continue
 
-                if not 'absoluteMagnitude' in body:
+                if body["absoluteMagnitude"] is None:
                     continue
 
                 color += temperature_to_color(body["surfaceTemperature"], body["absoluteMagnitude"])
 
-        self.cursor.execute('''
+        self.connection.execute('''
         INSERT OR REPLACE INTO module_image
             (id64, name, x_coord, z_coord, r_color, g_color, b_color)
         VALUES

@@ -42,26 +42,52 @@ def print_data(old, data):
 class Galaxy:
     def __init__(self, name):
         self.con = sqlite3.connect("galaxy.sqlite")
-        self.cur = self.con.cursor()
-        self.cur.execute('''
+        self.con.execute('''
         CREATE TABLE IF NOT EXISTS data_systems (
             id64 INTEGER PRIMARY KEY,
             name TEXT NOT NULL,
+            bodyCount INT,
+            coord_x FLOAT NOT NULL,
+            coord_y FLOAT NOT NULL,
+            coord_z FLOAT NOT NULL,
             last_updated DATETIME NOT NULL,
             sector TEXT
         )
         ''')
-        self.cur.execute('''
-            CREATE INDEX IF NOT EXISTS idx_id64 ON data_systems(id64)
+        self.con.execute('''
+        CREATE TABLE IF NOT EXISTS data_bodies (
+            id64 INTEGER PRIMARY KEY,
+            name TEXT NOT NULL,
+            system_id64 INTEGER,
+            type TEXT NOT NULL
+        )
         ''')
+        self.con.execute('''
+        CREATE TABLE IF NOT EXISTS data_stars (
+            id64 INTEGER PRIMARY KEY,
+            surfaceTemperature FLOAT,
+            absoluteMagnitude FLOAT,
+            solarMasses FLOAT
+        )
+        ''')
+        self.con.execute('''
+        CREATE TABLE IF NOT EXISTS data_planets (
+            id64 INTEGER PRIMARY KEY,
+            earthMasses FLOAT
+        )
+        ''')
+        self.con.execute("CREATE INDEX IF NOT EXISTS idx_id64_s ON data_systems(id64)")
+        self.con.execute("CREATE INDEX IF NOT EXISTS idx_id64_b ON data_bodies(system_id64)")
+        self.con.execute("CREATE INDEX IF NOT EXISTS idx_id64_st ON data_stars(id64)")
+        self.con.execute("CREATE INDEX IF NOT EXISTS idx_id64_p ON data_planets(id64)")
 
         self.json_file = gzip.open(name, 'r')
 
-        self.image = Image(self.cur)
-        self.anomalies = Anomalies(favorite_sectors, self.cur)
-        self.subsectors = Subsectors(favorite_sectors, self.cur)
+        self.image = Image(self.con)
+        self.anomalies = Anomalies(favorite_sectors, self.con)
+        self.subsectors = Subsectors(favorite_sectors, self.con)
         if predictor_enabled:
-            self.predictor = Predictor(self.cur)
+            self.predictor = Predictor(self.con)
 
         self.data = {
             "galaxy": {}
@@ -74,6 +100,47 @@ class Galaxy:
 
     def __del__(self):
         self.json_file.close()
+
+    def build_system_json(self, id64):
+        for fetched_system in self.con.execute("SELECT name, coord_x, coord_y, coord_z, sector, bodyCount FROM data_systems WHERE id64 = ?", (id64, )):
+            sys_json = {
+                "id64" : id64,
+                "name" : fetched_system[0],
+                "coords" : {
+                    "x" : fetched_system[1],
+                    "y" : fetched_system[2],
+                    "z" : fetched_system[3]
+                },
+                "sector" : fetched_system[4],
+                "bodyCount" : fetched_system[5]
+            }
+            break
+
+        bodies = []
+        for fetched_body in self.con.execute("SELECT id64, name, type FROM data_bodies WHERE system_id64 = ?", (id64, )):
+            body = {
+                "id64" : fetched_body[0],
+                "name" : fetched_body[1],
+                "type" : fetched_body[2],
+            }
+
+            if body["type"] == "Star":
+                for fetched_star in self.con.execute("SELECT surfaceTemperature, absoluteMagnitude, solarMasses FROM data_stars WHERE id64 = ?", (fetched_body[0], )):
+                    body["surfaceTemperature"] = fetched_star[0]
+                    body["absoluteMagnitude"] = fetched_star[1]
+                    body["solarMasses"] = fetched_star[2]
+                    break
+
+            if body["type"] == "Planet":
+                for fetched_planet in self.con.execute("SELECT earthMasses FROM data_planets WHERE id64 = ?", (fetched_body[0], )):
+                    body["earthMasses"] = fetched_planet[0]
+                    break
+
+            bodies.append(body)
+
+        sys_json["bodies"] = bodies
+        return sys_json
+
 
     def load(self):
         i = 0
@@ -96,26 +163,67 @@ class Galaxy:
             i += 1
             if i % step == 0:
                 pbar.update(step)
-                pbar.set_description(system["name"])
+                pbar.set_description(f'Updating data: {system["name"]}')
                 self.con.commit()
 
-            system["sector"] = sector_name(system["name"])
-
-            # check if system has been updates
-            self.cur.execute('''
-                SELECT last_updated, id64 FROM data_systems WHERE id64 = ?
-            ''', (system["id64"], ))
-
             updated = True
-            while fetched := self.cur.fetchone():
+            for fetched in self.con.execute("SELECT last_updated, id64 FROM data_systems WHERE id64 = ?", (system["id64"], )):
                 if fetched[0] == system["date"]:
                     updated = False
 
             if not updated:
                 continue
 
+            self.con.execute('''
+                INSERT OR REPLACE INTO data_systems
+                (id64, name, bodyCount, coord_x, coord_y, coord_z, last_updated, sector)
+                    VALUES
+                (?, ?, ?, ?, ?, ?, ?, ?)''',
+            (system["id64"], system["name"], system.get("bodyCount", None), system["coords"]["x"], system["coords"]["y"], system["coords"]["z"], system["date"], sector_name(system["name"])))
+
+            for body in system["bodies"]:
+                self.con.execute('''
+                    INSERT OR REPLACE INTO data_bodies
+                    (id64, name, system_id64, type)
+                        VALUES
+                    (?, ?, ?, ?)''',
+                (body["id64"], body["name"], system["id64"], body["type"]))
+
+                if body["type"] == "Star":
+                    surfaceTemperature = body.get("surfaceTemperature", None)
+                    absoluteMagnitude = body.get("absoluteMagnitude", None)
+                    solarMasses = body.get("solarMasses", None)
+
+                    self.con.execute('''
+                        INSERT OR REPLACE INTO data_stars
+                        (id64, surfaceTemperature, absoluteMagnitude, solarMasses)
+                            VALUES
+                        (?, ?, ?, ?)''',
+                    (body["id64"], surfaceTemperature, absoluteMagnitude, solarMasses))
+
+                if body["type"] == "Planet":
+                    earthMasses = body.get("earthMasses", None)
+
+                    self.con.execute('''
+                        INSERT OR REPLACE INTO data_planets
+                        (id64, earthMasses)
+                            VALUES
+                        (?, ?)''',
+                    (body["id64"], earthMasses))
+
             updated_systems += 1
-            #print(f'Updated system {system["name"]}')
+
+        pbar.close()
+        print(f'Processing done, updated {updated_systems} systems')
+
+        total = None
+        for fetched in self.con.execute("SELECT COUNT(id64) FROM data_systems"):
+            total = fetched[0]
+
+        pbar = tqdm.tqdm(total=total)
+        i = 0
+        for fetched in self.con.execute("SELECT id64, name FROM data_systems"):
+            system = self.build_system_json(fetched[0])
 
             self.image.process(system)
             self.anomalies.process(system)
@@ -123,15 +231,12 @@ class Galaxy:
 #            if predictor_enabled:
 #                self.predictor.process(system)
 
-            self.cur.execute('''
-                INSERT OR REPLACE INTO data_systems
-                (id64, name, last_updated)
-                    VALUES
-                (?, ?, ?)''',
-            (system["id64"], system["name"], system["date"]))
+            i += 1
+            if i % step == 0:
+                pbar.update(step)
+                pbar.set_description(f'Processing data: {system["name"]}')
 
         pbar.close()
-        print(f'Processing done, updated {updated_systems} systems')
 
         self.image.finalize()
         self.anomalies.finalize(self.data)
@@ -144,7 +249,7 @@ class Galaxy:
             self.subsectors.finalize(self.data, fav)
 
         self.con.commit()
-        #print_data(self.olddata, self.data)
+        print_data(self.olddata, self.data)
         #with open("olddata.json", 'w') as f:
         #    json.dump(self.data, f)
 

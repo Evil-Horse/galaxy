@@ -53,11 +53,11 @@ def sector_name(text):
     return ' '.join(split[:-2])
 
 class Subsectors:
-    def __init__(self, fav, cursor):
+    def __init__(self, fav, connection):
         self.fav = fav
-        self.cursor = cursor
+        self.connection = connection
 
-        cursor.execute('''
+        connection.execute('''
         CREATE TABLE IF NOT EXISTS module_subsectors (
             id64 INTEGER PRIMARY KEY,
             name TEXT NOT NULL,
@@ -82,7 +82,7 @@ class Subsectors:
         subsector = '-'.join(normalized_split[:-1])
         number = int(normalized_split[-1])
 
-        self.cursor.execute('''
+        self.connection.execute('''
             INSERT OR REPLACE INTO module_subsectors
                 (id64, name, sector, subsector, number)
             VALUES
@@ -92,40 +92,25 @@ class Subsectors:
     def finalize(self, data, sector = None):
         if sector is None:
             with open("subsectors", 'w') as f:
-                self.cursor.execute('''
-                    SELECT sector, subsector, MAX(number + 1) FROM module_subsectors WHERE subsector IS NOT NULL GROUP BY subsector
-                ''')
-                while fetched := self.cursor.fetchone():
+                for fetched in self.connection.execute("SELECT sector, subsector, MAX(number + 1) FROM module_subsectors WHERE subsector IS NOT NULL GROUP BY subsector"):
                     print(f"{fetched[1]}: {fetched[2]} systems", file=f)
 
         key = 'galaxy' if sector is None else sector
 
         if key != 'galaxy':
-            self.cursor.execute('''
-                SELECT COUNT(subsector), SUM(number + 1) FROM module_subsectors WHERE sector = ?
-            ''', (key, ))
-            fetched = self.cursor.fetchone()
-            systems = fetched[0]
-            total = fetched[1]
+            for fetched in self.connection.execute("SELECT COUNT(subsector), SUM(number + 1) FROM module_subsectors WHERE sector = ?", (key, )):
+                systems = fetched[0]
+                total = fetched[1]
 
-            self.cursor.execute('''
-                SELECT COUNT(subsector) FROM module_subsectors WHERE sector = ?
-            ''', (key, ))
-            fetched = self.cursor.fetchone()
-            count = fetched[0]
+            for fetched in self.connection.execute("SELECT COUNT(subsector) FROM module_subsectors WHERE sector = ?", (key, )):
+                count = fetched[0]
         else:
-            self.cursor.execute('''
-                SELECT COUNT(subsector), SUM(number + 1) FROM module_subsectors WHERE sector IS NOT NULL
-            ''')
-            fetched = self.cursor.fetchone()
-            systems = fetched[0]
-            total = fetched[1]
+            for fetched in self.connection.execute("SELECT COUNT(subsector), SUM(number + 1) FROM module_subsectors WHERE sector IS NOT NULL"):
+                systems = fetched[0]
+                total = fetched[1]
 
-            self.cursor.execute('''
-                SELECT COUNT(subsector) FROM module_subsectors WHERE sector IS NOT NULL
-            ''')
-            fetched = self.cursor.fetchone()
-            count = fetched[0]
+            for fetched in self.connection.execute("SELECT COUNT(subsector) FROM module_subsectors WHERE sector IS NOT NULL"):
+                count = fetched[0]
 
         subdata = data[key]
         subdata["systems"] = systems

@@ -26,15 +26,13 @@ def check(system):
             barycenters += 1
 
         # stars first
-        if not "solarMasses" in body:
+        if body["type"] == "Star" and body["solarMasses"] is None:
             # star mass unknown, skip system
-            if body["type"] == "Star":
-                reasons |= 0x01
-        if not "earthMasses" in body:
-            if body["type"] == "Planet":
-                reasons |= 0x02
+            reasons |= 0x01
+        if body["type"] == "Planet" and body["earthMasses"] is None:
+            reasons |= 0x02
 
-    if not "bodyCount" in system:
+    if system["bodyCount"] is None:
         reasons |= 0x04
     elif system["bodyCount"] + barycenters != len(system["bodies"]):
         reasons |= 0x08
@@ -42,11 +40,11 @@ def check(system):
     return reasons
 
 class Anomalies:
-    def __init__(self, fav, cursor):
+    def __init__(self, fav, connection):
         self.fav = fav
-        self.cursor = cursor
+        self.connection = connection
 
-        cursor.execute('''
+        connection.execute('''
         CREATE TABLE IF NOT EXISTS module_anomaly (
             id64 INTEGER PRIMARY KEY,
             name TEXT NOT NULL,
@@ -59,7 +57,7 @@ class Anomalies:
         anomaly_reason = check(system)
 
         if anomaly_reason is not None:
-            self.cursor.execute('''
+            self.connection.execute('''
                 INSERT OR REPLACE INTO module_anomaly
                     (id64, name, sector, anomalies)
                 VALUES
@@ -69,27 +67,18 @@ class Anomalies:
     def finalize(self, data, sector = None):
         if sector is None:
             with open("anomaly", 'w') as f:
-                self.cursor.execute('''
-                    SELECT name, anomalies FROM module_anomaly WHERE anomalies != 0
-                ''')
-                while fetched := self.cursor.fetchone():
+                for fetched in self.connection.execute("SELECT name, anomalies FROM module_anomaly WHERE anomalies != 0"):
                     anomaly_reason = enum_to_string(fetched[0], fetched[1])
                     print(f"{fetched[0]}: {anomaly_reason}", file=f)
 
         key = 'galaxy' if sector is None else sector
 
         if key != 'galaxy':
-            self.cursor.execute('''
-                SELECT COUNT(anomalies) FROM module_anomaly WHERE sector = ?
-            ''', (key, ))
-            fetched = self.cursor.fetchone()
-            anomalies = fetched[0]
+            for fetched in self.connection.execute("SELECT COUNT(anomalies) FROM module_anomaly WHERE sector = ?", (key, )):
+                anomalies = fetched[0]
         else:
-            self.cursor.execute('''
-                SELECT COUNT(anomalies) FROM module_anomaly WHERE sector IS NOT NULL
-            ''')
-            fetched = self.cursor.fetchone()
-            anomalies = fetched[0]
+            for fetched in self.connection.execute("SELECT COUNT(anomalies) FROM module_anomaly WHERE sector IS NOT NULL"):
+                anomalies = fetched[0]
 
         subdata = data[key]
         subdata["anomalies"] = anomalies
