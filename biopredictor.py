@@ -774,7 +774,7 @@ conditions = {
       "Metallicum" : [
         { "atm_composition" : { "Water" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 390.0 <= x <= 400.0, "subtypes" : ['High metal content world'], "volcanism" : [ "No volcanism" ]},
         { "atm_composition" : { "Ammonia" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 152.0 <= x <= 176.0, "subtypes" : ['High metal content world'], "volcanism" : [ "No volcanism" ]},
-        { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 146.0 <= x <= 195.0, "subtypes" : ['High metal content world'], "volcanism" : [ "No volcanism" ]}
+        { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 146.0 <= x <= 196.0, "subtypes" : ['High metal content world'], "volcanism" : [ "No volcanism" ]}
       ],
       "Sponsae" : [ { "atm_composition" : { "Water" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 392.0 <= x <= 452.0, "subtypes" : ['Rocky body'], "volcanism" : [ "No volcanism" ]} ],
     }
