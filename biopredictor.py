@@ -1254,7 +1254,7 @@ class Predictor:
                 (region, system["id64"], system["name"], system["coords"]["x"], system["coords"]["y"], system["coords"]["z"], body_id64, body_name, species, priority))
 
     def finalize(self):
-        for fetched in self.connection.execute("SELECT region, system, x_coord, y_coord, z_coord, body, species, priority FROM module_predictor"):
+        for fetched in self.connection.execute("SELECT region, system, x_coord, y_coord, z_coord, body, species, priority FROM module_predictor WHERE priority > 1"):
             region = fetched[0]
             system = {
                 "name" : fetched[1],
