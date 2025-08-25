@@ -213,7 +213,7 @@ def get_possible_stars(body, stars, threshold = 1.0):
     body_coordinates = body["coordinates"]
     brightnesses = {}
     for star in stars:
-        star_type = get_mapped_star_type(star.get("subType", None))
+        star_type = get_mapped_star_type(star["subType"])
         if star_type is None:
             #print(f'{star["name"]}: type is none')
             continue
@@ -225,7 +225,7 @@ def get_possible_stars(body, stars, threshold = 1.0):
             #print(f'{star["name"]}: dist is zero')
             continue
 
-        if "solarRadius" not in star:
+        if star["solarRadius"] is None:
             #print(f'{star["name"]}: solar radius is unknown')
             continue
 
@@ -969,14 +969,14 @@ def check_environment(genus, species, body, spec):
             cond = gas_req
             value = 0.0
             for subgas in gas:
-                value += body.get("atmosphereComposition", {}).get(subgas, 0.0)
+                value += body["atmosphereComposition"].get(subgas, 0.0)
 
             if value != cond:
                 return False
             continue
 
         if type(gas) is str:
-            value = body.get("atmosphereComposition", {}).get(gas, 0.0)
+            value = body["atmosphereComposition"].get(gas, 0.0)
             if not gas_req(value):
                 return False
 
@@ -985,14 +985,14 @@ def check_environment(genus, species, body, spec):
             return False
 
     if (cond := spec.get("volcanism", [])) != []:
-        if body.get("volcanism", "No volcanism") not in cond:
+        if body["volcanism"] not in cond:
             return False
 
     temp = body["surfaceTemperature"]
     if not spec["temperature"](temp):
         return False
 
-    sma = body.get("semiMajorAxis", None)
+    sma = body["semiMajorAxis"]
     if sma is not None and "semimajor_axis" in spec and not spec["semimajor_axis"](sma):
         #print(f"Skipping {body['name']} - semimajor axis is too big ({body['semiMajorAxis']})")
         return False
@@ -1013,7 +1013,7 @@ def check(region, body, stars):
             if len(known_planets[name]["by_genus"][genus]) > 1:
                 print(name, "WTF-2", known_planets[name]["by_genus"][genus], file=sys.stderr)
             for e in known_planets[name]["by_genus"][genus]:
-                ret.append((region, name, e, 1))
+                ret.append((region, body["id64"], name, e, 1))
             continue
 
         colors = genus_data["colors"]
@@ -1030,7 +1030,7 @@ def check(region, body, stars):
                     if s == "Stratum Araneamus":
                         string = f"Stratum Araneamus - {CANONN_COLOR_EM}"
                         region_priority = get_color_priority(region, string)
-                        ret.append((region, body["name"], string, region_priority))
+                        ret.append((region, body["id64"], body["name"], string, region_priority))
                         continue
 
                     min_dist = species_spec.get("min_dist", None)
@@ -1040,7 +1040,8 @@ def check(region, body, stars):
                     for color in set_colors:
                         string = f"{s} - {color}"
                         region_priority = get_color_priority(region, string)
-                        ret.append((region, body["name"], string, region_priority))
+                        ret.append((region, body["id64"], body["name"], string, region_priority))
+
     return ret
 
 global_entries = set()
@@ -1082,7 +1083,7 @@ def get_odyssey_genus(name):
     return None
 
 class Predictor:
-    def __init__(self):
+    def __init__(self, connection):
         # list of tuples: (region, system_name, species, priority)
         self.predicted = {
             "timestamp": date.today().isoformat(),
@@ -1131,6 +1132,24 @@ class Predictor:
                     if len(known_planets[planet]["by_genus"][genus]) > 1:
                         print(f'Invalid data for {planet}: {known_planets[planet]["by_genus"][genus]}', file=f)
 
+        connection.execute('''
+        CREATE TABLE IF NOT EXISTS module_predictor (
+            region TEXT NOT NULL,
+            system_id64 INTEGER NOT NULL,
+            system TEXT NOT NULL,
+            x_coord FLOAT NOT NULL,
+            y_coord FLOAT NOT NULL,
+            z_coord FLOAT NOT NULL,
+            body_id64 INTEGER NOT NULL,
+            body TEXT NOT NULL,
+            species TEXT NOT NULL,
+            priority INTEGER,
+            PRIMARY KEY (body_id64, species)
+        )
+        ''')
+        connection.execute("CREATE INDEX IF NOT EXISTS idx_system_id64_mp ON module_predictor(system_id64)")
+        self.connection = connection
+
 
     def process(self, system):
         stars = []
@@ -1156,7 +1175,7 @@ class Predictor:
                 for parent in body["parents"]:
                     for key in parent:
                         id = parent[key]
-                        if key == "Star" and (id not in bodies or "subType" not in bodies[id]):
+                        if key == "Star" and bodies.get(id, {}).get("subType", None) is None:
                             #print(f'looks like star {id} is missing in system {system["name"]}, adding dummy M')
                             M_star = {
                                 "name" : f"{system["name"]} dummy {id}",
@@ -1166,6 +1185,8 @@ class Predictor:
                                 "surfaceTemperature" : 2000,
                                 "solarRadius" : 0.30,
                                 "updateTime" : "1970-01-01",
+
+                                "parents" : body["parents"][1:]
                             }
 
                             system["bodies"].append(M_star)
@@ -1178,10 +1199,8 @@ class Predictor:
                 continue
 
             if body["type"] == "Planet":
-                if body.get("subType", None) in ["Icy body", "Rocky Ice world", "Rocky body", "High metal content world", "Metal-rich body"]:
-                    atmosphere_type = body.get("atmosphereType", "No atmosphere")
-
-                    if "signals" in body and "$SAA_SignalType_Biological;" in body["signals"]["signals"] and body["name"] in known_planets:
+                if body["subType"] in ["Icy body", "Rocky Ice world", "Rocky body", "High metal content world", "Metal-rich body"]:
+                    if "$SAA_SignalType_Biological;" in body["signals"]["signals"] and body["name"] in known_planets:
                         signals_found = len(known_planets[body["name"]]["all_bio"])
                         signals_on_planet = body["signals"]["signals"]["$SAA_SignalType_Biological;"]
                         if signals_found > signals_on_planet:
@@ -1192,12 +1211,15 @@ class Predictor:
                             # all signals has been already found, skip the planet
                             continue
 
+                    atmosphere_type = body["atmosphereType"]
                     if atmosphere_type is not None and atmosphere_type.startswith("Thin"):
                         if body["updateTime"] >= "2021-05-19" and body["isLandable"] == False:
                             #print(f'Skipping non-landable in Odyssey body {body["name"]}, last updated {body["updateTime"]}')
                             continue
 
                         planets.append(body)
+
+        self.connection.execute('DELETE FROM module_predictor WHERE system_id64 = ?', (system["id64"], ))
 
         # no valuable planets, skip the system
         if planets == []:
@@ -1209,7 +1231,6 @@ class Predictor:
 
         for star in stars:
             star["coordinates"] = c.get_coordinates(star["bodyId"])
-            _ = get_mapped_star_type(star.get("subType", None))
 
         for planet in planets:
             planet["coordinates"] = c.get_coordinates(planet["bodyId"])
@@ -1217,30 +1238,52 @@ class Predictor:
             gravity = planet["gravity"]
 
             # predicted: list of tuples
-            # (region, body name, species name, priority)
+            # (region, body id64, body name, species name, priority)
 
             predicted = check(region, planet, stars)
 
             for entry in predicted:
-                region, bodyname, species, priority = entry
+                region, body_id64, body_name, species, priority = entry
 
-                if region not in self.predicted["bio"]:
-                    self.predicted["bio"][region] = {}
-
-                if species not in self.predicted["bio"][region]:
-                    self.predicted["bio"][region][species] = {
-                        "priority" : priority,
-                        "locations" : [],
-                    }
-
-                self.predicted["bio"][region][species]["locations"].append({
-                    "system" : system["name"],
-                    "body" : bodyname,
-                    "x" : system["coords"]["x"],
-                    "y" : system["coords"]["y"],
-                    "z" : system["coords"]["z"],
-                })
+                self.connection.execute('''
+                INSERT OR REPLACE INTO module_predictor
+                    (region, system_id64, system, x_coord, y_coord, z_coord, body_id64, body, species, priority)
+                VALUES
+                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ''',
+                (region, system["id64"], system["name"], system["coords"]["x"], system["coords"]["y"], system["coords"]["z"], body_id64, body_name, species, priority))
 
     def finalize(self):
+        for fetched in self.connection.execute("SELECT region, system, x_coord, y_coord, z_coord, body, species, priority FROM module_predictor"):
+            region = fetched[0]
+            system = {
+                "name" : fetched[1],
+                "coords" : {
+                    "x" : fetched[2],
+                    "y" : fetched[3],
+                    "z" : fetched[4]
+                }
+            }
+            bodyname = fetched[5]
+            species = fetched[6]
+            priority = fetched[7]
+
+            if region not in self.predicted["bio"]:
+                self.predicted["bio"][region] = {}
+
+            if species not in self.predicted["bio"][region]:
+                self.predicted["bio"][region][species] = {
+                    "priority" : priority,
+                    "locations" : [],
+                }
+
+            self.predicted["bio"][region][species]["locations"].append({
+                "system" : system["name"],
+                "body" : bodyname,
+                "x" : system["coords"]["x"],
+                "y" : system["coords"]["y"],
+                "z" : system["coords"]["z"],
+            })
+
         with open("biopredictor.json", "w") as f:
             json.dump(self.predicted, f)

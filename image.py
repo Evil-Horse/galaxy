@@ -34,13 +34,34 @@ def temperature_to_color(temperature, magnitude):
     return color
 
 class Image:
-    def __init__(self):
+    def __init__(self, connection):
         output_size = 10000
         self.input_dims = ((-42213, 40503), (-23405, 65630))
         self.output_dims = (output_size, output_size, 3)
         self.image = np.zeros(self.output_dims, dtype=np.float64)
 
+        connection.execute('''
+        CREATE TABLE IF NOT EXISTS module_image (
+            id64 INTEGER PRIMARY KEY,
+            name TEXT NOT NULL,
+            x_coord FLOAT NOT NULL,
+            z_coord FLOAT NOT NULL,
+            r_color FLOAT NOT NULL,
+            g_color FLOAT NOT NULL,
+            b_color FLOAT NOT NULL
+        )
+        ''')
+
+        self.connection = connection
+
     def finalize(self):
+        for fetched in self.connection.execute("SELECT id64, name, x_coord, z_coord, r_color, g_color, b_color FROM module_image"):
+            xdim = normalize_dim(self.input_dims[0], fetched[2], self.output_dims[0])
+            zdim = normalize_dim(self.input_dims[1], fetched[3], self.output_dims[1])
+
+            color = np.array([fetched[4], fetched[5], fetched[6]], dtype=np.float64)
+            self.image[xdim,zdim] += color
+
         self.image /= np.max(self.image, axis=2, keepdims=True)
         self.image *= 255
         self.image = np.asarray(self.image, dtype=np.int8)
@@ -51,20 +72,24 @@ class Image:
 
     def process(self, system):
         #generate color
-        xdim = normalize_dim(self.input_dims[0], system["coords"]["x"], self.output_dims[0])
-        zdim = normalize_dim(self.input_dims[1], system["coords"]["z"], self.output_dims[1])
-
+        color = np.array([0.0, 0.0, 0.0], dtype=np.float64)
         for body in system["bodies"]:
             if not 'type' in body:
                 continue
 
             if body["type"] == "Star":
-                if not 'surfaceTemperature' in body:
+                if body["surfaceTemperature"] is None:
                     continue
 
-                if not 'absoluteMagnitude' in body:
+                if body["absoluteMagnitude"] is None:
                     continue
 
-                color = temperature_to_color(body["surfaceTemperature"], body["absoluteMagnitude"])
-                self.image[xdim,zdim] += color
+                color += temperature_to_color(body["surfaceTemperature"], body["absoluteMagnitude"])
 
+        self.connection.execute('''
+        INSERT OR REPLACE INTO module_image
+            (id64, name, x_coord, z_coord, r_color, g_color, b_color)
+        VALUES
+            (?, ?, ?, ?, ?, ?, ?)
+        ''',
+        (system["id64"], system["name"], system["coords"]["x"], system["coords"]["z"], color[0], color[1], color[2]))

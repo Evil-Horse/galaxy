@@ -20,22 +20,22 @@ class Body:
         else:
             raise ValueError("not a body")
 
-        self.bodyID:    int = entry.get("bodyId")
-        self.bodyName:  str = entry.get("name")
-        self.timestamp = datetime.fromisoformat(entry.get("updateTime")).replace(tzinfo=UTC)
+        self.bodyID:    int = entry["bodyId"]
+        self.bodyName:  str = entry["name"]
+        self.timestamp = datetime.fromisoformat(entry["updateTime"]).replace(tzinfo=UTC)
 
-        self.ascendingNode: float = entry.get("ascendingNode", 0.0)
-        self.axialTilt:     float = entry.get("axialTilt", 0.0)
-        self.eccentricity:  float = entry.get("orbitalEccentricity", 0.0)
+        self.ascendingNode:      float = entry.get("ascendingNode", 0.0)
+        self.axialTilt:          float = entry.get("axialTilt", 0.0)
+        self.eccentricity:       float = entry.get("orbitalEccentricity", 0.0)
         self.orbitalInclination: float = entry.get("orbitalInclination", 0.0)
-        self.meanAnomaly:   float = entry.get("meanAnomaly", 0.0)
-        self.orbitalPeriod: float = entry.get("orbitalPeriod", 0.0)
-        self.periapsis:     float = entry.get("argOfPeriapsis", 0.0)
-        self.semiMajorAxis: float = entry.get("semiMajorAxis", 0.0)
+        self.meanAnomaly:        float = entry.get("meanAnomaly", 0.0)
+        self.orbitalPeriod:      float = entry.get("orbitalPeriod", 0.0)
+        self.periapsis:          float = entry.get("argOfPeriapsis", 0.0)
+        self.semiMajorAxis:      float = entry.get("semiMajorAxis", 0.0)
         self.orbit:         Orbit = Orbit(self, currentTime)
 
         self.parentIDs: list[int] = list()
-        for j in entry.get("parents", []):
+        for j in entry["parents"]:
             for _, id in j.items():
                 self.parentIDs.append(id)
 
