@@ -1,7 +1,22 @@
-import utils
+def enum_to_string(name, reason):
+    string_list = []
+    if reason & 0x01:
+        string_list.append("Star mass is unknown")
+    if reason & 0x02:
+        string_list.append("Planet mass is unknown")
+    if reason & 0x04:
+        string_list.append("Body count unknown")
+    if reason & 0x08:
+        string_list.append("Is not fully scanned")
+
+    # build reason string
+    separator = "\n" + " " * (2 + len(name)) #TODO make alignment
+    string_joined = separator.join(string_list)
+
+    return string_joined
 
 def check(system):
-    string_list = []
+    reasons = 0
 
     barycenters = 0
     for body in system["bodies"]:
@@ -9,46 +24,59 @@ def check(system):
             barycenters += 1
 
         # stars first
-        if not "solarMasses" in body:
+        if body["type"] == "Star" and body["solarMasses"] is None:
             # star mass unknown, skip system
-            if body["type"] == "Star":
-                string_list.append("Star mass is unknown")
+            reasons |= 0x01
+        if body["type"] == "Planet" and body["earthMasses"] is None:
+            reasons |= 0x02
 
-        if not "earthMasses" in body:
-            if body["type"] == "Planet":
-                string_list.append("Planet mass is unknown")
-
-    if not "bodyCount" in system:
-        string_list.append("Body count unknown")
+    if system["bodyCount"] is None:
+        reasons |= 0x04
     elif system["bodyCount"] + barycenters != len(system["bodies"]):
-        string_list.append(f"is not fully scanned ({len(system['bodies']) - barycenters}/{system['bodyCount']})")
+        reasons |= 0x08
 
-    # build reason string
-    separator = "\n" + " " * (2 + len(system["name"])) #TODO make alignment
-    string_joined = separator.join(string_list)
-    if string_joined == "":
-        return None
-
-    return string_joined
+    return reasons
 
 class Anomalies:
-    def __init__(self, fav):
-        self.anomaly_file = open("anomaly", 'w')
-        self.anomalies = utils.counter_init(fav)
+    def __init__(self, fav, connection):
         self.fav = fav
+        self.connection = connection
+
+        connection.execute('''
+        CREATE TABLE IF NOT EXISTS module_anomaly (
+            id64 INTEGER PRIMARY KEY,
+            name TEXT NOT NULL,
+            sector TEXT,
+            anomalies INTEGER NOT NULL DEFAULT 0
+        )
+        ''')
 
     def process(self, system):
         anomaly_reason = check(system)
 
         if anomaly_reason is not None:
-            print(f"{system['name']}: {anomaly_reason}", file=self.anomaly_file)
-
-            utils.counter_increment(self.anomalies, system['sector'], self.fav)
+            self.connection.execute('''
+                INSERT OR REPLACE INTO module_anomaly
+                    (id64, name, sector, anomalies)
+                VALUES
+                    (?, ?, ?, ?)
+            ''', (system["id64"], system["name"], system["sector"], anomaly_reason))
 
     def finalize(self, data, sector = None):
+        if sector is None:
+            with open("anomaly", 'w') as f:
+                for fetched in self.connection.execute("SELECT name, anomalies FROM module_anomaly WHERE anomalies != 0"):
+                    anomaly_reason = enum_to_string(fetched[0], fetched[1])
+                    print(f"{fetched[0]}: {anomaly_reason}", file=f)
+
         key = 'galaxy' if sector is None else sector
 
-        anomalies = self.anomalies[key]
+        if key != 'galaxy':
+            for fetched in self.connection.execute("SELECT COUNT(anomalies) FROM module_anomaly WHERE anomalies != 0 AND sector = ?", (key, )):
+                anomalies = fetched[0]
+        else:
+            for fetched in self.connection.execute("SELECT COUNT(anomalies) FROM module_anomaly WHERE anomalies != 0"):
+                anomalies = fetched[0]
 
         subdata = data[key]
         subdata["anomalies"] = anomalies

@@ -1,5 +1,3 @@
-import utils
-
 def split_generator(text):
     split = text.split(" ")
 
@@ -53,11 +51,19 @@ def sector_name(text):
     return ' '.join(split[:-2])
 
 class Subsectors:
-    def __init__(self, fav):
-        self.subsectors = {}
-        self.systems = utils.counter_init(fav)
-        self.count = utils.counter_init(fav)
+    def __init__(self, fav, connection):
         self.fav = fav
+        self.connection = connection
+
+        connection.execute('''
+        CREATE TABLE IF NOT EXISTS module_subsectors (
+            id64 INTEGER PRIMARY KEY,
+            name TEXT NOT NULL,
+            sector TEXT,
+            subsector TEXT,
+            number INTEGER
+        )
+        ''')
 
     def process(self, system):
         split = split_generator(system["name"])
@@ -74,30 +80,35 @@ class Subsectors:
         subsector = '-'.join(normalized_split[:-1])
         number = int(normalized_split[-1])
 
-        if not subsector in self.subsectors:
-            self.subsectors[subsector] = number
-            utils.counter_increment(self.count, system['sector'], self.fav)
-        else:
-            if number > self.subsectors[subsector]:
-                self.subsectors[subsector] = number
-
-        utils.counter_increment(self.systems, system['sector'], self.fav)
+        self.connection.execute('''
+            INSERT OR REPLACE INTO module_subsectors
+                (id64, name, sector, subsector, number)
+            VALUES
+                (?, ?, ?, ?, ?)
+        ''', (system["id64"], system["name"], system["sector"], subsector, number))
 
     def finalize(self, data, sector = None):
         if sector is None:
             with open("subsectors", 'w') as f:
-                for subsector in self.subsectors:
-                    print(f"{subsector}: {self.subsectors[subsector] + 1} systems", file=f)
+                for fetched in self.connection.execute("SELECT sector, subsector, MAX(number + 1) FROM module_subsectors WHERE subsector IS NOT NULL GROUP BY subsector"):
+                    print(f"{fetched[1]}: {fetched[2]} systems", file=f)
 
         key = 'galaxy' if sector is None else sector
 
-        systems = self.systems[key]
-        count = self.count[key]
+        if key != 'galaxy':
+            for fetched in self.connection.execute("SELECT SUM(col1), SUM(col2 + 1) FROM (SELECT COUNT(subsector) AS col1, MAX(number) AS col2 FROM module_subsectors WHERE sector = ? GROUP BY subsector)", (key, )):
+                systems = fetched[0]
+                total = fetched[1]
 
-        total = 0
-        for subsector in self.subsectors:
-            if sector is None or sector == sector_name(subsector):
-                total += self.subsectors[subsector] + 1
+            for fetched in self.connection.execute("SELECT COUNT(DISTINCT(subsector)) FROM module_subsectors WHERE sector = ?", (key, )):
+                count = fetched[0]
+        else:
+            for fetched in self.connection.execute("SELECT SUM(col1), SUM(col2 + 1) FROM (SELECT COUNT(subsector) AS col1, MAX(number) AS col2 FROM module_subsectors WHERE sector IS NOT NULL GROUP BY subsector)"):
+                systems = fetched[0]
+                total = fetched[1]
+
+            for fetched in self.connection.execute("SELECT COUNT(DISTINCT(subsector)) FROM module_subsectors WHERE sector IS NOT NULL"):
+                count = fetched[0]
 
         subdata = data[key]
         subdata["systems"] = systems
