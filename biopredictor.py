@@ -644,7 +644,6 @@ conditions = {
     "specs" : {
       "Vermis" : [
         { "atm_composition" : { "Water" : lambda x: 100.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 390.0 <= x <= 450.0},
-        { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x,('Carbon dioxide', 'Sulphur dioxide') : 100.0}, "gravity" : 0.275313, "temperature" : lambda x: 160.0 <= x <= 207.0}
       ],
       "Cortexum" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 97.5 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 180.0 <= x <= 196.0, "volcanism" : [ "No volcanism" ]} ],
       "Lapis" : [ { "atm_composition" : { "Ammonia" : lambda x: 99.0 <= x}, "gravity" : 0.275313, "temperature" : lambda x: 160.0 <= x <= 177.0} ],
@@ -963,18 +962,6 @@ def check_environment(genus, species, body, spec):
 
     # check atmosphere composition
     for gas, gas_req in spec.get("atm_composition", {}).items():
-
-        # special hack for Vermis
-        if type(gas) is tuple:
-            cond = gas_req
-            value = 0.0
-            for subgas in gas:
-                value += body.get("atmosphereComposition", {}).get(subgas, 0.0)
-
-            if value != cond:
-                return False
-            continue
-
         if type(gas) is str:
             value = body.get("atmosphereComposition", {}).get(gas, 0.0)
             if not gas_req(value):
