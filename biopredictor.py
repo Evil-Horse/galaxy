@@ -817,7 +817,11 @@ conditions = {
     },
     "max_gravity" : 0.275313,
     "specs" : {
-      "Umbrux" : [ { "atm_composition" : { "Sulphur dioxide" : lambda x: 0.0 < x}, "gravity" : 0.275313, "temperature" : lambda x: 132.0 <= x <= 273.0} ],
+      "Umbrux" : [
+          { "atm_composition" : { "Sulphur dioxide" : lambda x: 50.0 < x}, "gravity" : 0.275313, "temperature" : lambda x: 132.0 <= x <= 273.0},
+          { "atm_composition" : { "Sulphur dioxide" : lambda x: 1.05 < x, "Carbon dioxide" : lambda x: 50.0 < x}, "gravity" : 0.275313, "temperature" : lambda x: 149.0 <= x <= 201.0},
+          { "atm_composition" : { "Sulphur dioxide" : lambda x: 1.05 < x, "Oxygen" : lambda x: 60.0 < x}, "gravity" : 0.275313, "temperature" : lambda x: 153.0 <= x <= 176.0}
+      ],
     }
   },
   "Stratum" : {
