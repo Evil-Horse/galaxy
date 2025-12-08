@@ -288,11 +288,11 @@ class Galaxy:
             system = json.loads(line)
             system["sector"] = sector_name(system["name"])
 
-            i += 1
             if i % step == 0:
                 pbar.update(step)
                 pbar.set_description(f'Updating data ({updated_systems} systems updated): {system["name"]}')
                 self.con.commit()
+            i += 1
 
             updated = True
             cur_id64 = system["id64"]
