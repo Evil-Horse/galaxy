@@ -1144,7 +1144,8 @@ class Predictor:
             body TEXT NOT NULL,
             species TEXT NOT NULL,
             priority INTEGER,
-            PRIMARY KEY (body_id64, species)
+            PRIMARY KEY (body_id64, species),
+            FOREIGN KEY (body_id64) REFERENCES data_bodies(id64) ON DELETE CASCADE
         )
         ''')
         connection.execute("CREATE INDEX IF NOT EXISTS idx_system_id64_mp ON module_predictor(system_id64)")

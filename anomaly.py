@@ -47,7 +47,8 @@ class Anomalies:
             id64 INTEGER PRIMARY KEY,
             name TEXT NOT NULL,
             sector TEXT,
-            anomalies INTEGER NOT NULL DEFAULT 0
+            anomalies INTEGER NOT NULL DEFAULT 0,
+            FOREIGN KEY (id64) REFERENCES data_systems(id64) ON DELETE CASCADE
         )
         ''')
 

@@ -61,7 +61,8 @@ class Subsectors:
             name TEXT NOT NULL,
             sector TEXT,
             subsector TEXT,
-            number INTEGER
+            number INTEGER,
+            FOREIGN KEY (id64) REFERENCES data_systems(id64) ON DELETE CASCADE
         )
         ''')
 

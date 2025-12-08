@@ -93,7 +93,8 @@ class Galaxy:
             meanAnomaly FLOAT NOT NULL,
             orbitalPeriod FLOAT NOT NULL,
             argOfPeriapsis FLOAT NOT NULL,
-            semiMajorAxis FLOAT NOT NULL
+            semiMajorAxis FLOAT NOT NULL,
+            FOREIGN KEY (system_id64) REFERENCES data_systems(id64) ON DELETE CASCADE
         )
         ''')
         self.con.execute('''
@@ -103,7 +104,8 @@ class Galaxy:
             absoluteMagnitude FLOAT,
             solarMasses FLOAT,
             subtype TEXT,
-            solarRadius FLOAT
+            solarRadius FLOAT,
+            FOREIGN KEY (id64) REFERENCES data_bodies(id64) ON DELETE CASCADE
         )
         ''')
         self.con.execute('''
@@ -115,7 +117,8 @@ class Galaxy:
             gravity FLOAT,
             isLandable BOOLEAN NOT NULL,
             surfaceTemperature FLOAT,
-            volcanism TEXT NOT NULL
+            volcanism TEXT NOT NULL,
+            FOREIGN KEY (id64) REFERENCES data_bodies(id64) ON DELETE CASCADE
         )
         ''')
         self.con.execute('''
@@ -123,7 +126,8 @@ class Galaxy:
             id64 INTEGER NOT NULL,
             signalType TEXT NOT NULL,
             signalCount INTEGER NOT NULL,
-            PRIMARY KEY (id64, signalType)
+            PRIMARY KEY (id64, signalType),
+            FOREIGN KEY (id64) REFERENCES data_bodies(id64) ON DELETE CASCADE
         )
         ''')
         self.con.execute('''
@@ -132,7 +136,8 @@ class Galaxy:
             bodyId INTEGER NOT NULL,
             parent_bodyID INTEGER NOT NULL,
             parent_type TEXT NOT NULL,
-            PRIMARY KEY (system_id64, bodyId)
+            PRIMARY KEY (system_id64, bodyId),
+            FOREIGN KEY (system_id64) REFERENCES data_systems(id64) ON DELETE CASCADE
         )
         ''')
         self.con.execute('''
@@ -140,7 +145,8 @@ class Galaxy:
             id64 INTEGER NOT NULL,
             gas TEXT NOT NULL,
             percentage FLOAT NOT NULL,
-            PRIMARY KEY (id64, gas)
+            PRIMARY KEY (id64, gas),
+            FOREIGN KEY (id64) REFERENCES data_bodies(id64) ON DELETE CASCADE
         )
         ''')
         self.con.execute("CREATE INDEX IF NOT EXISTS idx_id64_s ON data_systems(id64)")

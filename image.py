@@ -48,7 +48,8 @@ class Image:
             z_coord FLOAT NOT NULL,
             r_color FLOAT NOT NULL,
             g_color FLOAT NOT NULL,
-            b_color FLOAT NOT NULL
+            b_color FLOAT NOT NULL,
+            FOREIGN KEY (id64) REFERENCES data_systems(id64) ON DELETE CASCADE
         )
         ''')
 
