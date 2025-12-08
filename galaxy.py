@@ -149,11 +149,11 @@ class Galaxy:
             FOREIGN KEY (id64) REFERENCES data_bodies(id64) ON DELETE CASCADE
         )
         ''')
-        self.con.execute("CREATE INDEX IF NOT EXISTS idx_id64_s ON data_systems(id64)")
-        self.con.execute("CREATE INDEX IF NOT EXISTS idx_id64_b ON data_bodies(system_id64)")
-        self.con.execute("CREATE INDEX IF NOT EXISTS idx_id64_st ON data_stars(id64)")
-        self.con.execute("CREATE INDEX IF NOT EXISTS idx_id64_p ON data_planets(id64)")
-        self.con.execute("CREATE INDEX IF NOT EXISTS idx_id64_si ON data_signals(id64)")
+        self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_systems_id64 ON data_systems(id64)")
+        self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_bodies_system_id64 ON data_bodies(system_id64)")
+        self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_stars_id64 ON data_stars(id64)")
+        self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_planets_id64 ON data_planets(id64)")
+        self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_signals_id64 ON data_signals(id64)")
 
         self.json_file = gzip.open(name, 'r')
 

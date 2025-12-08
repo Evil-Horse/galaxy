@@ -1148,7 +1148,7 @@ class Predictor:
             FOREIGN KEY (body_id64) REFERENCES data_bodies(id64) ON DELETE CASCADE
         )
         ''')
-        connection.execute("CREATE INDEX IF NOT EXISTS idx_system_id64_mp ON module_predictor(system_id64)")
+        connection.execute("CREATE INDEX IF NOT EXISTS idx_module_predictor_id64 ON module_predictor(system_id64)")
         self.connection = connection
 
 
