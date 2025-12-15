@@ -404,37 +404,21 @@ class Galaxy:
 
             updated_systems += 1
 
+            db_json = self.build_system_json(cur_id64)
+            if compare_dicts(db_json, system) != True:
+                print(f"Something is wrong with system {system['name']} (id64 = {cur_id64})")
+            self.process_db(db_json)
+
         pbar.close()
         self.con.commit()
         print(f'Updated {updated_systems} systems')
 
 
-    def process_db(self):
-        i = 0
-        step = 10000
-
-        total = None
-        for fetched in self.con.execute("SELECT COUNT(id64) FROM data_systems"):
-            total = fetched[0]
-
-        pbar = tqdm.tqdm(total=total)
-
-        for fetched in self.con.execute("SELECT id64, name FROM data_systems"):
-            i += 1
-            if i % step == 0:
-                pbar.update(step)
-                pbar.set_description(f'Processing data: {fetched[1]}')
-
-            system = self.build_system_json(fetched[0])
-
-            self.image.process(system)
-            self.anomalies.process(system)
-            self.subsectors.process(system)
-            self.predictor.process(system)
-
-        pbar.close()
-        self.con.commit()
-        print(f'Processed {i} systems')
+    def process_db(self, system):
+        self.image.process(system)
+        self.anomalies.process(system)
+        self.subsectors.process(system)
+        self.predictor.process(system)
 
 
     def finalize(self):
@@ -458,7 +442,6 @@ class Galaxy:
 
     def load(self):
         self.import_json()
-        self.process_db()
         self.finalize()
 
         self.con.commit()
