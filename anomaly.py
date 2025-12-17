@@ -57,7 +57,7 @@ class Anomalies:
 
         if anomaly_reason is not None:
             self.connection.execute('''
-                INSERT OR REPLACE INTO module_anomaly
+                INSERT INTO module_anomaly
                     (id64, name, sector, anomalies)
                 VALUES
                     (?, ?, ?, ?)

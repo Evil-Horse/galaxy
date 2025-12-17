@@ -155,6 +155,8 @@ class Galaxy:
         self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_planets_id64 ON data_planets(id64)")
         self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_signals_id64 ON data_signals(id64)")
 
+        self.con.execute("PRAGMA foreign_keys = ON")
+
         self.json_file = gzip.open(name, 'r')
 
         self.image = Image(self.con)
@@ -304,9 +306,11 @@ class Galaxy:
             if not updated:
                 continue
 
+            self.con.execute("DELETE FROM data_systems WHERE id64 = ?", (cur_id64, ))
+
             bodyCount = system.get("bodyCount", None)
             self.con.execute('''
-                INSERT OR REPLACE INTO data_systems
+                INSERT INTO data_systems
                 (id64, name, bodyCount, coord_x, coord_y, coord_z, last_updated, sector)
                     VALUES
                 (?, ?, ?, ?, ?, ?, ?, ?)''',
@@ -322,7 +326,7 @@ class Galaxy:
                         if current_body not in test_parents:
                             test_parents[current_body] = v
                             self.con.execute('''
-                                INSERT OR REPLACE INTO data_parents
+                                INSERT INTO data_parents
                                 (system_id64, bodyId, parent_type, parent_bodyID)
                                     VALUES
                                 (?, ?, ?, ?)''',
@@ -334,7 +338,7 @@ class Galaxy:
                         current_body = v
 
                 self.con.execute('''
-                    INSERT OR REPLACE INTO data_bodies
+                    INSERT INTO data_bodies
                     (id64, name, system_id64, type, body_id, updateTime, ascendingNode, axialTilt, orbitalEccentricity, orbitalInclination, meanAnomaly, orbitalPeriod, argOfPeriapsis, semiMajorAxis)
                         VALUES
                     (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
@@ -361,7 +365,7 @@ class Galaxy:
                     solarRadius = body.get("solarRadius", None)
 
                     self.con.execute('''
-                        INSERT OR REPLACE INTO data_stars
+                        INSERT INTO data_stars
                         (id64, surfaceTemperature, absoluteMagnitude, solarMasses, subType, solarRadius)
                             VALUES
                         (?, ?, ?, ?, ?, ?)''',
@@ -377,7 +381,7 @@ class Galaxy:
                     volcanism = body.get("volcanism", "No volcanism")
 
                     self.con.execute('''
-                        INSERT OR REPLACE INTO data_planets
+                        INSERT INTO data_planets
                         (id64, earthMasses, subType, atmosphereType, gravity, isLandable, surfaceTemperature, volcanism)
                             VALUES
                         (?, ?, ?, ?, ?, ?, ?, ?)''',
@@ -386,7 +390,7 @@ class Galaxy:
                     if "atmosphereComposition" in body:
                         for k, v in body["atmosphereComposition"].items():
                             self.con.execute('''
-                                INSERT OR REPLACE INTO data_atmcomposition
+                                INSERT INTO data_atmcomposition
                                 (id64, gas, percentage)
                                     VALUES
                                 (?, ?, ?)''',
@@ -396,7 +400,7 @@ class Galaxy:
                     if "signals" in body:
                         for signal in body["signals"]["signals"].items():
                             self.con.execute('''
-                                INSERT OR REPLACE INTO data_signals
+                                INSERT INTO data_signals
                                 (id64, signalType, signalCount)
                                     VALUES
                                 (?, ?, ?)''',

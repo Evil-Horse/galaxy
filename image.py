@@ -88,7 +88,7 @@ class Image:
                 color += temperature_to_color(body["surfaceTemperature"], body["absoluteMagnitude"])
 
         self.connection.execute('''
-        INSERT OR REPLACE INTO module_image
+        INSERT INTO module_image
             (id64, name, x_coord, z_coord, r_color, g_color, b_color)
         VALUES
             (?, ?, ?, ?, ?, ?, ?)

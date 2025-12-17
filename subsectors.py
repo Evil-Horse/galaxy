@@ -82,7 +82,7 @@ class Subsectors:
         number = int(normalized_split[-1])
 
         self.connection.execute('''
-            INSERT OR REPLACE INTO module_subsectors
+            INSERT INTO module_subsectors
                 (id64, name, sector, subsector, number)
             VALUES
                 (?, ?, ?, ?, ?)

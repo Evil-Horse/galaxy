@@ -1220,8 +1220,6 @@ class Predictor:
 
                         planets.append(body)
 
-        self.connection.execute('DELETE FROM module_predictor WHERE system_id64 = ?', (system["id64"], ))
-
         # no valuable planets, skip the system
         if planets == []:
             return
@@ -1247,7 +1245,7 @@ class Predictor:
                 region, body_id64, body_name, species, priority = entry
 
                 self.connection.execute('''
-                INSERT OR REPLACE INTO module_predictor
+                INSERT INTO module_predictor
                     (region, system_id64, system, x_coord, y_coord, z_coord, body_id64, body, species, priority)
                 VALUES
                     (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
