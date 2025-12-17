@@ -1000,7 +1000,7 @@ def check_environment(genus, species, body, spec):
     return True
 
 def check(region, body, stars):
-    ret = []
+    ret = set()
 
     valid_stars = get_possible_stars(body, stars)
     for genus, genus_data in conditions.items():
@@ -1013,7 +1013,7 @@ def check(region, body, stars):
             if len(known_planets[name]["by_genus"][genus]) > 1:
                 print(name, "WTF-2", known_planets[name]["by_genus"][genus], file=sys.stderr)
             for e in known_planets[name]["by_genus"][genus]:
-                ret.append((region, body["id64"], name, e, 1))
+                ret.add((region, body["id64"], name, e, 1))
             continue
 
         colors = genus_data["colors"]
@@ -1030,7 +1030,7 @@ def check(region, body, stars):
                     if s == "Stratum Araneamus":
                         string = f"Stratum Araneamus - {CANONN_COLOR_EM}"
                         region_priority = get_color_priority(region, string)
-                        ret.append((region, body["id64"], body["name"], string, region_priority))
+                        ret.add((region, body["id64"], body["name"], string, region_priority))
                         continue
 
                     min_dist = species_spec.get("min_dist", None)
@@ -1040,7 +1040,7 @@ def check(region, body, stars):
                     for color in set_colors:
                         string = f"{s} - {color}"
                         region_priority = get_color_priority(region, string)
-                        ret.append((region, body["id64"], body["name"], string, region_priority))
+                        ret.add((region, body["id64"], body["name"], string, region_priority))
 
     return ret
 
