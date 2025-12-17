@@ -32,7 +32,7 @@ def is_pg_system_name(name, strict = False):
   return (get_sector(m.group("sector")) is not None) if strict else True
 
 
-def get_sector_name(pos, allow_ha=True, format_output=True):
+def get_sector_name(offset):
   """
   Get the name of a sector that a position falls within.
 
@@ -42,23 +42,12 @@ def get_sector_name(pos, allow_ha=True, format_output=True):
   Returns:
     The name of the sector which contains the input position, either as a string or as a list of fragments
   """
-  pos = util.get_as_position(pos)
-  if pos is None:
-    return None
-  if allow_ha:
-    ha_name = _ha_get_name(pos)
-    if ha_name is not None:
-      return ha_name
-  offset = _c1_get_offset(pos)
   if _get_c1_or_c2(offset) == 1:
-    output = _c1_get_name(pos)
+    output = _c1_get_name_from_offset(offset)
   else:
-    output = _c2_get_name(pos)
+    output = _c2_get_name_from_offset(offset)
   
-  if format_output:
-    return format_sector_name(output)
-  else:
-    return output
+  return format_sector_name(output)
 
 
 def get_sector(input, allow_ha = True, get_name = True):
@@ -763,7 +752,10 @@ def _c1_get_name(pos):
   if pos is None:
     return None
   offset = _c1_get_offset(pos)
+  return _c1_get_name_from_offset(offset)
 
+
+def _c1_get_name_from_offset(offset):
   # Get the current prefix run we're on, and keep the remaining offset
   prefix_cnt, cur_offset = divmod(offset, pgdata.cx_prefix_total_run_length)
   # Work out which prefix we're currently within

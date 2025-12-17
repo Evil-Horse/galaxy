@@ -6,6 +6,7 @@ from datetime import datetime
 
 from image import Image
 from anomaly import Anomalies
+from sectors import get_sector_name
 from subsectors import Subsectors, sector_name
 from biopredictor import Predictor
 
@@ -288,7 +289,17 @@ class Galaxy:
             if line[-1] == ',':
                 line = line[0:-1]
             system = json.loads(line)
-            system["sector"] = sector_name(system["name"])
+
+            sector1 = sector_name(system["name"])
+            sector2 = get_sector_name(system["id64"], system["coords"])
+
+            if sector1 is None or sector1 == sector2:
+                pass
+            else:
+                print("Sector mismatch detected!")
+                print(f'  Sector from name: {system["name"]} -> {sector1}')
+                print(f'  Sector from id64: {system["id64"]} -> {sector2}')
+            system["sector"] = sector2
 
             if i % step == 0:
                 pbar.update(step)
