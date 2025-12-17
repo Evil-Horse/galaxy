@@ -24,6 +24,16 @@ def test_generated(split):
     if "ICZ" in split:
         return False
 
+    # permit regions
+    permit_regions = [
+      "Bleia1", "Bleia2", "Bleia3", "Bleia4", "Bleia5",
+      "Praei1", "Praei2", "Praei3", "Praei4", "Praei5", "Praei6",
+      "Bovomit", "Dryman", "Froadik", "Hyponia", "Sidgoir"
+    ]
+    for permit in permit_regions:
+        if permit in split:
+            return False
+
     # second part should contain '-'
     if not split[-2].__contains__('-'):
         return False
