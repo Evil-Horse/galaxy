@@ -1135,20 +1135,45 @@ class Predictor:
         connection.execute('''
         CREATE TABLE IF NOT EXISTS module_predictor (
             region TEXT NOT NULL,
-            system_id64 INTEGER NOT NULL,
-            system TEXT NOT NULL,
-            x_coord FLOAT NOT NULL,
-            y_coord FLOAT NOT NULL,
-            z_coord FLOAT NOT NULL,
             body_id64 INTEGER NOT NULL,
-            body TEXT NOT NULL,
             species TEXT NOT NULL,
             priority INTEGER,
             PRIMARY KEY (body_id64, species),
             FOREIGN KEY (body_id64) REFERENCES data_bodies(id64) ON DELETE CASCADE
         )
         ''')
-        connection.execute("CREATE INDEX IF NOT EXISTS idx_module_predictor_id64 ON module_predictor(system_id64)")
+        connection.execute("CREATE INDEX IF NOT EXISTS idx_module_predictor_id64 ON module_predictor(body_id64)")
+        connection.execute('''
+        CREATE VIEW IF NOT EXISTS view_predictor (
+            body_id64,
+            body,
+            system_id64,
+            system,
+            x_coord,
+            y_coord,
+            z_coord,
+            region,
+            species,
+            priority
+        ) AS
+        SELECT
+            module_predictor.body_id64,
+            data_bodies.name AS body,
+            data_systems.id64 AS system_id64,
+            data_systems.name AS system,
+            data_systems.coord_x AS x_coord,
+            data_systems.coord_y AS y_coord,
+            data_systems.coord_z AS z_coord,
+            module_predictor.region,
+            module_predictor.species,
+            module_predictor.priority
+        FROM
+            module_predictor
+        INNER JOIN
+            data_bodies ON module_predictor.body_id64 = data_bodies.id64
+        INNER JOIN
+            data_systems ON data_bodies.system_id64 = data_systems.id64
+        ''')
         self.connection = connection
 
 
@@ -1242,18 +1267,18 @@ class Predictor:
             predicted = check(region, planet, stars)
 
             for entry in predicted:
-                region, body_id64, body_name, species, priority = entry
+                region, body_id64, _, species, priority = entry
 
                 self.connection.execute('''
                 INSERT INTO module_predictor
-                    (region, system_id64, system, x_coord, y_coord, z_coord, body_id64, body, species, priority)
+                    (region, body_id64, species, priority)
                 VALUES
-                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    (?, ?, ?, ?)
                 ''',
-                (region, system["id64"], system["name"], system["coords"]["x"], system["coords"]["y"], system["coords"]["z"], body_id64, body_name, species, priority))
+                (region, body_id64, species, priority))
 
     def finalize(self):
-        for fetched in self.connection.execute("SELECT region, system, x_coord, y_coord, z_coord, body, species, priority FROM module_predictor WHERE priority > 1"):
+        for fetched in self.connection.execute("SELECT region, system, x_coord, y_coord, z_coord, body, species, priority FROM view_predictor WHERE priority > 1"):
             region = fetched[0]
             system = {
                 "name" : fetched[1],
