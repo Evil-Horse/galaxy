@@ -606,7 +606,11 @@ conditions = {
     "specs" : {
       "Alcyoneum" : [ { "atm_composition" : { "Ammonia" : lambda x: 60.0 <= x}, "gravity" : 0.375253, "temperature" : lambda x: 152.0 <= x <= 177.0} ],
       "Aurasus" : [ { "atm_composition" : { "Carbon dioxide" : lambda x: 50.0 <= x}, "gravity" : 0.611807, "temperature" : lambda x: 145.0 <= x <= 400.0} ],
-      "Cerbrus" : [ { "atm_composition" : { "Ammonia" : lambda x: 60.0 <= x}, "gravity" : 0.611807, "temperature" : lambda x: 132.0 <= x <= 500.0} ],
+      "Cerbrus" : [
+        { "atm_composition" : { "Water" : lambda x: 100.0 == x}, "gravity" : 0.611807, "temperature" : lambda x: 390.0 <= x <= 453.0},
+        { "atm_composition" : { "Sulphur Dioxide" : lambda x: 50.0 <= x}, "gravity" : 0.611807, "temperature" : lambda x: 132.0 <= x <= 500.0},
+        { "atm_composition" : { "Argon" : lambda x: 50.0 <= x, "Water" : lambda x: 0.0 < x}, "gravity" : 0.611807, "temperature" : lambda x: 227.0 <= x <= 315.0}
+      ],
     },
   },
   "Cactoida" : {
