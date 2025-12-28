@@ -260,17 +260,6 @@ def get_possible_colors(valid_stars, species, colors, min_dist=None, max_dist=No
 
     return set_colors
 
-def get_color_priority(region, variant):
-    # galaxy-wide discovery
-    if variant not in global_entries:
-        return 3
-
-    # region discovery
-    if variant not in regional_entries[region]:
-        return 2
-
-    return 1
-
 def check_region(genus, species, region):
     genus_species = f'{genus} {species}'
 
@@ -1007,15 +996,6 @@ def check(region, body, stars):
         if body["gravity"] >= genus_data["max_gravity"]:
             continue
 
-        # check if everything has been scanned
-        name = body["name"]
-        if name in known_planets and genus in known_planets[name]["by_genus"]:
-            if len(known_planets[name]["by_genus"][genus]) > 1:
-                print(name, "WTF-2", known_planets[name]["by_genus"][genus], file=sys.stderr)
-            for e in known_planets[name]["by_genus"][genus]:
-                ret.add((region, body["id64"], name, e, 1))
-            continue
-
         colors = genus_data["colors"]
         for species, species_spec_list in genus_data["specs"].items():
             if not check_region(genus, species, region):
@@ -1029,8 +1009,7 @@ def check(region, body, stars):
                     # due to a bug, only Emerald Araneamus exists
                     if s == "Stratum Araneamus":
                         string = f"Stratum Araneamus - {CANONN_COLOR_EM}"
-                        region_priority = get_color_priority(region, string)
-                        ret.add((region, body["id64"], body["name"], string, region_priority))
+                        ret.add((region, body["id64"], string))
                         continue
 
                     min_dist = species_spec.get("min_dist", None)
@@ -1039,15 +1018,9 @@ def check(region, body, stars):
 
                     for color in set_colors:
                         string = f"{s} - {color}"
-                        region_priority = get_color_priority(region, string)
-                        ret.add((region, body["id64"], body["name"], string, region_priority))
+                        ret.add((region, body["id64"], string))
 
     return ret
-
-global_entries = set()
-regional_entries = {}
-
-known_planets = {}
 
 def get_odyssey_genus(name):
     if name.startswith("$Codex_Ent_Bacterial"):
@@ -1090,54 +1063,13 @@ class Predictor:
             "bio": {}
         }
         self.datetime = datetime.now(tz=UTC).replace(minute=0, second=0, microsecond=0)
-        print(f'Predicting biology as of {self.datetime}', file=sys.stderr)
-
-        with gzip.open("codex.json.gz", "r") as codex:
-            entries = json.load(codex)
-            for entry in entries:
-                if entry["hud_category"] == "Biology":
-                    english_name = entry["english_name"]
-                    name = entry["name"]
-                    genus = get_odyssey_genus(name)
-                    if genus is None:
-                        continue
-
-                    body = entry["body"]
-                    if body not in known_planets:
-                        known_planets[body] = {
-                            "all_bio" : set(),
-                            "by_genus" : {},
-                        }
-
-                    if genus not in known_planets[body]["by_genus"]:
-                        known_planets[body]["by_genus"][genus] = set()
-
-                    known_planets[body]["by_genus"][genus].add(english_name)
-                    known_planets[body]["all_bio"].add(english_name)
-
-                    region = regions[entry["region_name"]]
-                    global_entries.add(english_name)
-
-                    if region not in regional_entries:
-                        regional_entries[region] = set()
-
-                    regional_entries[region].add(english_name)
-
-        with open("invalid-data", "w") as f:
-            for planet in known_planets:
-                if planet is None:
-                    continue
-
-                for genus in known_planets[planet]["by_genus"]:
-                    if len(known_planets[planet]["by_genus"][genus]) > 1:
-                        print(f'Invalid data for {planet}: {known_planets[planet]["by_genus"][genus]}', file=f)
+        print(f'Predicting biology as of {self.datetime}')
 
         connection.execute('''
         CREATE TABLE IF NOT EXISTS module_predictor (
             region TEXT NOT NULL,
             body_id64 INTEGER NOT NULL,
             species TEXT NOT NULL,
-            priority INTEGER,
             PRIMARY KEY (body_id64, species),
             FOREIGN KEY (body_id64) REFERENCES data_bodies(id64) ON DELETE CASCADE
         )
@@ -1153,8 +1085,7 @@ class Predictor:
             y_coord,
             z_coord,
             region,
-            species,
-            priority
+            species
         ) AS
         SELECT
             module_predictor.body_id64,
@@ -1165,8 +1096,7 @@ class Predictor:
             data_systems.coord_y AS y_coord,
             data_systems.coord_z AS z_coord,
             module_predictor.region,
-            module_predictor.species,
-            module_predictor.priority
+            module_predictor.species
         FROM
             module_predictor
         INNER JOIN
@@ -1226,17 +1156,6 @@ class Predictor:
 
             if body["type"] == "Planet":
                 if body["subType"] in ["Icy body", "Rocky Ice world", "Rocky body", "High metal content world", "Metal-rich body"]:
-                    if "$SAA_SignalType_Biological;" in body["signals"]["signals"] and body["name"] in known_planets:
-                        signals_found = len(known_planets[body["name"]]["all_bio"])
-                        signals_on_planet = body["signals"]["signals"]["$SAA_SignalType_Biological;"]
-                        if signals_found > signals_on_planet:
-                            print(f'WTF: {body["name"]} has {signals_on_planet} signals, found {signals_found}', file=sys.stderr)
-
-                        if signals_found == signals_on_planet:
-                            #print(f'Skipping {body["name"]}: all {signals_found} signals found', file=sys.stderr)
-                            # all signals has been already found, skip the planet
-                            continue
-
                     atmosphere_type = body["atmosphereType"]
                     if atmosphere_type is not None and atmosphere_type.startswith("Thin"):
                         if body["updateTime"] >= "2021-05-19" and body["isLandable"] == False:
@@ -1262,52 +1181,158 @@ class Predictor:
             gravity = planet["gravity"]
 
             # predicted: list of tuples
-            # (region, body id64, body name, species name, priority)
+            # (region, body id64, body name, species name)
 
             predicted = check(region, planet, stars)
 
             for entry in predicted:
-                region, body_id64, _, species, priority = entry
+                region, body_id64, species = entry
 
                 self.connection.execute('''
                 INSERT INTO module_predictor
-                    (region, body_id64, species, priority)
+                    (region, body_id64, species)
                 VALUES
-                    (?, ?, ?, ?)
+                    (?, ?, ?)
                 ''',
-                (region, body_id64, species, priority))
+                (region, body_id64, species))
 
     def finalize(self):
-        for fetched in self.connection.execute("SELECT region, system, x_coord, y_coord, z_coord, body, species, priority FROM view_predictor WHERE priority > 1"):
-            region = fetched[0]
+        global_entries = set()
+        regional_entries = {}
+
+        known_planets = {}
+
+        # fetch data from Canonn
+        with gzip.open("codex.json.gz", "r") as codex:
+            entries = json.load(codex)
+            for entry in entries:
+                if entry["hud_category"] == "Biology":
+                    english_name = entry["english_name"]
+                    name = entry["name"]
+                    genus = get_odyssey_genus(name)
+                    if genus is None:
+                        continue
+
+                    body = entry["body"]
+                    if body not in known_planets:
+                        known_planets[body] = {
+                            "all_bio" : set(),
+                            "by_genus" : {},
+                        }
+
+                    if genus not in known_planets[body]["by_genus"]:
+                        known_planets[body]["by_genus"][genus] = set()
+
+                    known_planets[body]["by_genus"][genus].add(english_name)
+                    known_planets[body]["all_bio"].add(english_name)
+
+                    region = regions[entry["region_name"]]
+                    global_entries.add(english_name)
+
+                    if region not in regional_entries:
+                        regional_entries[region] = set()
+
+                    regional_entries[region].add(english_name)
+
+        with open("invalid-data", "w") as f:
+            for planet in known_planets:
+                if planet is None:
+                    continue
+
+                for genus in known_planets[planet]["by_genus"]:
+                    if len(known_planets[planet]["by_genus"][genus]) > 1:
+                        print(f'Invalid data for {planet}: {known_planets[planet]["by_genus"][genus]}', file=f)
+
+        for fetched in self.connection.execute("SELECT DISTINCT(body_id64), region, system, x_coord, y_coord, z_coord, body FROM view_predictor"):
+            body_id64 = fetched[0]
+            region = fetched[1]
             system = {
-                "name" : fetched[1],
+                "name" : fetched[2],
                 "coords" : {
-                    "x" : fetched[2],
-                    "y" : fetched[3],
-                    "z" : fetched[4]
+                    "x" : fetched[3],
+                    "y" : fetched[4],
+                    "z" : fetched[5]
                 }
             }
-            bodyname = fetched[5]
-            species = fetched[6]
-            priority = fetched[7]
+            body = fetched[6]
+            body_signals = None
+            for fetched_signals in self.connection.execute("SELECT signalCount FROM data_signals WHERE id64 = ? AND signalType = '$SAA_SignalType_Biological;'", (body_id64, )):
+                body_signals = fetched_signals[0]
 
-            if region not in self.predicted["bio"]:
-                self.predicted["bio"][region] = {}
+            canonn_valid = True
+            if body in known_planets:
+                canonn_signals = len(known_planets[body]["all_bio"])
 
-            if species not in self.predicted["bio"][region]:
-                self.predicted["bio"][region][species] = {
-                    "priority" : priority,
-                    "locations" : [],
-                }
+                if body_signals is not None and canonn_signals > body_signals:
+                    #print(f'Body {body} holds too many confirmed signals (reported {body_signals}, confirmed {canonn_signals})')
+                    canonn_valid = False
 
-            self.predicted["bio"][region][species]["locations"].append({
-                "system" : system["name"],
-                "body" : bodyname,
-                "x" : system["coords"]["x"],
-                "y" : system["coords"]["y"],
-                "z" : system["coords"]["z"],
-            })
+                for genus in known_planets[body]["by_genus"]:
+                    genus_found = len(known_planets[body]["by_genus"][genus])
+                    if genus_found > 1:
+                        #print(f"Body {body} has mutually exclusive confirmed signals for {genus}: {known_planets[body]["by_genus"][genus]}")
+                        canonn_valid = False
+
+                if body_signals is not None and canonn_signals == body_signals:
+                    #print(f"Canonn found everything on {body}: {known_planets[body]["all_bio"]}")
+                    for canonn_species in known_planets[body]["all_bio"]:
+                        predicted_species.add(canonn_species)
+                    continue
+            else:
+                #print(f"Canonn has not found anything yet on {body}")
+                canonn_valid = False
+
+            predicted_species = set()
+            for fetched_ in self.connection.execute("SELECT species FROM view_predictor WHERE body_id64 = ?", (body_id64, )):
+                species = fetched_[0]
+
+                if not canonn_valid:
+                    predicted_species.add(species)
+                    continue
+
+                # check if genus has been scanned
+                genus = species.split(' ')[0]
+                if body in known_planets and genus in known_planets[body]["by_genus"]:
+                    genus_found = len(known_planets[body]["by_genus"][genus])
+
+                    # genus is found by Canonn, add it
+                    if genus_found == 1:
+                        for canonn_species in known_planets[body]["by_genus"][genus]:
+                            #if species != canonn_species:
+                                #print(f"Dropping predicted {species} from {body}: {canonn_species} is confirmed by Canonn")
+                            predicted_species.add(canonn_species)
+                        continue
+
+                predicted_species.add(species)
+
+            for species in predicted_species:
+                #print(f"Adding {species} to {body}")
+
+                priority = 1
+                if species not in regional_entries[region]:
+                    priority = 2
+                if species not in global_entries:
+                    priority = 3
+
+                if priority == 1:
+                    continue
+
+                if region not in self.predicted["bio"]:
+                    self.predicted["bio"][region] = {}
+
+                if species not in self.predicted["bio"][region]:
+                    self.predicted["bio"][region][species] = {
+                        "priority" : priority,
+                        "locations" : [],
+                    }
+
+                self.predicted["bio"][region][species]["locations"].append({
+                    "system" : system["name"],
+                    "body" : body,
+                    "x" : system["coords"]["x"],
+                    "y" : system["coords"]["y"],
+                    "z" : system["coords"]["z"],
+                })
 
         with open("biopredictor.json", "w") as f:
             json.dump(self.predicted, f)
