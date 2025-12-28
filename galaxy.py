@@ -102,8 +102,8 @@ class Galaxy:
             self.anomalies.finalize(self.data, fav)
 
         print_data(self.olddata, self.data)
-        with open("olddata.json", 'w') as f:
-            json.dump(self.data, f)
+        #with open("olddata.json", 'w') as f:
+        #    json.dump(self.data, f)
 
 galaxy = Galaxy("galaxy.json.gz")
 galaxy.load()
