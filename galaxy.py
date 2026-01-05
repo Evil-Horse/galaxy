@@ -461,8 +461,8 @@ class Galaxy:
 
         self.con.commit()
         print_data(self.olddata, self.data)
-        #with open("olddata.json", 'w') as f:
-        #    json.dump(self.data, f)
+        with open("olddata.json", 'w') as f:
+            json.dump(self.data, f)
 
 galaxy = Galaxy("galaxy.json.gz")
 galaxy.load()
