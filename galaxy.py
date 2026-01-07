@@ -464,5 +464,5 @@ class Galaxy:
         with open("olddata.json", 'w') as f:
             json.dump(self.data, f)
 
-galaxy = Galaxy("galaxy.json.gz")
+galaxy = Galaxy("galaxy_1day.json.gz")
 galaxy.load()
