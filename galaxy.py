@@ -151,6 +151,15 @@ class Galaxy:
             FOREIGN KEY (id64) REFERENCES data_bodies(id64) ON DELETE CASCADE
         )
         ''')
+        self.con.execute('''
+        CREATE TABLE IF NOT EXISTS data_factions (
+            id64 INTEGER NOT NULL,
+            faction TEXT not NULL,
+            influence FLOAT NOT NULL,
+            PRIMARY KEY (id64, faction),
+            FOREIGN KEY (id64) REFERENCES data_systems(id64) ON DELETE CASCADE
+        )
+        ''')
         self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_systems_id64 ON data_systems(id64)")
         self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_bodies_system_id64 ON data_bodies(system_id64)")
         self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_stars_id64 ON data_stars(id64)")
@@ -270,6 +279,17 @@ class Galaxy:
             bodies.append(body)
 
         sys_json["bodies"] = bodies
+
+        factions = []
+        for fetched_faction in self.con.execute("SELECT faction, influence FROM data_factions WHERE id64 = ?", (id64, )):
+            new_faction = {
+                "name" : fetched_faction[0],
+                "influence" : fetched_faction[1]
+            }
+            factions.append(new_faction)
+
+        sys_json["factions"] = factions
+
         return sys_json
 
 
@@ -327,6 +347,14 @@ class Galaxy:
                     VALUES
                 (?, ?, ?, ?, ?, ?, ?, ?)''',
             (system["id64"], system["name"], bodyCount, system["coords"]["x"], system["coords"]["y"], system["coords"]["z"], system["date"], system["sector"]))
+
+            for faction in system.get("factions", []):
+                self.con.execute('''
+                    INSERT INTO data_factions
+                    (id64, faction, influence)
+                        VALUES
+                    (?, ?, ?)''',
+                (system["id64"], faction["name"], faction["influence"]))
 
             test_parents = {}
             for body in system["bodies"]:
