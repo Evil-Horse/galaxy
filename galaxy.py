@@ -1,3 +1,4 @@
+import sys
 import gzip
 import json
 import tqdm
@@ -437,22 +438,22 @@ class Galaxy:
 
 
     def finalize(self):
-        print(f"{datetime.now()} Finalizing image")
+        print(f"{datetime.now()} Finalizing image", file=sys.stderr)
         self.image.finalize()
-        print(f"{datetime.now()} Finalizing anomalies")
+        print(f"{datetime.now()} Finalizing anomalies", file=sys.stderr)
         self.anomalies.finalize(self.data)
-        print(f"{datetime.now()} Finalizing subsectors")
+        print(f"{datetime.now()} Finalizing subsectors", file=sys.stderr)
         self.subsectors.finalize(self.data)
-        print(f"{datetime.now()} Finalizing predictor")
+        print(f"{datetime.now()} Finalizing predictor", file=sys.stderr)
         self.predictor.finalize()
 
         for fav in favorite_sectors:
-            print(f"{datetime.now()} Finalizing anomalies for sector {fav}")
+            print(f"{datetime.now()} Finalizing anomalies for sector {fav}", file=sys.stderr)
             self.anomalies.finalize(self.data, fav)
-            print(f"{datetime.now()} Finalizing subsectors for sector {fav}")
+            print(f"{datetime.now()} Finalizing subsectors for sector {fav}", file=sys.stderr)
             self.subsectors.finalize(self.data, fav)
 
-        print(f"{datetime.now()} Finalizing done")
+        print(f"{datetime.now()} Finalizing done", file=sys.stderr)
 
 
     def load(self):
