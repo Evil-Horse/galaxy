@@ -78,8 +78,7 @@ class Galaxy:
             coord_x FLOAT NOT NULL,
             coord_y FLOAT NOT NULL,
             coord_z FLOAT NOT NULL,
-            last_updated DATETIME NOT NULL,
-            sector TEXT
+            last_updated DATETIME NOT NULL
         )
         ''')
         self.con.execute('''
@@ -184,6 +183,34 @@ class Galaxy:
         self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_signals_id64 ON data_signals(id64)")
         self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_systems_procgen_id64 ON data_systems_procgen(id64)")
 
+        self.con.execute('''CREATE VIEW IF NOT EXISTS view_systems (
+            id64,
+            name,
+            bodyCount,
+            coord_x,
+            coord_y,
+            coord_z,
+            last_updated,
+            sector
+        ) AS
+        SELECT
+            data_systems.id64,
+            data_systems.name,
+            data_systems.bodyCount,
+            data_systems.coord_x,
+            data_systems.coord_y,
+            data_systems.coord_z,
+            data_systems.last_updated,
+            data_systems_procgen.sector
+        FROM
+            data_systems
+        INNER JOIN
+            data_systems_procgen
+        ON
+            data_systems_procgen.id64 = data_systems.id64
+        ''')
+
+
         self.con.execute("PRAGMA foreign_keys = ON")
 
         self.json_file = gzip.open(name, 'r')
@@ -221,7 +248,7 @@ class Galaxy:
 
     def build_system_json(self, id64):
         sys_json = {}
-        for fetched_system in self.con.execute("SELECT name, coord_x, coord_y, coord_z, sector, bodyCount FROM data_systems WHERE id64 = ?", (id64, )):
+        for fetched_system in self.con.execute("SELECT name, coord_x, coord_y, coord_z, sector, bodyCount FROM view_systems WHERE id64 = ?", (id64, )):
             sys_json = {
                 "id64" : id64,
                 "name" : fetched_system[0],
@@ -383,10 +410,10 @@ class Galaxy:
             bodyCount = system.get("bodyCount", None)
             self.con.execute('''
                 INSERT INTO data_systems
-                (id64, name, bodyCount, coord_x, coord_y, coord_z, last_updated, sector)
+                (id64, name, bodyCount, coord_x, coord_y, coord_z, last_updated)
                     VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?)''',
-            (system["id64"], system["name"], bodyCount, system["coords"]["x"], system["coords"]["y"], system["coords"]["z"], system["date"], system["sector"]))
+                (?, ?, ?, ?, ?, ?, ?)''',
+            (system["id64"], system["name"], bodyCount, system["coords"]["x"], system["coords"]["y"], system["coords"]["z"], system["date"]))
 
             self.con.execute('''
                 INSERT INTO data_systems_procgen
