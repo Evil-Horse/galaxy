@@ -7,9 +7,11 @@ from datetime import datetime
 
 from image import Image
 from anomaly import Anomalies
-from sectors import get_sector_name
+from sectors import split_ids, get_sector, get_boxel, get_procgen_name
 from subsectors import Subsectors, sector_name
 from biopredictor import Predictor
+
+from RegionMap import findRegion, findRegionForBoxel
 
 favorite_sectors = ('Boepp',)
 
@@ -160,11 +162,27 @@ class Galaxy:
             FOREIGN KEY (id64) REFERENCES data_systems(id64) ON DELETE CASCADE
         )
         ''')
+        self.con.execute('''
+        CREATE TABLE IF NOT EXISTS data_systems_procgen (
+            id64 INTEGER PRIMARY KEY,
+            sector_id INTEGER,
+            masscode_id INTEGER,
+            boxel_id INTEGER,
+            system_id iNTEGER,
+            sector TEXT NOT NULL,
+            subsector TEXT NOT NULL,
+            procgen_name TEXT NOT NULL,
+            region TEXT NOT NULL,
+            region_codex TEXT NOT NULL,
+            FOREIGN KEY (id64) REFERENCES data_systems(id64) ON DELETE CASCADE
+        )
+        ''')
         self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_systems_id64 ON data_systems(id64)")
         self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_bodies_system_id64 ON data_bodies(system_id64)")
         self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_stars_id64 ON data_stars(id64)")
         self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_planets_id64 ON data_planets(id64)")
         self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_signals_id64 ON data_signals(id64)")
+        self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_systems_procgen_id64 ON data_systems_procgen(id64)")
 
         self.con.execute("PRAGMA foreign_keys = ON")
 
@@ -311,16 +329,39 @@ class Galaxy:
                 line = line[0:-1]
             system = json.loads(line)
 
-            sector1 = sector_name(system["name"])
-            sector2 = get_sector_name(system["id64"], system["coords"])
+            cur_name = system["name"]
+            cur_id64 = system["id64"]
+            sector_from_name = sector_name(cur_name)
 
-            if sector1 is None or sector1 == sector2:
+            sector_offset, masscode, boxel_offset, system_id, _ = split_ids(cur_id64)
+            sector_from_id64 = get_sector(sector_offset)
+
+            pg_name = get_procgen_name(sector_offset, masscode, boxel_offset, system_id)
+            boxel = get_boxel(masscode, boxel_offset)
+
+            subsector = f'{sector_from_id64} {boxel}'
+
+            if sector_from_name is None:
                 pass
             else:
-                print("Sector mismatch detected!")
-                print(f'  Sector from name: {system["name"]} -> {sector1}')
-                print(f'  Sector from id64: {system["id64"]} -> {sector2}')
-            system["sector"] = sector2
+                if sector_from_name != sector_from_id64:
+                    print("Sector mismatch detected!")
+                    print(f'  Sector from name: {cur_name} -> {sector_from_name}')
+                    print(f'  Sector from id64: {cur_id64} -> {sector_from_id64}')
+                    raise KeyboardInterrupt
+
+                if pg_name != cur_name:
+                    print("Name mismatch detected!")
+                    print(f'  Proc-generated name from id64: {cur_id64} -> {pg_name} != {cur_name}')
+                    raise KeyboardInterrupt
+            system["sector"] = sector_from_id64
+
+            region = findRegion(system["coords"]["x"],
+                                system["coords"]["y"],
+                                system["coords"]["z"])
+            region_codex = findRegionForBoxel(cur_id64)["region"]
+            sqlite_region = "Out of bounds" if region is None else region[1]
+            sqlite_region_codex = "Out of bounds" if region_codex is None else region_codex[1]
 
             if i % step == 0:
                 pbar.update(step)
@@ -329,7 +370,6 @@ class Galaxy:
             i += 1
 
             updated = True
-            cur_id64 = system["id64"]
 
             db_json = self.build_system_json(cur_id64)
             if db_json != {} and compare_dicts(db_json, system) == True:
@@ -347,6 +387,13 @@ class Galaxy:
                     VALUES
                 (?, ?, ?, ?, ?, ?, ?, ?)''',
             (system["id64"], system["name"], bodyCount, system["coords"]["x"], system["coords"]["y"], system["coords"]["z"], system["date"], system["sector"]))
+
+            self.con.execute('''
+                INSERT INTO data_systems_procgen
+                (id64, sector_id, masscode_id, boxel_id, system_id, sector, subsector, procgen_name, region, region_codex)
+                    VALUES
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+            (cur_id64, sector_offset, masscode, boxel_offset, system_id, sector_from_id64, subsector, pg_name, sqlite_region, sqlite_region_codex))
 
             for faction in system.get("factions", []):
                 self.con.execute('''
