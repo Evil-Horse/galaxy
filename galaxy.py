@@ -176,12 +176,32 @@ class Galaxy:
             FOREIGN KEY (id64) REFERENCES data_systems(id64) ON DELETE CASCADE
         )
         ''')
+        self.con.execute('''
+        CREATE TABLE IF NOT EXISTS data_rings (
+            id64 INTEGER PRIMARY KEY,
+            body_id64 INTEGER,
+            name TEXT NOT NULL,
+            FOREIGN KEY (body_id64) REFERENCES data_bodies(id64) ON DELETE CASCADE
+        )
+        ''')
+        self.con.execute('''
+        CREATE TABLE IF NOT EXISTS data_ring_signals (
+            id64 INTEGER NOT NULL,
+            signalType TEXT NOT NULL,
+            signalCount INTEGER NOT NULL,
+            PRIMARY KEY (id64, signalType),
+            FOREIGN KEY (id64) REFERENCES data_rings(id64) ON DELETE CASCADE
+        )
+        ''')
+
         self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_systems_id64 ON data_systems(id64)")
         self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_bodies_system_id64 ON data_bodies(system_id64)")
         self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_stars_id64 ON data_stars(id64)")
         self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_planets_id64 ON data_planets(id64)")
         self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_signals_id64 ON data_signals(id64)")
         self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_systems_procgen_id64 ON data_systems_procgen(id64)")
+        self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_rings_system_id64 ON data_rings(body_id64)")
+        self.con.execute("CREATE INDEX IF NOT EXISTS idx_data_ring_signals_id64 ON data_ring_signals(id64)")
 
         self.con.execute('''CREATE VIEW IF NOT EXISTS view_systems (
             id64,
@@ -288,6 +308,21 @@ class Galaxy:
 
             body["parents"] = self.get_parent_chain(parents, body["bodyId"])
 
+            body["rings"] = []
+            for fetched_ring in self.con.execute("SELECT id64, name FROM data_rings WHERE body_id64 = ?", (fetched_body[0], )):
+                ring = {
+                    "name" : fetched_ring[0],
+                    "name" : fetched_ring[1],
+                }
+
+                ring_signals = {}
+                for fetched_ring_signal in self.con.execute("SELECT signalType, signalCount FROM data_ring_signals WHERE id64 = ?", (fetched_ring[0], )):
+                    ring_signals[fetched_ring_signal[0]] = fetched_ring_signal[1]
+
+                ring["signals"] = {"signals" : ring_signals}
+
+                body["rings"].append(ring)
+
             if body["type"] == "Star":
                 for fetched_star in self.con.execute("SELECT surfaceTemperature, absoluteMagnitude, solarMasses, subType, solarRadius FROM data_stars WHERE id64 = ?", (fetched_body[0], )):
                     body["surfaceTemperature"] = fetched_star[0]
@@ -390,6 +425,19 @@ class Galaxy:
             sqlite_region = "Out of bounds" if region is None else region[1]
             sqlite_region_codex = "Out of bounds" if region_codex is None else region_codex[1]
 
+            # remove rings without id64
+            for body in system["bodies"]:
+                if "rings" in body:
+                    new_rings = []
+
+                    for ring in body["rings"]:
+                        if "id64" not in ring:
+                            continue
+
+                        new_rings.append(ring)
+
+                    body["rings"] = new_rings
+
             if i % step == 0:
                 pbar.update(step)
                 pbar.set_description(f'Updating data ({updated_systems} systems updated): {system["name"]}')
@@ -470,6 +518,24 @@ class Galaxy:
                  body.get("orbitalPeriod", 0.0),
                  body.get("argOfPeriapsis", 0.0),
                  body.get("semiMajorAxis", 0.0)))
+
+                if "rings" in body:
+                    for ring in body["rings"]:
+                        self.con.execute('''
+                        INSERT INTO data_rings
+                        (id64, body_id64, name)
+                            VALUES
+                        (?, ?, ?)''',
+                        (ring["id64"], body["id64"], ring["name"]))
+
+                        if "signals" in ring:
+                            for ring_signal in ring["signals"]["signals"].items():
+                                self.con.execute('''
+                                INSERT INTO data_ring_signals
+                                (id64, signalType, signalCount)
+                                VALUES
+                            (?, ?, ?)''',
+                            (ring["id64"], ring_signal[0], ring_signal[1]))
 
                 if body["type"] == "Star":
                     surfaceTemperature = body.get("surfaceTemperature", None)
