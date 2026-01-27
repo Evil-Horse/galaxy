@@ -4,6 +4,7 @@ import json
 import tqdm
 import sqlite3
 from datetime import datetime
+from tqdm.auto import tqdm
 
 from image import Image
 from anomaly import Anomalies
@@ -377,7 +378,7 @@ class Galaxy:
         i = 0
         updated_systems = 0
         step = 10000
-        pbar = tqdm.tqdm(total=self.olddata['galaxy']['systems'])
+        pbar = tqdm(total=self.olddata['galaxy']['systems'])
         for line in self.json_file:
             line = line[0:-1].decode()
 
@@ -407,14 +408,14 @@ class Galaxy:
                 pass
             else:
                 if sector_from_name != sector_from_id64:
-                    print("Sector mismatch detected!")
-                    print(f'  Sector from name: {cur_name} -> {sector_from_name}')
-                    print(f'  Sector from id64: {cur_id64} -> {sector_from_id64}')
+                    tqdm.write("Sector mismatch detected!", file=sys.stderr)
+                    tqdm.write(f'  Sector from name: {cur_name} -> {sector_from_name}', file=sys.stderr)
+                    tqdm.write(f'  Sector from id64: {cur_id64} -> {sector_from_id64}', file=sys.stderr)
                     raise KeyboardInterrupt
 
                 if pg_name != cur_name:
-                    print("Name mismatch detected!")
-                    print(f'  Proc-generated name from id64: {cur_id64} -> {pg_name} != {cur_name}')
+                    tqdm.write("Name mismatch detected!", file=sys.stderr)
+                    tqdm.write(f'  Proc-generated name from id64: {cur_id64} -> {pg_name} != {cur_name}', file=sys.stderr)
                     raise KeyboardInterrupt
             system["sector"] = sector_from_id64
 
@@ -590,12 +591,12 @@ class Galaxy:
 
             db_json = self.build_system_json(cur_id64)
             if compare_dicts(db_json, system) != True:
-                print(f"Something is wrong with system {system['name']} (id64 = {cur_id64})")
+                tqdm.write(f"Something is wrong with system {system['name']} (id64 = {cur_id64})", file=sys.stderr)
             self.process_db(db_json)
 
         pbar.close()
         self.con.commit()
-        print(f'Updated {updated_systems} systems')
+        tqdm.write(f'Updated {updated_systems} systems', file=sys.stderr)
 
 
     def process_db(self, system):
@@ -606,22 +607,22 @@ class Galaxy:
 
 
     def finalize(self):
-        print(f"{datetime.now()} Finalizing image", file=sys.stderr)
+        tqdm.write(f"{datetime.now()} Finalizing image", file=sys.stderr)
         self.image.finalize()
-        print(f"{datetime.now()} Finalizing anomalies", file=sys.stderr)
+        tqdm.write(f"{datetime.now()} Finalizing anomalies", file=sys.stderr)
         self.anomalies.finalize(self.data)
-        print(f"{datetime.now()} Finalizing subsectors", file=sys.stderr)
+        tqdm.write(f"{datetime.now()} Finalizing subsectors", file=sys.stderr)
         self.subsectors.finalize(self.data)
-        print(f"{datetime.now()} Finalizing predictor", file=sys.stderr)
+        tqdm.write(f"{datetime.now()} Finalizing predictor", file=sys.stderr)
         self.predictor.finalize()
 
         for fav in favorite_sectors:
-            print(f"{datetime.now()} Finalizing anomalies for sector {fav}", file=sys.stderr)
+            tqdm.write(f"{datetime.now()} Finalizing anomalies for sector {fav}", file=sys.stderr)
             self.anomalies.finalize(self.data, fav)
-            print(f"{datetime.now()} Finalizing subsectors for sector {fav}", file=sys.stderr)
+            tqdm.write(f"{datetime.now()} Finalizing subsectors for sector {fav}", file=sys.stderr)
             self.subsectors.finalize(self.data, fav)
 
-        print(f"{datetime.now()} Finalizing done", file=sys.stderr)
+        tqdm.write(f"{datetime.now()} Finalizing done", file=sys.stderr)
 
 
     def load(self):
