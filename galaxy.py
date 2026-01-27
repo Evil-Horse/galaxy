@@ -52,15 +52,18 @@ def compare_dicts(lesser, bigger):
 
         if isinstance(lesser[k], dict):
             if not compare_dicts(lesser[k], bigger[k]):
+                #tqdm.write(f"dict mismatch: values for {k} are not equal: {lesser[k]} != {bigger[k]}", file=sys.stderr)
                 return False
 
         elif isinstance(lesser[k], list):
             for iteml in lesser[k]:
                 if not any([compare_dicts(iteml, itemr) for itemr in bigger[k]]):
+                    #tqdm.write(f"list mismatch: iteml does not exist in bigger[k]: {iteml}", file=sys.stderr)
                     return False
 
             for itemr in bigger[k]:
                 if not any([compare_dicts(iteml, itemr) for iteml in lesser[k]]):
+                    #tqdm.write(f"list mismatch: itemr does not exist in lesser[k]: {itemr}", file=sys.stderr)
                     return False
 
         elif lesser[k] != bigger[k]:
