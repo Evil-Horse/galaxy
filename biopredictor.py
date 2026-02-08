@@ -921,7 +921,7 @@ conditions = {
       "T" : CANONN_COLOR_TE,
       "Y" : CANONN_COLOR_RE,
       "TTS" : None,
-      "Ae" : None,
+      "Ae" : CANONN_COLOR_AM,
       "W" : CANONN_COLOR_OR,
       "D" : CANONN_COLOR_MR,
       "N" : CANONN_COLOR_YE,
