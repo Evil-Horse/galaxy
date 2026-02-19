@@ -65,7 +65,7 @@ class Image:
 
         self.image /= np.max(self.image, axis=2, keepdims=True)
         self.image *= 255
-        self.image = np.asarray(self.image, dtype=np.int8)
+        self.image = np.asarray(self.image, dtype=np.uint8)
 
         img = PImage.fromarray(self.image, mode="RGB")
         img = img.rotate(90)
