@@ -1254,6 +1254,7 @@ class Predictor:
             for fetched_signals in self.connection.execute("SELECT signalCount FROM data_signals WHERE id64 = ? AND signalType = '$SAA_SignalType_Biological;'", (body_id64, )):
                 body_signals = fetched_signals[0]
 
+            predicted_species = set()
             canonn_valid = True
             if body in known_planets:
                 canonn_signals = len(known_planets[body]["all_bio"])
@@ -1277,7 +1278,6 @@ class Predictor:
                 #print(f"Canonn has not found anything yet on {body}")
                 canonn_valid = False
 
-            predicted_species = set()
             for fetched_ in self.connection.execute("SELECT species FROM view_predictor WHERE body_id64 = ?", (body_id64, )):
                 species = fetched_[0]
 
