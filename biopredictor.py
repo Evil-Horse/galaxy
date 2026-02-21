@@ -1198,7 +1198,7 @@ class Predictor:
         known_planets = {}
 
         # fetch data from Canonn
-        with gzip.open("codex.json.gz", "r") as codex:
+        with gzip.open("data/codex.json.gz", "r") as codex:
             entries = json.load(codex)
             for entry in entries:
                 if entry["hud_category"] == "Biology":

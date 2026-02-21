@@ -73,7 +73,7 @@ def compare_dicts(lesser, bigger):
 
 class Galaxy:
     def __init__(self, name):
-        self.con = sqlite3.connect("galaxy.sqlite")
+        self.con = sqlite3.connect("data/galaxy.sqlite")
         self.con.execute('''
         CREATE TABLE IF NOT EXISTS data_systems (
             id64 INTEGER PRIMARY KEY,
@@ -637,5 +637,5 @@ class Galaxy:
         with open("archive/olddata.json", 'w') as f:
             json.dump(self.data, f)
 
-galaxy = Galaxy("galaxy_1day.json.gz")
+galaxy = Galaxy("data/galaxy-dump.json.gz")
 galaxy.load()
