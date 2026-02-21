@@ -69,7 +69,7 @@ class Image:
 
         img = PImage.fromarray(self.image, mode="RGB")
         img = img.rotate(90)
-        img.save("img.png")
+        img.save("archive/img.png")
 
     def process(self, system):
         #generate color

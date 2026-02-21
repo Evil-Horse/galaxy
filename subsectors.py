@@ -100,7 +100,7 @@ class Subsectors:
 
     def finalize(self, data, sector = None):
         if sector is None:
-            with open("subsectors", 'w') as f:
+            with open("archive/subsectors", 'w') as f:
                 for fetched in self.connection.execute("SELECT sector, subsector, MAX(number + 1) FROM module_subsectors WHERE subsector IS NOT NULL GROUP BY subsector"):
                     print(f"{fetched[1]}: {fetched[2]} systems", file=f)
 

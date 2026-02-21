@@ -65,7 +65,7 @@ class Anomalies:
 
     def finalize(self, data, sector = None):
         if sector is None:
-            with open("anomaly", 'w') as f:
+            with open("archive/anomaly", 'w') as f:
                 for fetched in self.connection.execute("SELECT name, anomalies FROM module_anomaly WHERE anomalies != 0"):
                     anomaly_reason = enum_to_string(fetched[0], fetched[1])
                     print(f"{fetched[0]}: {anomaly_reason}", file=f)

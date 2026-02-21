@@ -27,20 +27,20 @@ def compare(old_data, data, key, subkey):
     return f'{value:,} ({diff:+,})'
 
 def print_data(old, data):
-    print("=======")
-    for key in data.keys():
-        if key == 'galaxy':
-            print("Milky Way Galaxy:")
-        else:
-            print(f'\n{key} Sector:')
+    with open("archive/galaxy-stats", "w") as f:
+        for key in data.keys():
+            if key == 'galaxy':
+                print("Milky Way Galaxy:", file=f)
+            else:
+                print(f'\n{key} Sector:', file=f)
 
-        systems = compare(old, data, key, "systems")
-        total = compare(old, data, key, "total")
-        count = compare(old, data, key, "count")
-        print(f"Opened {systems}/{total} systems in {count} subsectors")
+            systems = compare(old, data, key, "systems")
+            total = compare(old, data, key, "total")
+            count = compare(old, data, key, "count")
+            print(f"Opened {systems}/{total} systems in {count} subsectors", file=f)
 
-        anomalies = compare(old, data, key, "anomalies")
-        print(f"Anomalies: {anomalies}")
+            anomalies = compare(old, data, key, "anomalies")
+            print(f"Anomalies: {anomalies}", file=f)
 
 # checks if lesser can be achieved by removing key-value pairs from bigger without any modification
 def compare_dicts(lesser, bigger):
@@ -250,7 +250,7 @@ class Galaxy:
         for key in favorite_sectors:
             self.data[key] = {}
 
-        with open("olddata.json", 'r') as f:
+        with open("archive/olddata.json", 'r') as f:
             self.olddata = json.load(f)
 
     def __del__(self):
@@ -498,7 +498,7 @@ class Galaxy:
                                 (?, ?, ?, ?)''',
                             (system["id64"], current_body, k, v))
                         elif test_parents[current_body] != v:
-                            with open("invalid-parents.txt", "a") as f:
+                            with open("archive/invalid-parents.txt", "a") as f:
                                 print(f'System {system["name"]} - {system["id64"]}: trying to change parent of {current_body}: {body["name"]} from {test_parents[current_body]} to {v}', file=f)
 
                         current_body = v
@@ -634,7 +634,7 @@ class Galaxy:
 
         self.con.commit()
         print_data(self.olddata, self.data)
-        with open("olddata.json", 'w') as f:
+        with open("archive/olddata.json", 'w') as f:
             json.dump(self.data, f)
 
 galaxy = Galaxy("galaxy_1day.json.gz")

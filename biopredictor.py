@@ -1229,7 +1229,7 @@ class Predictor:
 
                     regional_entries[region].add(english_name)
 
-        with open("invalid-data", "w") as f:
+        with open("archive/invalid-data", "w") as f:
             for planet in known_planets:
                 if planet is None:
                     continue
@@ -1329,5 +1329,5 @@ class Predictor:
                     "z" : system["coords"]["z"],
                 })
 
-        with open("biopredictor.json", "w") as f:
+        with open("archive/biopredictor.json", "w") as f:
             json.dump(self.predicted, f)
