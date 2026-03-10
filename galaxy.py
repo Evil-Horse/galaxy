@@ -112,6 +112,7 @@ class Galaxy:
             solarMasses FLOAT,
             subtype TEXT,
             solarRadius FLOAT,
+            age INT,
             FOREIGN KEY (id64) REFERENCES data_bodies(id64) ON DELETE CASCADE
         )
         ''')
@@ -328,12 +329,13 @@ class Galaxy:
                 body["rings"].append(ring)
 
             if body["type"] == "Star":
-                for fetched_star in self.con.execute("SELECT surfaceTemperature, absoluteMagnitude, solarMasses, subType, solarRadius FROM data_stars WHERE id64 = ?", (fetched_body[0], )):
+                for fetched_star in self.con.execute("SELECT surfaceTemperature, absoluteMagnitude, solarMasses, subType, solarRadius, age FROM data_stars WHERE id64 = ?", (fetched_body[0], )):
                     body["surfaceTemperature"] = fetched_star[0]
                     body["absoluteMagnitude"] = fetched_star[1]
                     body["solarMasses"] = fetched_star[2]
                     body["subType"] = fetched_star[3]
                     body["solarRadius"] = fetched_star[4]
+                    body["age"] = fetched_star[5]
                     break
 
             if body["type"] == "Planet":
@@ -547,13 +549,14 @@ class Galaxy:
                     solarMasses = body.get("solarMasses", None)
                     subType = body.get("subType", None)
                     solarRadius = body.get("solarRadius", None)
+                    age = body.get("age", None)
 
                     self.con.execute('''
                         INSERT INTO data_stars
-                        (id64, surfaceTemperature, absoluteMagnitude, solarMasses, subType, solarRadius)
+                        (id64, surfaceTemperature, absoluteMagnitude, solarMasses, subType, solarRadius, age)
                             VALUES
-                        (?, ?, ?, ?, ?, ?)''',
-                    (body["id64"], surfaceTemperature, absoluteMagnitude, solarMasses, subType, solarRadius))
+                        (?, ?, ?, ?, ?, ?, ?)''',
+                    (body["id64"], surfaceTemperature, absoluteMagnitude, solarMasses, subType, solarRadius, age))
 
                 if body["type"] == "Planet":
                     earthMasses = body.get("earthMasses", None)
