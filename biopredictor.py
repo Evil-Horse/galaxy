@@ -503,6 +503,9 @@ def check_region(genus, species, region):
         return True
 
     if genus_species == "Tussock Divisa":
+        if region == "Izanami":
+            return False
+
         # Perseus Arm including Ryker's Hope
         if region not in ARM_PERSEUS | set(["Ryker's Hope"]):
             return False
